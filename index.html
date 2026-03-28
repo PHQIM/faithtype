@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Faith Type System</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300;400;500&family=Playfair+Display:wght@400;600&family=Inter:wght@300;400;500&display=swap');
+:root{
+  --bg:#F8F6F1;--white:#fff;--text:#1A1814;--muted:#7A7568;--light:#B0A99E;
+  --border:#E8E3DC;--accent:#3D3526;
+  --c1:#534AB7;--c2:#0F6E56;--c3:#185FA5;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans KR','Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(248,246,241,.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:56px;}
+.nav-logo{font-family:'Playfair Display','Noto Serif KR',serif;font-size:16px;font-weight:600;color:var(--text);letter-spacing:.3px;}
+.nav-logo span{color:var(--c1);}
+.nav-lang{position:relative;}
+.lang-btn{display:flex;align-items:center;gap:6px;padding:6px 12px;border:1px solid var(--border);border-radius:20px;background:transparent;font-family:'Noto Sans KR','Inter',sans-serif;font-size:12px;color:var(--muted);cursor:pointer;transition:all .2s;}
+.lang-btn:hover{border-color:var(--accent);color:var(--text);}
+.lang-flag{font-size:14px;}
+.lang-dropdown{position:absolute;top:calc(100% + 8px);right:0;background:var(--white);border:1px solid var(--border);border-radius:8px;padding:6px;min-width:160px;display:none;z-index:200;}
+.lang-dropdown.open{display:block;}
+.lang-item{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:5px;cursor:pointer;font-size:13px;color:var(--muted);transition:background .1s;}
+.lang-item:hover{background:var(--bg);}
+.lang-item.active{color:var(--text);font-weight:500;}
+.lang-item-flag{font-size:16px;width:20px;}
+.nav-links{display:flex;gap:20px;align-items:center;}
+.nav-link{font-size:13px;color:var(--muted);text-decoration:none;cursor:pointer;transition:color .2s;}
+.nav-link:hover{color:var(--text);}
+
+/* ── HERO ── */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:80px 28px 60px;}
+.hero-eyebrow{font-size:11px;font-weight:500;letter-spacing:1.5px;color:var(--light);text-transform:uppercase;margin-bottom:20px;}
+.hero-title{font-family:'Playfair Display','Noto Serif KR',serif;font-size:clamp(32px,5vw,52px);font-weight:600;line-height:1.2;margin-bottom:18px;max-width:700px;}
+.hero-title em{font-style:normal;color:var(--c1);}
+.hero-sub{font-size:clamp(14px,2vw,16px);color:var(--muted);line-height:1.85;max-width:520px;margin-bottom:48px;}
+.hero-ctas{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-bottom:64px;}
+.btn-primary{padding:14px 28px;background:var(--accent);color:#fff;border:none;border-radius:3px;font-family:inherit;font-size:14px;font-weight:500;cursor:pointer;transition:opacity .2s;text-decoration:none;display:inline-block;}
+.btn-primary:hover{opacity:.88;}
+.btn-secondary{padding:14px 28px;background:transparent;color:var(--text);border:1px solid var(--border);border-radius:3px;font-family:inherit;font-size:14px;cursor:pointer;transition:all .2s;text-decoration:none;display:inline-block;}
+.btn-secondary:hover{border-color:var(--accent);color:var(--accent);}
+.hero-stats{display:flex;gap:40px;justify-content:center;}
+.stat{text-align:center;}
+.stat-num{font-family:'Playfair Display','Noto Serif KR',serif;font-size:28px;font-weight:600;color:var(--text);}
+.stat-lbl{font-size:11px;color:var(--light);margin-top:4px;letter-spacing:.3px;}
+
+/* ── SECTION COMMON ── */
+.section{padding:80px 28px;}
+.section-inner{max-width:900px;margin:0 auto;}
+.section-eyebrow{font-size:11px;font-weight:500;letter-spacing:1.2px;color:var(--c1);text-transform:uppercase;margin-bottom:10px;text-align:center;}
+.section-title{font-family:'Playfair Display','Noto Serif KR',serif;font-size:clamp(22px,3vw,32px);font-weight:600;text-align:center;margin-bottom:12px;line-height:1.3;}
+.section-sub{font-size:14px;color:var(--muted);text-align:center;line-height:1.8;max-width:560px;margin:0 auto 48px;}
+.divider{height:1px;background:var(--border);max-width:900px;margin:0 auto;}
+
+/* ── ABOUT CARDS ── */
+.about-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+@media(max-width:640px){.about-grid{grid-template-columns:1fr;}}
+.about-card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:24px;}
+.about-card-num{font-family:'Playfair Display','Noto Serif KR',serif;font-size:32px;font-weight:600;margin-bottom:12px;}
+.about-card-title{font-size:15px;font-weight:500;margin-bottom:8px;}
+.about-card-desc{font-size:13px;color:var(--muted);line-height:1.75;}
+
+/* ── HOW IT WORKS STEPS ── */
+.steps{display:flex;flex-direction:column;gap:0;max-width:640px;margin:0 auto;}
+.step{display:flex;gap:20px;padding:24px 0;border-bottom:1px solid var(--border);}
+.step:last-child{border-bottom:none;}
+.step-num{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;flex-shrink:0;color:#fff;margin-top:2px;}
+.step-body{}
+.step-title{font-size:15px;font-weight:500;margin-bottom:6px;}
+.step-desc{font-size:13px;color:var(--muted);line-height:1.75;}
+.step-badge{display:inline-block;font-size:11px;font-weight:500;padding:2px 9px;border-radius:10px;margin-top:6px;}
+
+/* ── USER TABS ── */
+.user-tabs{display:flex;gap:8px;justify-content:center;margin-bottom:32px;}
+.user-tab{padding:10px 24px;border:1px solid var(--border);border-radius:3px;background:transparent;font-family:inherit;font-size:13px;color:var(--muted);cursor:pointer;transition:all .2s;}
+.user-tab.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+.user-panel{display:none;}
+.user-panel.active{display:block;}
+
+/* ── TOOL CARDS ── */
+.tools-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;}
+.tool-card{background:var(--white);border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:transform .15s,border-color .15s;}
+.tool-card:hover{transform:translateY(-2px);border-color:var(--light);}
+.tool-card-top{padding:24px 24px 16px;}
+.tool-card-badge{display:inline-block;font-size:10px;font-weight:500;padding:3px 10px;border-radius:10px;letter-spacing:.3px;margin-bottom:14px;}
+.tool-card-num{font-family:'Playfair Display','Noto Serif KR',serif;font-size:13px;font-weight:400;color:var(--light);margin-bottom:4px;}
+.tool-card-title{font-size:16px;font-weight:500;margin-bottom:8px;}
+.tool-card-desc{font-size:13px;color:var(--muted);line-height:1.7;}
+.tool-card-bottom{padding:16px 24px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.tool-card-tags{display:flex;gap:5px;flex-wrap:wrap;}
+.tool-card-tag{font-size:10px;color:var(--light);background:var(--bg);padding:2px 8px;border-radius:8px;border:1px solid var(--border);}
+.tool-card-btn{font-size:12px;font-weight:500;color:var(--accent);text-decoration:none;cursor:pointer;white-space:nowrap;padding:6px 14px;border:1px solid var(--border);border-radius:3px;transition:all .2s;}
+.tool-card-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
+
+/* ── FLOW ── */
+.flow{display:flex;align-items:flex-start;gap:0;margin-top:8px;flex-wrap:wrap;justify-content:center;}
+.flow-item{text-align:center;padding:16px 20px;}
+.flow-dot{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:500;color:#fff;margin:0 auto 10px;}
+.flow-label{font-size:12px;font-weight:500;color:var(--text);margin-bottom:4px;}
+.flow-sub{font-size:11px;color:var(--light);}
+.flow-arrow{padding:16px 4px;display:flex;align-items:center;color:var(--light);font-size:18px;margin-top:8px;}
+
+/* ── LANG SECTION ── */
+.lang-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;}
+.lang-card{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center;cursor:pointer;transition:all .2s;}
+.lang-card:hover,.lang-card.active{border-color:var(--c1);background:#EEEDFE;}
+.lang-card-flag{font-size:24px;margin-bottom:6px;}
+.lang-card-name{font-size:13px;font-weight:500;color:var(--text);margin-bottom:2px;}
+.lang-card-native{font-size:11px;color:var(--light);}
+
+/* ── FOOTER ── */
+footer{background:var(--accent);color:rgba(255,255,255,.7);padding:40px 28px;text-align:center;}
+.footer-logo{font-family:'Playfair Display','Noto Serif KR',serif;font-size:18px;font-weight:600;color:#fff;margin-bottom:10px;}
+.footer-desc{font-size:12px;line-height:1.8;max-width:480px;margin:0 auto 20px;}
+.footer-links{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;}
+.footer-link{font-size:12px;color:rgba(255,255,255,.6);text-decoration:none;cursor:pointer;}
+.footer-link:hover{color:#fff;}
+.footer-copy{font-size:11px;color:rgba(255,255,255,.35);margin-top:24px;}
+
+/* ── MOBILE ── */
+@media(max-width:640px){
+  nav{padding:0 16px;}
+  .nav-links{display:none;}
+  .hero{padding:80px 20px 48px;}
+  .hero-stats{gap:24px;}
+  .section{padding:56px 20px;}
+  .flow-arrow{display:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Faith<span>Type</span></div>
+  <div class="nav-links">
+    <a class="nav-link" onclick="scrollTo('about')" data-i="nav_about">소개</a>
+    <a class="nav-link" onclick="scrollTo('tools')" data-i="nav_tools">도구</a>
+    <a class="nav-link" onclick="scrollTo('howto')" data-i="nav_how">사용 방법</a>
+    <a class="nav-link" onclick="scrollTo('languages')" data-i="nav_lang">언어</a>
+  </div>
+  <div class="nav-lang">
+    <button class="lang-btn" onclick="toggleLangMenu()">
+      <span class="lang-flag" id="currentFlag">🇰🇷</span>
+      <span id="currentLangLabel">한국어</span>
+      <span style="font-size:10px;color:var(--light);">▾</span>
+    </button>
+    <div class="lang-dropdown" id="langDropdown">
+      <div class="lang-item active" onclick="setLang('ko')"><span class="lang-item-flag">🇰🇷</span>한국어</div>
+      <div class="lang-item" onclick="setLang('en')"><span class="lang-item-flag">🇺🇸</span>English</div>
+      <div class="lang-item" onclick="setLang('id')"><span class="lang-item-flag">🇮🇩</span>Bahasa Indonesia</div>
+      <div class="lang-item" onclick="setLang('zh')"><span class="lang-item-flag">🇨🇳</span>中文</div>
+      <div class="lang-item" onclick="setLang('it')"><span class="lang-item-flag">🇮🇹</span>Italiano</div>
+      <div class="lang-item" onclick="setLang('de')"><span class="lang-item-flag">🇩🇪</span>Deutsch</div>
+      <div class="lang-item" onclick="setLang('fr')"><span class="lang-item-flag">🇫🇷</span>Français</div>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="hero-eyebrow" data-i="hero_eyebrow">신앙 유형 진단 시스템</div>
+  <h1 class="hero-title" data-i="hero_title">나의 신앙 여정을<br><em>더 깊이</em> 이해합니다</h1>
+  <p class="hero-sub" data-i="hero_sub">74가지 질문으로 신앙 유형을 진단하고, 맞춤 상담 가이드와 성장 플랜으로 신앙의 다음 단계를 향해 나아갑니다.</p>
+  <div class="hero-ctas">
+    <a class="btn-primary" href="faith-assessment-v6.html" data-i="hero_cta1">검사 시작하기</a>
+    <button class="btn-secondary" onclick="scrollTo('about')" data-i="hero_cta2">더 알아보기</button>
+  </div>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-num">74</div><div class="stat-lbl" data-i="stat1">문항</div></div>
+    <div class="stat"><div class="stat-num">8</div><div class="stat-lbl" data-i="stat2">신앙 유형</div></div>
+    <div class="stat"><div class="stat-num">8</div><div class="stat-lbl" data-i="stat3">사명 유형</div></div>
+    <div class="stat"><div class="stat-num">7</div><div class="stat-lbl" data-i="stat4">지원 언어</div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ABOUT -->
+<section class="section" id="about">
+  <div class="section-inner">
+    <div class="section-eyebrow" data-i="about_eyebrow">이 도구에 대해</div>
+    <h2 class="section-title" data-i="about_title">Faith Type System이란?</h2>
+    <p class="section-sub" data-i="about_sub">신앙 여정의 어느 단계에 있든, 나를 더 잘 이해하고 다음 단계로 나아가도록 돕는 통합 진단·상담 도구입니다.</p>
+    <div class="about-grid">
+      <div class="about-card">
+        <div class="about-card-num" style="color:var(--c1)">01</div>
+        <div class="about-card-title" data-i="about_c1_title">신앙 유형 진단</div>
+        <div class="about-card-desc" data-i="about_c1_desc">74문항을 통해 인성·신성·환경·에너지 4개 축을 측정하고, 8가지 신앙 유형과 8가지 사명 유형을 분류합니다. 나의 이야기가 담긴 개인화된 결과를 제공합니다.</div>
+      </div>
+      <div class="about-card">
+        <div class="about-card-num" style="color:var(--c2)">02</div>
+        <div class="about-card-title" data-i="about_c2_title">상담자 가이드</div>
+        <div class="about-card-desc" data-i="about_c2_desc">각 유형별 프로파일, 상담 접근 원칙, 권장 질문, 위험 신호, 동반 성장 방향까지 상담자가 바로 사용할 수 있는 7섹션 가이드입니다.</div>
+      </div>
+      <div class="about-card">
+        <div class="about-card-num" style="color:var(--c3)">03</div>
+        <div class="about-card-title" data-i="about_c3_title">성장 플랜지</div>
+        <div class="about-card-desc" data-i="about_c3_desc">검사 결과를 바탕으로 1년 단위 성장 목표, 영역별 행동 방안, 케어 체크리스트를 작성하는 맞춤형 플랜 문서입니다.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- HOW IT WORKS -->
+<section class="section" id="howto">
+  <div class="section-inner">
+    <div class="section-eyebrow" data-i="how_eyebrow">사용 방법</div>
+    <h2 class="section-title" data-i="how_title">어떻게 사용하나요?</h2>
+    <p class="section-sub" data-i="how_sub">세 가지 도구가 순서대로 연결됩니다. 내담자와 상담자가 각각의 역할로 참여합니다.</p>
+    <div class="flow" style="margin-bottom:40px;">
+      <div class="flow-item">
+        <div class="flow-dot" style="background:var(--c1)">1</div>
+        <div class="flow-label" data-i="flow1_label">검사 참여</div>
+        <div class="flow-sub" data-i="flow1_sub">내담자</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-item">
+        <div class="flow-dot" style="background:var(--c2)">2</div>
+        <div class="flow-label" data-i="flow2_label">결과 공유</div>
+        <div class="flow-sub" data-i="flow2_sub">내담자 → 상담자</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-item">
+        <div class="flow-dot" style="background:var(--c3)">3</div>
+        <div class="flow-label" data-i="flow3_label">가이드 참고</div>
+        <div class="flow-sub" data-i="flow3_sub">상담자</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-item">
+        <div class="flow-dot" style="background:#854F0B">4</div>
+        <div class="flow-label" data-i="flow4_label">플랜 작성</div>
+        <div class="flow-sub" data-i="flow4_sub">상담자</div>
+      </div>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num" style="background:var(--c1)">1</div>
+        <div class="step-body">
+          <div class="step-title" data-i="step1_title">내담자가 신앙 유형 검사를 완료합니다</div>
+          <div class="step-desc" data-i="step1_desc">74문항에 응답하면 신앙 유형, 사명 유형, 성장 적성이 자동으로 분류됩니다. 결과는 JPG 이미지 또는 PDF로 저장해 상담자에게 공유합니다.</div>
+          <span class="step-badge" style="background:#EEEDFE;color:#3C3489" data-i="step1_badge">내담자용</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num" style="background:var(--c2)">2</div>
+        <div class="step-body">
+          <div class="step-title" data-i="step2_title">상담자가 유형별 가이드를 확인합니다</div>
+          <div class="step-desc" data-i="step2_desc">드롭다운에서 해당 유형을 선택하면 7섹션 상담 가이드가 펼쳐집니다. 상담 전 미리 읽고, 권장 질문과 주의 패턴을 파악합니다.</div>
+          <span class="step-badge" style="background:#E1F5EE;color:#085041" data-i="step2_badge">상담자용</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num" style="background:var(--c3)">3</div>
+        <div class="step-body">
+          <div class="step-title" data-i="step3_title">성장 플랜지를 작성하고 함께 걸어갑니다</div>
+          <div class="step-desc" data-i="step3_desc">검사 결과를 입력하고 1년 단위 성장 로드맵, 4개 영역별 실천 목표, 케어 체크리스트를 작성합니다. PDF로 저장해 매 상담 시 점검합니다.</div>
+          <span class="step-badge" style="background:#E6F1FB;color:#0C447C" data-i="step3_badge">상담자용</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- TOOLS -->
+<section class="section" id="tools">
+  <div class="section-inner">
+    <div class="section-eyebrow" data-i="tools_eyebrow">도구 목록</div>
+    <h2 class="section-title" data-i="tools_title">내담자용 · 상담자용 도구</h2>
+    <p class="section-sub" data-i="tools_sub">역할에 맞는 도구를 선택해 시작하세요.</p>
+
+    <!-- USER TABS -->
+    <div class="user-tabs">
+      <button class="user-tab active" onclick="switchTab('client')" data-i="tab_client">내담자용</button>
+      <button class="user-tab" onclick="switchTab('counselor')" data-i="tab_counselor">상담자용</button>
+    </div>
+
+    <!-- CLIENT PANEL -->
+    <div class="user-panel active" id="panel-client">
+      <div class="tools-grid">
+        <div class="tool-card">
+          <div class="tool-card-top">
+            <div class="tool-card-badge" style="background:#EEEDFE;color:#3C3489" data-i="tc1_badge">신앙 유형 검사</div>
+            <div class="tool-card-num" data-i="tc1_num">도구 01</div>
+            <div class="tool-card-title" data-i="tc1_title">나의 신앙 유형은 무엇인가요?</div>
+            <div class="tool-card-desc" data-i="tc1_desc">74문항에 응답하면 8가지 신앙 유형, 8가지 사명 유형, 10가지 성장 적성이 자동으로 분류됩니다. 나의 이야기가 담긴 개인화된 분석 결과를 제공합니다.</div>
+          </div>
+          <div class="tool-card-bottom">
+            <div class="tool-card-tags">
+              <span class="tool-card-tag" data-i="tag_74q">74문항</span>
+              <span class="tool-card-tag" data-i="tag_15m">약 15분</span>
+              <span class="tool-card-tag" data-i="tag_save">저장 가능</span>
+            </div>
+            <a class="tool-card-btn" href="faith-assessment-v6.html" data-i="btn_start">시작하기 →</a>
+          </div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-card-top">
+            <div class="tool-card-badge" style="background:#EEEDFE;color:#3C3489" data-i="tc2_badge">신앙 유형 검사 (영문)</div>
+            <div class="tool-card-num" data-i="tc2_num">도구 01-EN</div>
+            <div class="tool-card-title" data-i="tc2_title">Faith Type Assessment</div>
+            <div class="tool-card-desc" data-i="tc2_desc">The same 74-question assessment fully translated into English. Faith types, calling types, and growth aptitude results are all provided in English.</div>
+          </div>
+          <div class="tool-card-bottom">
+            <div class="tool-card-tags">
+              <span class="tool-card-tag">74 Qs</span>
+              <span class="tool-card-tag">~15 min</span>
+              <span class="tool-card-tag">English</span>
+            </div>
+            <a class="tool-card-btn" href="faith-assessment-en.html" data-i="btn_start_en">Start →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COUNSELOR PANEL -->
+    <div class="user-panel" id="panel-counselor">
+      <div class="tools-grid">
+        <div class="tool-card">
+          <div class="tool-card-top">
+            <div class="tool-card-badge" style="background:#E1F5EE;color:#085041" data-i="ts1_badge">상담자 전용</div>
+            <div class="tool-card-num" data-i="ts1_num">도구 02</div>
+            <div class="tool-card-title" data-i="ts1_title">신앙 유형 상담 가이드</div>
+            <div class="tool-card-desc" data-i="ts1_desc">8가지 유형별 7섹션 상담 가이드. 유형 프로파일, 상담 접근 원칙, 권장 질문, 주의 패턴, 동반 성장 방향까지 상담 현장에서 바로 활용합니다.</div>
+          </div>
+          <div class="tool-card-bottom">
+            <div class="tool-card-tags">
+              <span class="tool-card-tag" data-i="tag_8types">8가지 유형</span>
+              <span class="tool-card-tag" data-i="tag_7sec">7섹션</span>
+              <span class="tool-card-tag" data-i="tag_print">인쇄 가능</span>
+            </div>
+            <a class="tool-card-btn" href="counseling-guide-v2.html" data-i="btn_open">열기 →</a>
+          </div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-card-top">
+            <div class="tool-card-badge" style="background:#E6F1FB;color:#0C447C" data-i="ts2_badge">상담자 전용</div>
+            <div class="tool-card-num" data-i="ts2_num">도구 03</div>
+            <div class="tool-card-title" data-i="ts2_title">신앙 성장 플랜지</div>
+            <div class="tool-card-desc" data-i="ts2_desc">검사 결과를 입력하면 1년 단위 성장 로드맵, 4개 영역별 실천 행동, 구체적 목표, 케어 체크리스트를 작성하는 맞춤형 플랜 문서입니다.</div>
+          </div>
+          <div class="tool-card-bottom">
+            <div class="tool-card-tags">
+              <span class="tool-card-tag" data-i="tag_1y">1년 플랜</span>
+              <span class="tool-card-tag" data-i="tag_checklist">체크리스트</span>
+              <span class="tool-card-tag" data-i="tag_pdf">PDF 저장</span>
+            </div>
+            <a class="tool-card-btn" href="faith-growth-plan.html" data-i="btn_write">작성하기 →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- LANGUAGES -->
+<section class="section" id="languages">
+  <div class="section-inner">
+    <div class="section-eyebrow" data-i="lang_eyebrow">다국어 지원</div>
+    <h2 class="section-title" data-i="lang_title">전 세계 어디서나</h2>
+    <p class="section-sub" data-i="lang_sub">신앙 유형 검사는 한국어와 영어로 제공됩니다. 포털 인터페이스는 7개 언어를 지원합니다.</p>
+    <div class="lang-grid" style="max-width:640px;margin:0 auto 32px;">
+      <div class="lang-card active" onclick="setLang('ko')"><div class="lang-card-flag">🇰🇷</div><div class="lang-card-name">한국어</div><div class="lang-card-native">Korean</div></div>
+      <div class="lang-card" onclick="setLang('en')"><div class="lang-card-flag">🇺🇸</div><div class="lang-card-name">English</div><div class="lang-card-native">영어</div></div>
+      <div class="lang-card" onclick="setLang('id')"><div class="lang-card-flag">🇮🇩</div><div class="lang-card-name">Indonesia</div><div class="lang-card-native">인도네시아어</div></div>
+      <div class="lang-card" onclick="setLang('zh')"><div class="lang-card-flag">🇨🇳</div><div class="lang-card-name">中文</div><div class="lang-card-native">중국어</div></div>
+      <div class="lang-card" onclick="setLang('it')"><div class="lang-card-flag">🇮🇹</div><div class="lang-card-name">Italiano</div><div class="lang-card-native">이탈리아어</div></div>
+      <div class="lang-card" onclick="setLang('de')"><div class="lang-card-flag">🇩🇪</div><div class="lang-card-name">Deutsch</div><div class="lang-card-native">독일어</div></div>
+      <div class="lang-card" onclick="setLang('fr')"><div class="lang-card-flag">🇫🇷</div><div class="lang-card-name">Français</div><div class="lang-card-native">프랑스어</div></div>
+    </div>
+    <div style="background:var(--white);border:1px solid var(--border);border-radius:8px;padding:20px 24px;max-width:560px;margin:0 auto;text-align:center;">
+      <div style="font-size:11px;font-weight:500;letter-spacing:.5px;color:var(--light);text-transform:uppercase;margin-bottom:8px;" data-i="lang_note_label">검사 언어 안내</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.8;" data-i="lang_note">신앙 유형 검사는 현재 한국어와 영어로 제공됩니다. 다른 언어 버전은 순차적으로 추가될 예정입니다. 포털 메뉴와 소개는 7개 언어로 확인하실 수 있습니다.</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">FaithType</div>
+  <p class="footer-desc" data-i="footer_desc">신앙 유형 진단 · 상담 가이드 · 성장 플랜의 통합 시스템. 신앙의 다음 단계를 향해 함께 걸어갑니다.</p>
+  <div class="footer-links">
+    <span class="footer-link" onclick="scrollTo('about')" data-i="footer_about">소개</span>
+    <span class="footer-link" onclick="scrollTo('tools')" data-i="footer_tools">도구</span>
+    <span class="footer-link" onclick="scrollTo('howto')" data-i="footer_how">사용 방법</span>
+    <a class="footer-link" href="faith-assessment-v6.html" data-i="footer_start">검사 시작</a>
+  </div>
+  <div class="footer-copy">© 2025 FaithType System · All rights reserved</div>
+</footer>
+
+<script>
+// ── SCROLL ──
+function scrollTo(id){document.getElementById(id).scrollIntoView({behavior:'smooth'});}
+
+// ── TABS ──
+function switchTab(tab){
+  document.querySelectorAll('.user-tab').forEach((t,i)=>{t.classList.toggle('active',i===(tab==='client'?0:1));});
+  document.getElementById('panel-client').classList.toggle('active',tab==='client');
+  document.getElementById('panel-counselor').classList.toggle('active',tab==='counselor');
+}
+
+// ── LANG MENU ──
+function toggleLangMenu(){document.getElementById('langDropdown').classList.toggle('open');}
+document.addEventListener('click',e=>{if(!e.target.closest('.nav-lang'))document.getElementById('langDropdown').classList.remove('open');});
+
+// ── TRANSLATIONS ──
+const LANGS={
+  ko:{flag:'🇰🇷',label:'한국어',
+    nav_about:'소개',nav_tools:'도구',nav_how:'사용 방법',nav_lang:'언어',
+    hero_eyebrow:'신앙 유형 진단 시스템',
+    hero_title:'나의 신앙 여정을<br><em>더 깊이</em> 이해합니다',
+    hero_sub:'74가지 질문으로 신앙 유형을 진단하고, 맞춤 상담 가이드와 성장 플랜으로 신앙의 다음 단계를 향해 나아갑니다.',
+    hero_cta1:'검사 시작하기',hero_cta2:'더 알아보기',
+    stat1:'문항',stat2:'신앙 유형',stat3:'사명 유형',stat4:'지원 언어',
+    about_eyebrow:'이 도구에 대해',about_title:'Faith Type System이란?',
+    about_sub:'신앙 여정의 어느 단계에 있든, 나를 더 잘 이해하고 다음 단계로 나아가도록 돕는 통합 진단·상담 도구입니다.',
+    about_c1_title:'신앙 유형 진단',about_c1_desc:'74문항을 통해 인성·신성·환경·에너지 4개 축을 측정하고, 8가지 신앙 유형과 8가지 사명 유형을 분류합니다.',
+    about_c2_title:'상담자 가이드',about_c2_desc:'각 유형별 프로파일, 상담 접근 원칙, 권장 질문, 위험 신호, 동반 성장 방향까지 상담자가 바로 사용할 수 있는 7섹션 가이드입니다.',
+    about_c3_title:'성장 플랜지',about_c3_desc:'검사 결과를 바탕으로 1년 단위 성장 목표, 영역별 행동 방안, 케어 체크리스트를 작성하는 맞춤형 플랜 문서입니다.',
+    how_eyebrow:'사용 방법',how_title:'어떻게 사용하나요?',
+    how_sub:'세 가지 도구가 순서대로 연결됩니다. 내담자와 상담자가 각각의 역할로 참여합니다.',
+    flow1_label:'검사 참여',flow1_sub:'내담자',flow2_label:'결과 공유',flow2_sub:'내담자 → 상담자',
+    flow3_label:'가이드 참고',flow3_sub:'상담자',flow4_label:'플랜 작성',flow4_sub:'상담자',
+    step1_title:'내담자가 신앙 유형 검사를 완료합니다',step1_desc:'74문항에 응답하면 신앙 유형, 사명 유형, 성장 적성이 자동으로 분류됩니다. 결과는 JPG 또는 PDF로 저장해 상담자에게 공유합니다.',step1_badge:'내담자용',
+    step2_title:'상담자가 유형별 가이드를 확인합니다',step2_desc:'드롭다운에서 해당 유형을 선택하면 7섹션 상담 가이드가 펼쳐집니다. 상담 전 미리 읽고, 권장 질문과 주의 패턴을 파악합니다.',step2_badge:'상담자용',
+    step3_title:'성장 플랜지를 작성하고 함께 걸어갑니다',step3_desc:'검사 결과를 입력하고 1년 단위 성장 로드맵, 4개 영역별 실천 목표, 케어 체크리스트를 작성합니다. PDF로 저장해 매 상담 시 점검합니다.',step3_badge:'상담자용',
+    tools_eyebrow:'도구 목록',tools_title:'내담자용 · 상담자용 도구',tools_sub:'역할에 맞는 도구를 선택해 시작하세요.',
+    tab_client:'내담자용',tab_counselor:'상담자용',
+    tc1_badge:'신앙 유형 검사',tc1_num:'도구 01',tc1_title:'나의 신앙 유형은 무엇인가요?',tc1_desc:'74문항에 응답하면 8가지 신앙 유형, 8가지 사명 유형, 10가지 성장 적성이 자동으로 분류됩니다.',
+    tc2_badge:'신앙 유형 검사 (영문)',tc2_num:'도구 01-EN',tc2_title:'Faith Type Assessment',tc2_desc:'The same 74-question assessment fully translated into English.',
+    tag_74q:'74문항',tag_15m:'약 15분',tag_save:'저장 가능',btn_start:'시작하기 →',btn_start_en:'Start →',
+    ts1_badge:'상담자 전용',ts1_num:'도구 02',ts1_title:'신앙 유형 상담 가이드',ts1_desc:'8가지 유형별 7섹션 상담 가이드. 유형 프로파일, 상담 접근 원칙, 권장 질문, 주의 패턴, 동반 성장 방향까지.',
+    ts2_badge:'상담자 전용',ts2_num:'도구 03',ts2_title:'신앙 성장 플랜지',ts2_desc:'검사 결과를 입력하면 1년 단위 성장 로드맵, 4개 영역별 실천 행동, 구체적 목표, 케어 체크리스트를 작성합니다.',
+    tag_8types:'8가지 유형',tag_7sec:'7섹션',tag_print:'인쇄 가능',btn_open:'열기 →',
+    tag_1y:'1년 플랜',tag_checklist:'체크리스트',tag_pdf:'PDF 저장',btn_write:'작성하기 →',
+    lang_eyebrow:'다국어 지원',lang_title:'전 세계 어디서나',lang_sub:'신앙 유형 검사는 한국어와 영어로 제공됩니다. 포털 인터페이스는 7개 언어를 지원합니다.',
+    lang_note_label:'검사 언어 안내',lang_note:'신앙 유형 검사는 현재 한국어와 영어로 제공됩니다. 다른 언어 버전은 순차적으로 추가될 예정입니다.',
+    footer_desc:'신앙 유형 진단 · 상담 가이드 · 성장 플랜의 통합 시스템. 신앙의 다음 단계를 향해 함께 걸어갑니다.',
+    footer_about:'소개',footer_tools:'도구',footer_how:'사용 방법',footer_start:'검사 시작'
+  },
+  en:{flag:'🇺🇸',label:'English',
+    nav_about:'About',nav_tools:'Tools',nav_how:'How it works',nav_lang:'Language',
+    hero_eyebrow:'Faith Type Assessment System',
+    hero_title:'Understand your<br>faith journey <em>more deeply</em>',
+    hero_sub:'74 questions to assess your faith type, then personalized counseling guides and growth plans to move toward the next stage of your faith.',
+    hero_cta1:'Take the Assessment',hero_cta2:'Learn More',
+    stat1:'Questions',stat2:'Faith Types',stat3:'Calling Types',stat4:'Languages',
+    about_eyebrow:'About this system',about_title:'What is Faith Type System?',
+    about_sub:'An integrated diagnostic and counseling tool to help you understand yourself better and move forward, whatever stage of your faith journey you are on.',
+    about_c1_title:'Faith Type Assessment',about_c1_desc:'74 questions measuring 4 axes — Character, Spirituality, Environment, and Energy — to classify 8 faith types and 8 calling types with a personalized analysis.',
+    about_c2_title:'Counseling Guide',about_c2_desc:'A 7-section guide per type covering type profiles, counseling approach principles, recommended questions, warning patterns, and growth directions.',
+    about_c3_title:'Growth Plan Sheet',about_c3_desc:'A personalized planning document with 1-year growth goals, domain action plans, and care checklists based on assessment results.',
+    how_eyebrow:'How it works',how_title:'How do I use this?',
+    how_sub:'Three tools connect in sequence. The person assessed and the counselor each play their part.',
+    flow1_label:'Take Assessment',flow1_sub:'Person assessed',flow2_label:'Share Results',flow2_sub:'Person → Counselor',
+    flow3_label:'Read Guide',flow3_sub:'Counselor',flow4_label:'Write Plan',flow4_sub:'Counselor',
+    step1_title:'The person completes the Faith Type Assessment',step1_desc:'After responding to 74 questions, faith type, calling type, and growth aptitude are classified automatically. Results can be saved as JPG or PDF to share with a counselor.',step1_badge:'For the person assessed',
+    step2_title:'The counselor reviews the type-specific guide',step2_desc:'Selecting the relevant type from the dropdown opens a full 7-section counseling guide. Read it before a session to understand recommended questions and warning patterns.',step2_badge:'For counselors',
+    step3_title:'Write the growth plan and walk forward together',step3_desc:'Enter the assessment results to build a 1-year growth roadmap, domain action plans, and a care checklist. Save as PDF to review at each counseling session.',step3_badge:'For counselors',
+    tools_eyebrow:'Tools',tools_title:'Tools for Counselees & Counselors',tools_sub:'Choose the tool that fits your role.',
+    tab_client:'For Counselees',tab_counselor:'For Counselors',
+    tc1_badge:'Faith Type Assessment',tc1_num:'Tool 01',tc1_title:'What is my faith type?',tc1_desc:'74 questions automatically classify 8 faith types, 8 calling types, and 10 growth aptitudes with a personalized analysis.',
+    tc2_badge:'Faith Assessment (English)',tc2_num:'Tool 01-EN',tc2_title:'Faith Type Assessment',tc2_desc:'The same 74-question assessment fully translated into English.',
+    tag_74q:'74 Questions',tag_15m:'~15 min',tag_save:'Saveable',btn_start:'Start →',btn_start_en:'Start →',
+    ts1_badge:'Counselors Only',ts1_num:'Tool 02',ts1_title:'Faith Type Counseling Guide',ts1_desc:'7-section guide for each of the 8 types. Type profile, counseling approach, recommended questions, warning patterns, and growth direction.',
+    ts2_badge:'Counselors Only',ts2_num:'Tool 03',ts2_title:'Faith Growth Plan Sheet',ts2_desc:'Enter assessment results to build a 1-year growth roadmap, domain action plans, specific goals, and a care checklist.',
+    tag_8types:'8 Types',tag_7sec:'7 Sections',tag_print:'Printable',btn_open:'Open →',
+    tag_1y:'1-Year Plan',tag_checklist:'Checklist',tag_pdf:'PDF Save',btn_write:'Write →',
+    lang_eyebrow:'Language Support',lang_title:'Available Worldwide',lang_sub:'The assessment is available in Korean and English. The portal interface supports 7 languages.',
+    lang_note_label:'Assessment Languages',lang_note:'The Faith Type Assessment is currently available in Korean and English. Other language versions will be added progressively.',
+    footer_desc:'An integrated system for faith type assessment, counseling guides, and growth planning. Walking together toward the next stage of faith.',
+    footer_about:'About',footer_tools:'Tools',footer_how:'How it works',footer_start:'Start Assessment'
+  },
+  id:{flag:'🇮🇩',label:'Indonesia',
+    nav_about:'Tentang',nav_tools:'Alat',nav_how:'Cara Pakai',nav_lang:'Bahasa',
+    hero_eyebrow:'Sistem Penilaian Tipe Iman',
+    hero_title:'Pahami perjalanan iman Anda<br><em>lebih dalam</em>',
+    hero_sub:'74 pertanyaan untuk menilai tipe iman Anda, lalu panduan konseling dan rencana pertumbuhan yang dipersonalisasi untuk melangkah maju.',
+    hero_cta1:'Mulai Penilaian',hero_cta2:'Pelajari Lebih',
+    stat1:'Pertanyaan',stat2:'Tipe Iman',stat3:'Tipe Panggilan',stat4:'Bahasa',
+    about_eyebrow:'Tentang sistem ini',about_title:'Apa itu Faith Type System?',
+    about_sub:'Alat diagnosis dan konseling terpadu untuk membantu Anda memahami diri lebih baik dan maju ke tahap berikutnya.',
+    about_c1_title:'Penilaian Tipe Iman',about_c1_desc:'74 pertanyaan mengukur 4 sumbu untuk mengklasifikasikan 8 tipe iman dan 8 tipe panggilan dengan analisis yang dipersonalisasi.',
+    about_c2_title:'Panduan Konseling',about_c2_desc:'Panduan 7 bagian per tipe mencakup profil, prinsip pendekatan konseling, pertanyaan yang disarankan, pola peringatan, dan arah pertumbuhan.',
+    about_c3_title:'Lembar Rencana Pertumbuhan',about_c3_desc:'Dokumen perencanaan dengan tujuan pertumbuhan 1 tahun, rencana tindakan per domain, dan daftar periksa perawatan.',
+    how_eyebrow:'Cara Pakai',how_title:'Bagaimana cara menggunakannya?',
+    how_sub:'Tiga alat terhubung secara berurutan. Peserta dan konselor masing-masing memainkan peran mereka.',
+    flow1_label:'Ikuti Penilaian',flow1_sub:'Peserta',flow2_label:'Bagikan Hasil',flow2_sub:'Peserta → Konselor',
+    flow3_label:'Baca Panduan',flow3_sub:'Konselor',flow4_label:'Tulis Rencana',flow4_sub:'Konselor',
+    step1_title:'Peserta menyelesaikan Penilaian Tipe Iman',step1_desc:'Setelah menjawab 74 pertanyaan, tipe iman, tipe panggilan, dan bakat pertumbuhan diklasifikasikan secara otomatis.',step1_badge:'Untuk peserta',
+    step2_title:'Konselor meninjau panduan khusus tipe',step2_desc:'Pilih tipe yang relevan dari dropdown untuk membuka panduan konseling 7 bagian. Baca sebelum sesi konseling.',step2_badge:'Untuk konselor',
+    step3_title:'Tulis rencana pertumbuhan dan melangkah bersama',step3_desc:'Masukkan hasil penilaian untuk membangun peta jalan pertumbuhan 1 tahun, rencana tindakan per domain, dan daftar periksa perawatan.',step3_badge:'Untuk konselor',
+    tools_eyebrow:'Alat',tools_title:'Alat untuk Peserta & Konselor',tools_sub:'Pilih alat yang sesuai dengan peran Anda.',
+    tab_client:'Untuk Peserta',tab_counselor:'Untuk Konselor',
+    tc1_badge:'Penilaian Tipe Iman',tc1_num:'Alat 01',tc1_title:'Apa tipe iman saya?',tc1_desc:'74 pertanyaan secara otomatis mengklasifikasikan 8 tipe iman, 8 tipe panggilan, dan 10 bakat pertumbuhan.',
+    tc2_badge:'Penilaian (Inggris)',tc2_num:'Alat 01-EN',tc2_title:'Faith Type Assessment',tc2_desc:'Penilaian yang sama sepenuhnya diterjemahkan ke dalam bahasa Inggris.',
+    tag_74q:'74 Pertanyaan',tag_15m:'~15 menit',tag_save:'Dapat Disimpan',btn_start:'Mulai →',btn_start_en:'Start →',
+    ts1_badge:'Khusus Konselor',ts1_num:'Alat 02',ts1_title:'Panduan Konseling Tipe Iman',ts1_desc:'Panduan 7 bagian untuk masing-masing dari 8 tipe.',
+    ts2_badge:'Khusus Konselor',ts2_num:'Alat 03',ts2_title:'Lembar Rencana Pertumbuhan Iman',ts2_desc:'Masukkan hasil penilaian untuk membangun peta jalan pertumbuhan, rencana tindakan, tujuan spesifik, dan daftar periksa.',
+    tag_8types:'8 Tipe',tag_7sec:'7 Bagian',tag_print:'Dapat Dicetak',btn_open:'Buka →',
+    tag_1y:'Rencana 1 Tahun',tag_checklist:'Daftar Periksa',tag_pdf:'Simpan PDF',btn_write:'Tulis →',
+    lang_eyebrow:'Dukungan Bahasa',lang_title:'Tersedia di Seluruh Dunia',lang_sub:'Penilaian tersedia dalam bahasa Korea dan Inggris. Antarmuka portal mendukung 7 bahasa.',
+    lang_note_label:'Bahasa Penilaian',lang_note:'Penilaian Tipe Iman saat ini tersedia dalam bahasa Korea dan Inggris. Versi bahasa lain akan ditambahkan secara bertahap.',
+    footer_desc:'Sistem terpadu untuk penilaian tipe iman, panduan konseling, dan perencanaan pertumbuhan.',
+    footer_about:'Tentang',footer_tools:'Alat',footer_how:'Cara Pakai',footer_start:'Mulai Penilaian'
+  },
+  zh:{flag:'🇨🇳',label:'中文',
+    nav_about:'关于',nav_tools:'工具',nav_how:'使用方法',nav_lang:'语言',
+    hero_eyebrow:'信仰类型评估系统',
+    hero_title:'更<em>深入地</em>了解<br>您的信仰旅程',
+    hero_sub:'通过74个问题评估您的信仰类型，然后通过个性化辅导指南和成长计划迈向信仰的下一阶段。',
+    hero_cta1:'开始评估',hero_cta2:'了解更多',
+    stat1:'题目',stat2:'信仰类型',stat3:'使命类型',stat4:'支持语言',
+    about_eyebrow:'关于此系统',about_title:'什么是Faith Type System？',
+    about_sub:'一个综合诊断和辅导工具，帮助您更好地了解自己，无论您处于信仰旅程的哪个阶段，都能帮助您前进。',
+    about_c1_title:'信仰类型评估',about_c1_desc:'通过74个问题测量4个维度，对8种信仰类型和8种使命类型进行分类，并提供个性化分析。',
+    about_c2_title:'辅导指南',about_c2_desc:'每种类型的7节辅导指南，涵盖类型概况、辅导方法原则、推荐问题、警示模式和成长方向。',
+    about_c3_title:'成长计划表',about_c3_desc:'基于评估结果的个性化规划文件，包含1年成长目标、各领域行动方案和关怀检查清单。',
+    how_eyebrow:'使用方法',how_title:'如何使用？',
+    how_sub:'三个工具按顺序连接。被评估者和辅导者各自发挥作用。',
+    flow1_label:'参加评估',flow1_sub:'被评估者',flow2_label:'分享结果',flow2_sub:'被评估者 → 辅导者',
+    flow3_label:'参考指南',flow3_sub:'辅导者',flow4_label:'制定计划',flow4_sub:'辅导者',
+    step1_title:'被评估者完成信仰类型评估',step1_desc:'回答74个问题后，信仰类型、使命类型和成长适性将自动分类。结果可保存为JPG或PDF与辅导者共享。',step1_badge:'适用于被评估者',
+    step2_title:'辅导者查看类型专属指南',step2_desc:'从下拉菜单中选择相应类型，即可展开7节辅导指南。在辅导前阅读，了解推荐问题和警示模式。',step2_badge:'适用于辅导者',
+    step3_title:'制定成长计划，携手前行',step3_desc:'输入评估结果，构建1年成长路线图、各领域实践目标和关怀检查清单。保存为PDF，在每次辅导时检查。',step3_badge:'适用于辅导者',
+    tools_eyebrow:'工具',tools_title:'适用于被评估者和辅导者的工具',tools_sub:'选择适合您角色的工具开始使用。',
+    tab_client:'被评估者',tab_counselor:'辅导者',
+    tc1_badge:'信仰类型评估',tc1_num:'工具 01',tc1_title:'我的信仰类型是什么？',tc1_desc:'74个问题自动分类8种信仰类型、8种使命类型和10种成长适性。',
+    tc2_badge:'评估（英文版）',tc2_num:'工具 01-EN',tc2_title:'Faith Type Assessment',tc2_desc:'同样的74题评估，完整翻译成英文。',
+    tag_74q:'74题',tag_15m:'约15分钟',tag_save:'可保存',btn_start:'开始 →',btn_start_en:'Start →',
+    ts1_badge:'仅限辅导者',ts1_num:'工具 02',ts1_title:'信仰类型辅导指南',ts1_desc:'8种类型各自的7节辅导指南，涵盖类型概况、辅导原则、推荐问题、警示模式和成长方向。',
+    ts2_badge:'仅限辅导者',ts2_num:'工具 03',ts2_title:'信仰成长计划表',ts2_desc:'输入评估结果，构建1年成长路线图、各领域实践行动、具体目标和关怀检查清单。',
+    tag_8types:'8种类型',tag_7sec:'7节',tag_print:'可打印',btn_open:'打开 →',
+    tag_1y:'1年计划',tag_checklist:'检查清单',tag_pdf:'PDF保存',btn_write:'填写 →',
+    lang_eyebrow:'多语言支持',lang_title:'全球可用',lang_sub:'评估提供韩语和英语版本。门户界面支持7种语言。',
+    lang_note_label:'评估语言说明',lang_note:'信仰类型评估目前提供韩语和英语版本。其他语言版本将陆续添加。',
+    footer_desc:'信仰类型诊断、辅导指南和成长计划的综合系统，携手迈向信仰的下一阶段。',
+    footer_about:'关于',footer_tools:'工具',footer_how:'使用方法',footer_start:'开始评估'
+  },
+  it:{flag:'🇮🇹',label:'Italiano',
+    nav_about:'Chi siamo',nav_tools:'Strumenti',nav_how:'Come funziona',nav_lang:'Lingua',
+    hero_eyebrow:'Sistema di valutazione del tipo di fede',
+    hero_title:'Comprendi il tuo cammino di fede<br><em>più profondamente</em>',
+    hero_sub:'74 domande per valutare il tuo tipo di fede, poi guide di consulenza personalizzate e piani di crescita per avanzare verso la prossima tappa.',
+    hero_cta1:'Inizia la valutazione',hero_cta2:'Scopri di più',
+    stat1:'Domande',stat2:'Tipi di fede',stat3:'Tipi di missione',stat4:'Lingue',
+    about_eyebrow:'Sul sistema',about_title:'Cos\'è il Faith Type System?',
+    about_sub:'Uno strumento integrato di diagnosi e consulenza per aiutarti a comprenderti meglio e ad andare avanti, qualunque sia la tappa del tuo cammino di fede.',
+    about_c1_title:'Valutazione del tipo di fede',about_c1_desc:'74 domande che misurano 4 assi per classificare 8 tipi di fede e 8 tipi di missione con un\'analisi personalizzata.',
+    about_c2_title:'Guida di consulenza',about_c2_desc:'Una guida in 7 sezioni per tipo, che copre profili, principi di approccio alla consulenza, domande consigliate, schemi di avvertimento e direzioni di crescita.',
+    about_c3_title:'Foglio del piano di crescita',about_c3_desc:'Un documento di pianificazione personalizzato con obiettivi di crescita annuali, piani d\'azione per dominio e liste di controllo.',
+    how_eyebrow:'Come funziona',how_title:'Come si usa?',
+    how_sub:'Tre strumenti collegati in sequenza. La persona valutata e il consulente svolgono ciascuno il proprio ruolo.',
+    flow1_label:'Fai la valutazione',flow1_sub:'Persona valutata',flow2_label:'Condividi i risultati',flow2_sub:'Persona → Consulente',
+    flow3_label:'Leggi la guida',flow3_sub:'Consulente',flow4_label:'Scrivi il piano',flow4_sub:'Consulente',
+    step1_title:'La persona completa la valutazione del tipo di fede',step1_desc:'Dopo aver risposto a 74 domande, il tipo di fede, il tipo di missione e le attitudini di crescita vengono classificati automaticamente.',step1_badge:'Per la persona valutata',
+    step2_title:'Il consulente esamina la guida specifica per tipo',step2_desc:'Selezionando il tipo pertinente dal menu a tendina si apre la guida di consulenza in 7 sezioni.',step2_badge:'Per i consulenti',
+    step3_title:'Scrivi il piano di crescita e cammina insieme',step3_desc:'Inserisci i risultati per costruire una tabella di marcia di crescita annuale, piani d\'azione e una lista di controllo. Salva come PDF.',step3_badge:'Per i consulenti',
+    tools_eyebrow:'Strumenti',tools_title:'Strumenti per persone valutate e consulenti',tools_sub:'Scegli lo strumento adatto al tuo ruolo.',
+    tab_client:'Per le persone valutate',tab_counselor:'Per i consulenti',
+    tc1_badge:'Valutazione tipo di fede',tc1_num:'Strumento 01',tc1_title:'Qual è il mio tipo di fede?',tc1_desc:'74 domande classificano automaticamente 8 tipi di fede, 8 tipi di missione e 10 attitudini di crescita.',
+    tc2_badge:'Valutazione (Inglese)',tc2_num:'Strumento 01-EN',tc2_title:'Faith Type Assessment',tc2_desc:'La stessa valutazione completamente tradotta in inglese.',
+    tag_74q:'74 Domande',tag_15m:'~15 min',tag_save:'Salvabile',btn_start:'Inizia →',btn_start_en:'Start →',
+    ts1_badge:'Solo consulenti',ts1_num:'Strumento 02',ts1_title:'Guida di consulenza per tipo di fede',ts1_desc:'Guida in 7 sezioni per ognuno degli 8 tipi.',
+    ts2_badge:'Solo consulenti',ts2_num:'Strumento 03',ts2_title:'Foglio del piano di crescita della fede',ts2_desc:'Inserisci i risultati per costruire una tabella di marcia, piani d\'azione, obiettivi e liste di controllo.',
+    tag_8types:'8 Tipi',tag_7sec:'7 Sezioni',tag_print:'Stampabile',btn_open:'Apri →',
+    tag_1y:'Piano annuale',tag_checklist:'Lista di controllo',tag_pdf:'Salva PDF',btn_write:'Compila →',
+    lang_eyebrow:'Supporto linguistico',lang_title:'Disponibile in tutto il mondo',lang_sub:'La valutazione è disponibile in coreano e inglese. L\'interfaccia del portale supporta 7 lingue.',
+    lang_note_label:'Lingue della valutazione',lang_note:'La valutazione è attualmente disponibile in coreano e inglese. Le versioni in altre lingue saranno aggiunte progressivamente.',
+    footer_desc:'Sistema integrato per la valutazione del tipo di fede, guide di consulenza e pianificazione della crescita.',
+    footer_about:'Chi siamo',footer_tools:'Strumenti',footer_how:'Come funziona',footer_start:'Inizia'
+  },
+  de:{flag:'🇩🇪',label:'Deutsch',
+    nav_about:'Über uns',nav_tools:'Werkzeuge',nav_how:'So funktioniert es',nav_lang:'Sprache',
+    hero_eyebrow:'Glaubenstypus-Bewertungssystem',
+    hero_title:'Verstehe deinen Glaubensweg<br><em>tiefer</em>',
+    hero_sub:'74 Fragen zur Bewertung deines Glaubenstyps, dann personalisierte Beratungsleitfäden und Wachstumspläne für den nächsten Schritt.',
+    hero_cta1:'Bewertung starten',hero_cta2:'Mehr erfahren',
+    stat1:'Fragen',stat2:'Glaubenstypen',stat3:'Berufungstypen',stat4:'Sprachen',
+    about_eyebrow:'Über das System',about_title:'Was ist das Faith Type System?',
+    about_sub:'Ein integriertes Diagnose- und Beratungswerkzeug, das dir hilft, dich selbst besser zu verstehen und voranzukommen.',
+    about_c1_title:'Glaubenstyp-Bewertung',about_c1_desc:'74 Fragen messen 4 Achsen zur Klassifizierung von 8 Glaubenstypen und 8 Berufungstypen mit einer personalisierten Analyse.',
+    about_c2_title:'Beratungsleitfaden',about_c2_desc:'Ein 7-Abschnitte-Leitfaden pro Typ mit Profil, Beratungsansatz, empfohlenen Fragen, Warnmustern und Wachstumsrichtungen.',
+    about_c3_title:'Wachstumsplanblatt',about_c3_desc:'Ein personalisiertes Planungsdokument mit Jahreswachstumszielen, Aktionsplänen pro Bereich und Pflegeprüflisten.',
+    how_eyebrow:'So funktioniert es',how_title:'Wie benutze ich es?',
+    how_sub:'Drei Werkzeuge verbinden sich der Reihe nach. Die bewertete Person und der Berater spielen jeweils ihre Rolle.',
+    flow1_label:'Bewertung durchführen',flow1_sub:'Bewertete Person',flow2_label:'Ergebnisse teilen',flow2_sub:'Person → Berater',
+    flow3_label:'Leitfaden lesen',flow3_sub:'Berater',flow4_label:'Plan schreiben',flow4_sub:'Berater',
+    step1_title:'Die Person absolviert die Glaubenstyp-Bewertung',step1_desc:'Nach der Beantwortung von 74 Fragen werden Glaubenstyp, Berufungstyp und Wachstumseignungen automatisch klassifiziert.',step1_badge:'Für die bewertete Person',
+    step2_title:'Der Berater prüft den typspezifischen Leitfaden',step2_desc:'Die Auswahl des relevanten Typs aus dem Dropdown öffnet den 7-Abschnitte-Beratungsleitfaden.',step2_badge:'Für Berater',
+    step3_title:'Wachstumsplan schreiben und gemeinsam vorankommen',step3_desc:'Ergebnisse eingeben, um eine Jahres-Wachstumsroadmap, Aktionspläne und eine Pflegeprüfliste zu erstellen.',step3_badge:'Für Berater',
+    tools_eyebrow:'Werkzeuge',tools_title:'Werkzeuge für Bewertete und Berater',tools_sub:'Wähle das passende Werkzeug für deine Rolle.',
+    tab_client:'Für Bewertete',tab_counselor:'Für Berater',
+    tc1_badge:'Glaubenstyp-Bewertung',tc1_num:'Werkzeug 01',tc1_title:'Was ist mein Glaubenstyp?',tc1_desc:'74 Fragen klassifizieren automatisch 8 Glaubenstypen, 8 Berufungstypen und 10 Wachstumseignungen.',
+    tc2_badge:'Bewertung (Englisch)',tc2_num:'Werkzeug 01-EN',tc2_title:'Faith Type Assessment',tc2_desc:'Dieselbe Bewertung vollständig auf Englisch übersetzt.',
+    tag_74q:'74 Fragen',tag_15m:'~15 Min.',tag_save:'Speicherbar',btn_start:'Starten →',btn_start_en:'Start →',
+    ts1_badge:'Nur für Berater',ts1_num:'Werkzeug 02',ts1_title:'Glaubenstyp-Beratungsleitfaden',ts1_desc:'7-Abschnitte-Leitfaden für jeden der 8 Typen.',
+    ts2_badge:'Nur für Berater',ts2_num:'Werkzeug 03',ts2_title:'Glaubenswachstumsplanblatt',ts2_desc:'Ergebnisse eingeben für Jahresroadmap, Aktionspläne, Ziele und Prüflisten.',
+    tag_8types:'8 Typen',tag_7sec:'7 Abschnitte',tag_print:'Druckbar',btn_open:'Öffnen →',
+    tag_1y:'Jahresplan',tag_checklist:'Prüfliste',tag_pdf:'PDF speichern',btn_write:'Ausfüllen →',
+    lang_eyebrow:'Sprachunterstützung',lang_title:'Weltweit verfügbar',lang_sub:'Die Bewertung ist auf Koreanisch und Englisch verfügbar. Die Portaloberfläche unterstützt 7 Sprachen.',
+    lang_note_label:'Bewertungssprachen',lang_note:'Die Bewertung ist derzeit auf Koreanisch und Englisch verfügbar. Weitere Sprachversionen werden schrittweise hinzugefügt.',
+    footer_desc:'Integriertes System für Glaubenstypbewertung, Beratungsleitfäden und Wachstumsplanung.',
+    footer_about:'Über uns',footer_tools:'Werkzeuge',footer_how:'So funktioniert es',footer_start:'Bewertung starten'
+  },
+  fr:{flag:'🇫🇷',label:'Français',
+    nav_about:'À propos',nav_tools:'Outils',nav_how:'Comment ça marche',nav_lang:'Langue',
+    hero_eyebrow:'Système d\'évaluation du type de foi',
+    hero_title:'Comprendre votre chemin de foi<br><em>plus profondément</em>',
+    hero_sub:'74 questions pour évaluer votre type de foi, puis des guides de conseil personnalisés et des plans de croissance pour avancer vers la prochaine étape.',
+    hero_cta1:'Commencer l\'évaluation',hero_cta2:'En savoir plus',
+    stat1:'Questions',stat2:'Types de foi',stat3:'Types de vocation',stat4:'Langues',
+    about_eyebrow:'À propos du système',about_title:'Qu\'est-ce que le Faith Type System ?',
+    about_sub:'Un outil intégré de diagnostic et de conseil pour vous aider à mieux vous comprendre et à avancer, quelle que soit votre étape dans le chemin de foi.',
+    about_c1_title:'Évaluation du type de foi',about_c1_desc:'74 questions mesurant 4 axes pour classer 8 types de foi et 8 types de vocation avec une analyse personnalisée.',
+    about_c2_title:'Guide de conseil',about_c2_desc:'Un guide en 7 sections par type couvrant les profils, les principes d\'approche, les questions recommandées, les signaux d\'alerte et les directions de croissance.',
+    about_c3_title:'Feuille de plan de croissance',about_c3_desc:'Un document de planification personnalisé avec des objectifs de croissance annuels, des plans d\'action par domaine et des listes de contrôle.',
+    how_eyebrow:'Comment ça marche',how_title:'Comment l\'utiliser ?',
+    how_sub:'Trois outils reliés en séquence. La personne évaluée et le conseiller jouent chacun leur rôle.',
+    flow1_label:'Passer l\'évaluation',flow1_sub:'Personne évaluée',flow2_label:'Partager les résultats',flow2_sub:'Personne → Conseiller',
+    flow3_label:'Lire le guide',flow3_sub:'Conseiller',flow4_label:'Écrire le plan',flow4_sub:'Conseiller',
+    step1_title:'La personne complète l\'évaluation du type de foi',step1_desc:'Après avoir répondu à 74 questions, le type de foi, le type de vocation et les aptitudes de croissance sont classifiés automatiquement.',step1_badge:'Pour la personne évaluée',
+    step2_title:'Le conseiller consulte le guide spécifique au type',step2_desc:'La sélection du type dans le menu déroulant ouvre le guide de conseil en 7 sections.',step2_badge:'Pour les conseillers',
+    step3_title:'Rédigez le plan de croissance et avancez ensemble',step3_desc:'Saisissez les résultats pour construire une feuille de route annuelle, des plans d\'action et une liste de contrôle. Enregistrez en PDF.',step3_badge:'Pour les conseillers',
+    tools_eyebrow:'Outils',tools_title:'Outils pour personnes évaluées et conseillers',tools_sub:'Choisissez l\'outil adapté à votre rôle.',
+    tab_client:'Pour les personnes évaluées',tab_counselor:'Pour les conseillers',
+    tc1_badge:'Évaluation type de foi',tc1_num:'Outil 01',tc1_title:'Quel est mon type de foi ?',tc1_desc:'74 questions classifient automatiquement 8 types de foi, 8 types de vocation et 10 aptitudes de croissance.',
+    tc2_badge:'Évaluation (Anglais)',tc2_num:'Outil 01-EN',tc2_title:'Faith Type Assessment',tc2_desc:'La même évaluation entièrement traduite en anglais.',
+    tag_74q:'74 Questions',tag_15m:'~15 min',tag_save:'Sauvegardable',btn_start:'Commencer →',btn_start_en:'Start →',
+    ts1_badge:'Conseillers uniquement',ts1_num:'Outil 02',ts1_title:'Guide de conseil par type de foi',ts1_desc:'Guide en 7 sections pour chacun des 8 types.',
+    ts2_badge:'Conseillers uniquement',ts2_num:'Outil 03',ts2_title:'Feuille de plan de croissance de la foi',ts2_desc:'Saisissez les résultats pour construire une feuille de route, des plans d\'action, des objectifs et des listes de contrôle.',
+    tag_8types:'8 Types',tag_7sec:'7 Sections',tag_print:'Imprimable',btn_open:'Ouvrir →',
+    tag_1y:'Plan annuel',tag_checklist:'Liste de contrôle',tag_pdf:'Enregistrer PDF',btn_write:'Remplir →',
+    lang_eyebrow:'Support linguistique',lang_title:'Disponible dans le monde entier',lang_sub:'L\'évaluation est disponible en coréen et en anglais. L\'interface du portail prend en charge 7 langues.',
+    lang_note_label:'Langues de l\'évaluation',lang_note:'L\'évaluation est actuellement disponible en coréen et en anglais. D\'autres versions linguistiques seront ajoutées progressivement.',
+    footer_desc:'Système intégré d\'évaluation du type de foi, guides de conseil et planification de la croissance.',
+    footer_about:'À propos',footer_tools:'Outils',footer_how:'Comment ça marche',footer_start:'Commencer'
+  }
+};
+
+let currentLang='ko';
+function setLang(lang){
+  currentLang=lang;
+  const L=LANGS[lang];
+  document.documentElement.lang=lang;
+  // nav flag & label
+  document.getElementById('currentFlag').textContent=L.flag;
+  document.getElementById('currentLangLabel').textContent=L.label;
+  // update all [data-i] elements
+  document.querySelectorAll('[data-i]').forEach(el=>{
+    const key=el.getAttribute('data-i');
+    if(L[key]!==undefined) el.innerHTML=L[key];
+  });
+  // active lang items
+  document.querySelectorAll('.lang-item').forEach(el=>{
+    const elLang=el.getAttribute('onclick').replace("setLang('","").replace("')","");
+    el.classList.toggle('active',elLang===lang);
+  });
+  document.querySelectorAll('.lang-card').forEach(el=>{
+    const elLang=el.getAttribute('onclick').replace("setLang('","").replace("')","");
+    el.classList.toggle('active',elLang===lang);
+  });
+  // update font family for CJK
+  const serif=lang==='zh'?'serif':lang==='ko'?'\'Noto Serif KR\',serif':'\'Playfair Display\',serif';
+  document.querySelectorAll('.hero-title,.section-title,.about-card-num,.stat-num,.nav-logo').forEach(el=>{el.style.fontFamily=serif;});
+  document.getElementById('langDropdown').classList.remove('open');
+}
+// init
+setLang('ko');
+</script>
+</body>
+</html>
