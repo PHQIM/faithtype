@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>신앙 성장 플랜지</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300;400;500&display=swap');
+:root{
+  --bg:#F8F6F1;--white:#fff;--text:#1A1814;--muted:#7A7568;--light:#B0A99E;
+  --border:#E8E3DC;--bl:#F4F0EB;--accent:#3D3526;
+  --c-char:#0F6E56;--c-spir:#993C1D;--c-env:#185FA5;--c-ene:#7A4F9B;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{font-size:15px;}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* ── TOP BAR ── */
+.topbar{background:var(--white);border-bottom:1px solid var(--border);padding:12px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;}
+.topbar-title{font-size:13px;font-weight:500;color:var(--muted);}
+.topbar-btns{display:flex;gap:8px;align-items:center;}
+.btn-reset{padding:7px 14px;border:1px solid var(--border);background:transparent;border-radius:3px;font-family:'Noto Sans KR',sans-serif;font-size:12px;color:var(--muted);cursor:pointer;}
+.btn-pdf{padding:7px 16px;background:var(--accent);color:#fff;border:none;border-radius:3px;font-family:'Noto Sans KR',sans-serif;font-size:12px;font-weight:500;cursor:pointer;letter-spacing:.3px;}
+
+/* ── FORM AREA ── */
+.form-wrap{max-width:800px;margin:0 auto;padding:28px 24px 80px;}
+
+/* ── COVER ── */
+.cover{background:var(--white);border-radius:8px;border-top:5px solid var(--accent);padding:32px 36px 28px;margin-bottom:20px;}
+.cover-label{font-size:10px;font-weight:500;letter-spacing:1px;color:var(--light);text-transform:uppercase;margin-bottom:10px;}
+.cover-title{font-family:'Noto Serif KR',serif;font-size:24px;font-weight:600;color:var(--text);margin-bottom:6px;}
+.cover-sub{font-size:13px;color:var(--muted);margin-bottom:24px;}
+.cover-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.cover-field{display:flex;flex-direction:column;gap:5px;}
+.cf-label{font-size:10px;font-weight:500;letter-spacing:.5px;color:var(--light);text-transform:uppercase;}
+.cf-input{border:none;border-bottom:1.5px solid var(--border);background:transparent;padding:6px 2px;font-family:'Noto Sans KR',sans-serif;font-size:13px;color:var(--text);outline:none;width:100%;}
+.cf-input:focus{border-bottom-color:var(--accent);}
+
+/* ── SECTION ── */
+.section{background:var(--white);border-radius:8px;border:1px solid var(--border);margin-bottom:16px;overflow:hidden;}
+.sec-head{display:flex;align-items:center;gap:12px;padding:14px 20px;border-bottom:1px solid var(--border);background:var(--bg);}
+.sec-num{font-size:10px;font-weight:500;color:var(--light);width:22px;flex-shrink:0;}
+.sec-title{font-size:15px;font-weight:500;color:var(--text);flex:1;}
+.sec-badge{font-size:10px;font-weight:500;padding:3px 10px;border-radius:12px;}
+.sec-body{padding:20px;}
+
+/* ── SCORE GRID ── */
+.score-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.score-card{background:var(--bg);border-radius:6px;padding:14px 16px;}
+.score-card-head{font-size:10px;font-weight:500;letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px;}
+.score-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.score-row:last-child{margin-bottom:0;}
+.score-axis{font-size:12px;font-weight:500;width:40px;flex-shrink:0;}
+.score-input{width:52px;border:none;border-bottom:1.5px solid var(--border);background:transparent;text-align:center;font-family:'Noto Sans KR',sans-serif;font-size:13px;font-weight:500;color:var(--text);outline:none;padding:3px 0;}
+.score-input:focus{border-bottom-color:var(--accent);}
+.score-bar-bg{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden;}
+.score-bar-fill{height:5px;border-radius:3px;transition:width .4s;}
+.type-row{display:flex;flex-direction:column;gap:8px;}
+.type-field{display:flex;align-items:center;gap:10px;}
+.type-label{font-size:12px;color:var(--muted);width:80px;flex-shrink:0;}
+.type-input{flex:1;border:none;border-bottom:1.5px solid var(--border);background:transparent;padding:4px 2px;font-family:'Noto Sans KR',sans-serif;font-size:13px;color:var(--text);outline:none;}
+.type-input:focus{border-bottom-color:var(--accent);}
+
+/* ── STRENGTH / WEAK ── */
+.sw-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px;}
+.sw-card{border-radius:6px;padding:14px 16px;}
+.sw-head{font-size:10px;font-weight:500;letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px;}
+.sw-textarea{width:100%;border:none;background:transparent;font-family:'Noto Sans KR',sans-serif;font-size:12px;color:var(--text);resize:none;outline:none;line-height:1.8;min-height:56px;}
+
+/* ── TIMELINE ── */
+.timeline{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--border);border-radius:6px;overflow:hidden;}
+.tl-item{padding:14px 12px;text-align:center;border-right:1px solid var(--border);}
+.tl-item:last-child{border-right:none;}
+.tl-period{font-size:10px;font-weight:500;color:var(--light);letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px;}
+.tl-label{font-size:12px;font-weight:500;color:var(--text);margin-bottom:6px;}
+.tl-input{width:100%;border:none;border-bottom:1px solid var(--border);background:transparent;font-family:'Noto Sans KR',sans-serif;font-size:11px;color:var(--muted);outline:none;text-align:center;padding:3px 0;}
+
+/* ── GROWTH TRACK ── */
+.growth-track{display:flex;flex-direction:column;gap:8px;margin-top:14px;}
+.gt-row{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;border:1px solid var(--border);border-radius:6px;}
+.gt-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:3px;}
+.gt-info{flex:1;}
+.gt-title{font-size:13px;font-weight:500;color:var(--text);margin-bottom:4px;}
+.gt-input{width:100%;border:none;border-bottom:1px solid var(--border);background:transparent;font-family:'Noto Sans KR',sans-serif;font-size:12px;color:var(--muted);outline:none;padding:2px 0;line-height:1.7;}
+.gt-tag{font-size:10px;font-weight:500;padding:3px 9px;border-radius:10px;flex-shrink:0;white-space:nowrap;}
+
+/* ── STRATEGY ── */
+.strategy-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.strat-card{border-radius:6px;padding:14px 16px;}
+.strat-head{font-size:10px;font-weight:500;letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px;}
+.strat-item{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;}
+.strat-item:last-child{margin-bottom:0;}
+.strat-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+.strat-input{flex:1;border:none;border-bottom:1px solid var(--border);background:transparent;font-family:'Noto Sans KR',sans-serif;font-size:12px;color:var(--text);outline:none;padding:2px 0;}
+.strat-memo{margin-top:12px;border:1px solid var(--border);border-radius:6px;padding:14px 16px;}
+.strat-memo-head{font-size:10px;font-weight:500;letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px;}
+.strat-memo-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.strat-memo-row:last-child{margin-bottom:0;}
+.sml{font-size:12px;color:var(--muted);width:64px;flex-shrink:0;}
+.strat-memo-input{flex:1;border:none;border-bottom:1px solid var(--border);background:transparent;font-family:'Noto Sans KR',sans-serif;font-size:12px;color:var(--text);outline:none;padding:2px 0;}
+
+/* ── DOMAIN GRID ── */
+.domain-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.domain-card{border:1px solid var(--border);border-radius:6px;padding:14px 16px;}
+.domain-head{font-size:11px;font-weight:500;letter-spacing:.4px;margin-bottom:10px;}
+.domain-action{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;}
+.domain-action:last-child{margin-bottom:0;}
+.da-num{font-size:11px;color:var(--light);width:16px;flex-shrink:0;margin-top:2px;}
+.da-input{flex:1;border:none;border-bottom:1px solid var(--border);background:transparent;font-family:'Noto Sans KR',sans-serif;font-size:12px;color:var(--text);outline:none;padding:2px 0;line-height:1.6;}
+
+/* ── GOAL TABLE ── */
+.goal-section{margin-bottom:16px;}
+.goal-head{font-size:11px;font-weight:500;color:var(--muted);letter-spacing:.4px;margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+.goal-period-badge{font-size:10px;padding:2px 8px;border-radius:8px;font-weight:500;}
+.goal-row{display:flex;align-items:center;gap:10px;padding:9px 12px;border:1px solid var(--border);border-radius:5px;margin-bottom:6px;}
+.goal-row:last-child{margin-bottom:0;}
+.goal-check{width:16px;height:16px;border:1.5px solid var(--border);border-radius:3px;flex-shrink:0;cursor:pointer;}
+.goal-input{flex:1;border:none;background:transparent;font-family:'Noto Sans KR',sans-serif;font-size:12px;color:var(--text);outline:none;padding:0;}
+.goal-tag-wrap{display:flex;gap:5px;}
+.goal-tag{font-size:10px;font-weight:500;padding:2px 8px;border-radius:8px;}
+
+/* ── CHECKLIST ── */
+.check-group{margin-bottom:16px;}
+.check-group:last-child{margin-bottom:0;}
+.check-group-head{font-size:11px;font-weight:500;letter-spacing:.4px;margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+.check-row{display:flex;align-items:center;gap:10px;padding:9px 12px;border-bottom:1px solid var(--bl);}
+.check-row:last-child{border-bottom:none;}
+.chk{width:16px;height:16px;border:1.5px solid var(--border);border-radius:3px;flex-shrink:0;cursor:pointer;appearance:none;-webkit-appearance:none;position:relative;}
+.chk:checked{background:var(--accent);border-color:var(--accent);}
+.chk:checked::after{content:'✓';position:absolute;top:-1px;left:2px;font-size:11px;color:#fff;font-weight:500;}
+.check-text{flex:1;font-size:12px;color:var(--muted);line-height:1.55;}
+.check-badge{font-size:10px;font-weight:500;padding:2px 8px;border-radius:8px;white-space:nowrap;flex-shrink:0;}
+
+/* ── MEMO ── */
+.memo-area{width:100%;min-height:72px;border:1px solid var(--border);border-radius:6px;padding:12px 14px;font-family:'Noto Sans KR',sans-serif;font-size:12px;color:var(--text);resize:vertical;outline:none;background:var(--bg);line-height:1.8;}
+.memo-area:focus{border-color:var(--accent);}
+.pray-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;}
+.pray-row:last-child{margin-bottom:0;}
+.pray-num{font-size:12px;color:var(--light);width:18px;flex-shrink:0;margin-top:2px;}
+.pray-input{flex:1;border:none;border-bottom:1px solid var(--border);background:transparent;font-family:'Noto Sans KR',sans-serif;font-size:12px;color:var(--text);outline:none;padding:3px 0;line-height:1.7;}
+.pray-input:focus{border-bottom-color:var(--accent);}
+
+/* ── PRINT ── */
+@media print{
+  .topbar{display:none;}
+  .form-wrap{max-width:100%;padding:0;margin:0;}
+  body{background:#fff;}
+  .cover,.section{border-radius:0;page-break-inside:avoid;margin-bottom:0;}
+  .section{border-left:none;border-right:none;border-radius:0;}
+  .cover{border-top-width:4px;}
+  input,textarea{border-bottom-color:#ccc!important;}
+  .btn-reset,.btn-pdf{display:none;}
+  @page{margin:14mm 16mm;size:A4;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="topbar-title">신앙 성장 플랜지 · 상담자용</span>
+  <div class="topbar-btns">
+    <button class="btn-reset" onclick="resetAll()">초기화</button>
+    <button class="btn-pdf" onclick="window.print()">PDF 저장 / 인쇄</button>
+  </div>
+</div>
+
+<div class="form-wrap" id="planDoc">
+
+  <!-- COVER -->
+  <div class="cover">
+    <div class="cover-label">신앙 유형 검사 기반 · 개인 성장 플랜</div>
+    <div class="cover-title">신앙 단계 향상 플랜지</div>
+    <div class="cover-sub">검사 결과를 바탕으로 한 맞춤형 상담 & 성장 로드맵 · 상담자 작성용</div>
+    <div class="cover-grid">
+      <div class="cover-field"><span class="cf-label">내담자 이름</span><input class="cf-input" id="c_name" placeholder="이름 또는 코드명" /></div>
+      <div class="cover-field"><span class="cf-label">상담자</span><input class="cf-input" id="c_counselor" placeholder="담당 상담자" /></div>
+      <div class="cover-field"><span class="cf-label">플랜 시작일</span><input class="cf-input" id="c_date" type="date" /></div>
+      <div class="cover-field"><span class="cf-label">신앙 유형</span><input class="cf-input" id="c_ftype" placeholder="예) 씨앗형" /></div>
+      <div class="cover-field"><span class="cf-label">사명 유형</span><input class="cf-input" id="c_mtype" placeholder="예) 연결자형" /></div>
+      <div class="cover-field"><span class="cf-label">재검사 예정일</span><input class="cf-input" id="c_redate" type="date" /></div>
+    </div>
+  </div>
+
+  <!-- SECTION 01 -->
+  <div class="section">
+    <div class="sec-head">
+      <span class="sec-num">01</span>
+      <span class="sec-title">검사 결과 요약</span>
+      <span class="sec-badge" style="background:#EEEDFE;color:#3C3489">기반 정보</span>
+    </div>
+    <div class="sec-body">
+      <div class="score-grid">
+        <div class="score-card">
+          <div class="score-card-head" style="color:#534AB7">영역별 점수 (0–100)</div>
+          <div class="score-row">
+            <span class="score-axis" style="color:var(--c-char)">인성</span>
+            <input class="score-input" id="s_char" type="number" min="0" max="100" placeholder="__" oninput="updateBar('bar_char','s_char','var(--c-char)')" />
+            <div class="score-bar-bg"><div class="score-bar-fill" id="bar_char" style="background:var(--c-char);width:0%"></div></div>
+          </div>
+          <div class="score-row">
+            <span class="score-axis" style="color:var(--c-spir)">신성</span>
+            <input class="score-input" id="s_spir" type="number" min="0" max="100" placeholder="__" oninput="updateBar('bar_spir','s_spir','var(--c-spir)')" />
+            <div class="score-bar-bg"><div class="score-bar-fill" id="bar_spir" style="background:var(--c-spir);width:0%"></div></div>
+          </div>
+          <div class="score-row">
+            <span class="score-axis" style="color:var(--c-env)">환경</span>
+            <input class="score-input" id="s_env" type="number" min="0" max="100" placeholder="__" oninput="updateBar('bar_env','s_env','var(--c-env)')" />
+            <div class="score-bar-bg"><div class="score-bar-fill" id="bar_env" style="background:var(--c-env);width:0%"></div></div>
+          </div>
+          <div class="score-row">
+            <span class="score-axis" style="color:var(--c-ene)">에너지</span>
+            <input class="score-input" id="s_ene" type="number" min="0" max="100" placeholder="__" oninput="updateBar('bar_ene','s_ene','var(--c-ene)')" />
+            <div class="score-bar-bg"><div class="score-bar-fill" id="bar_ene" style="background:var(--c-ene);width:0%"></div></div>
+          </div>
+        </div>
+        <div class="score-card">
+          <div class="score-card-head" style="color:#0F6E56">유형 & 적성 정보</div>
+          <div class="type-row">
+            <div class="type-field"><span class="type-label">신앙 유형</span><input class="type-input" id="t_faith" placeholder="검사 결과 유형" /></div>
+            <div class="type-field"><span class="type-label">사명 유형</span><input class="type-input" id="t_mission" placeholder="검사 결과 유형" /></div>
+            <div class="type-field"><span class="type-label">적성 1순위</span><input class="type-input" id="t_apt1" placeholder="예) 지성형" /></div>
+            <div class="type-field"><span class="type-label">적성 2순위</span><input class="type-input" id="t_apt2" placeholder="예) 관계형" /></div>
+            <div class="type-field"><span class="type-label">취약 적성</span><input class="type-input" id="t_weak" placeholder="예) 감성형" /></div>
+          </div>
+        </div>
+      </div>
+      <div class="sw-grid">
+        <div class="sw-card" style="background:#EAF3DE">
+          <div class="sw-head" style="color:#3B6D11">강점 영역 (높은 점수 · 활용 방향)</div>
+          <textarea class="sw-textarea" id="sw_strength" rows="3" placeholder="높은 점수 영역과 이를 어떻게 활용할지 기록하세요."></textarea>
+        </div>
+        <div class="sw-card" style="background:#FAEEDA">
+          <div class="sw-head" style="color:#854F0B">보완 필요 영역 (낮은 점수 · 주의 사항)</div>
+          <textarea class="sw-textarea" id="sw_weak" rows="3" placeholder="낮은 점수 영역과 상담 시 주의할 점을 기록하세요."></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 02 -->
+  <div class="section">
+    <div class="sec-head">
+      <span class="sec-num">02</span>
+      <span class="sec-title">점검 기간 & 예상 성장 모습</span>
+      <span class="sec-badge" style="background:#EAF3DE;color:#27500A">로드맵</span>
+    </div>
+    <div class="sec-body">
+      <div class="timeline">
+        <div class="tl-item" style="background:#F8F6F1">
+          <div class="tl-period">1개월</div>
+          <div class="tl-label">관계 & 신뢰</div>
+          <input class="tl-input" id="tl1" placeholder="핵심 목표" />
+        </div>
+        <div class="tl-item">
+          <div class="tl-period">3개월</div>
+          <div class="tl-label">기반 다지기</div>
+          <input class="tl-input" id="tl3" placeholder="핵심 목표" />
+        </div>
+        <div class="tl-item" style="background:#F8F6F1">
+          <div class="tl-period">6개월</div>
+          <div class="tl-label">내면 성장</div>
+          <input class="tl-input" id="tl6" placeholder="핵심 목표" />
+        </div>
+        <div class="tl-item">
+          <div class="tl-period">1년</div>
+          <div class="tl-label">단계 향상</div>
+          <input class="tl-input" id="tl12" placeholder="재검사 & 평가" />
+        </div>
+      </div>
+      <div class="growth-track">
+        <div class="gt-row">
+          <div class="gt-dot" style="background:#D3D1C7;border:2px solid #B4B2A9;"></div>
+          <div class="gt-info">
+            <div class="gt-title">현재 상태 (출발점)</div>
+            <input class="gt-input" id="g_now" placeholder="검사 결과에서 나타난 현재 신앙 여정의 특징을 간략히 기록하세요." />
+          </div>
+          <span class="gt-tag" style="background:#F1EFE8;color:#5F5E5A">현재</span>
+        </div>
+        <div class="gt-row">
+          <div class="gt-dot" style="background:#B5D4F4;"></div>
+          <div class="gt-info">
+            <div class="gt-title">3개월 후 기대하는 모습</div>
+            <input class="gt-input" id="g_3m" placeholder="3개월 뒤 이 내담자에게 기대되는 구체적인 변화를 기록하세요." />
+          </div>
+          <span class="gt-tag" style="background:#E6F1FB;color:#0C447C">단기</span>
+        </div>
+        <div class="gt-row">
+          <div class="gt-dot" style="background:#9FE1CB;"></div>
+          <div class="gt-info">
+            <div class="gt-title">6개월 후 기대하는 모습</div>
+            <input class="gt-input" id="g_6m" placeholder="6개월 뒤 신앙 성장의 모습을 기록하세요." />
+          </div>
+          <span class="gt-tag" style="background:#E1F5EE;color:#085041">중기</span>
+        </div>
+        <div class="gt-row">
+          <div class="gt-dot" style="background:#639922;"></div>
+          <div class="gt-info">
+            <div class="gt-title">1년 후 기대하는 모습 (재검사 목표)</div>
+            <input class="gt-input" id="g_1y" placeholder="1년 후 재검사 시 기대되는 점수 변화와 삶의 모습을 기록하세요." />
+          </div>
+          <span class="gt-tag" style="background:#EAF3DE;color:#27500A">장기</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 03 -->
+  <div class="section">
+    <div class="sec-head">
+      <span class="sec-num">03</span>
+      <span class="sec-title">적성 활용 & 취약 보완 전략</span>
+      <span class="sec-badge" style="background:#FAEEDA;color:#633806">맞춤 전략</span>
+    </div>
+    <div class="sec-body">
+      <div class="strategy-grid">
+        <div class="strat-card" style="background:#EAF3DE">
+          <div class="strat-head" style="color:#3B6D11">강점 적성 활용 전략</div>
+          <div class="strat-item"><div class="strat-dot" style="background:#3B6D11"></div><input class="strat-input" id="str_s1" placeholder="1순위 적성을 통한 접근 방식" /></div>
+          <div class="strat-item"><div class="strat-dot" style="background:#3B6D11"></div><input class="strat-input" id="str_s2" placeholder="사명 유형과 적성의 연결점" /></div>
+          <div class="strat-item"><div class="strat-dot" style="background:#3B6D11"></div><input class="strat-input" id="str_s3" placeholder="공동체 안에서 역할 연결" /></div>
+          <div class="strat-item"><div class="strat-dot" style="background:#3B6D11"></div><input class="strat-input" id="str_s4" placeholder="강점으로 약점을 우회하는 방법" /></div>
+        </div>
+        <div class="strat-card" style="background:#FAEEDA">
+          <div class="strat-head" style="color:#854F0B">취약 영역 보완 전략</div>
+          <div class="strat-item"><div class="strat-dot" style="background:#854F0B"></div><input class="strat-input" id="str_w1" placeholder="낮은 점수 축의 핵심 원인" /></div>
+          <div class="strat-item"><div class="strat-dot" style="background:#854F0B"></div><input class="strat-input" id="str_w2" placeholder="환경 개선 우선순위" /></div>
+          <div class="strat-item"><div class="strat-dot" style="background:#854F0B"></div><input class="strat-input" id="str_w3" placeholder="약점을 드러내지 않는 접근법" /></div>
+          <div class="strat-item"><div class="strat-dot" style="background:#854F0B"></div><input class="strat-input" id="str_w4" placeholder="점진적 보완 순서" /></div>
+        </div>
+      </div>
+      <div class="strat-memo">
+        <div class="strat-memo-head" style="color:#534AB7">이 내담자의 통합 전략 메모</div>
+        <div class="strat-memo-row"><span class="sml">적성 활용</span><input class="strat-memo-input" id="str_m1" placeholder="이 내담자의 적성을 신앙 성장에 활용하는 방법" /></div>
+        <div class="strat-memo-row"><span class="sml">사명 연결</span><input class="strat-memo-input" id="str_m2" placeholder="사명 유형과 현재 신앙 단계를 연결하는 방법" /></div>
+        <div class="strat-memo-row"><span class="sml">보완 전략</span><input class="strat-memo-input" id="str_m3" placeholder="취약 영역을 단계적으로 보완하는 접근 방향" /></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 04 -->
+  <div class="section">
+    <div class="sec-head">
+      <span class="sec-num">04</span>
+      <span class="sec-title">4개 영역별 이번 달 행동 방안</span>
+      <span class="sec-badge" style="background:#FAECE7;color:#712B13">실천 설계</span>
+    </div>
+    <div class="sec-body">
+      <div class="domain-grid">
+        <div class="domain-card" style="border-left:3px solid var(--c-char);">
+          <div class="domain-head" style="color:var(--c-char)">인성 — 성품 & 관계</div>
+          <div class="domain-action"><span class="da-num">1</span><input class="da-input" id="d_c1" placeholder="이번 달 인성 영역 실천 행동" /></div>
+          <div class="domain-action"><span class="da-num">2</span><input class="da-input" id="d_c2" placeholder="관계·성품·정서 관련 구체적 행동" /></div>
+          <div class="domain-action"><span class="da-num">3</span><input class="da-input" id="d_c3" placeholder="선택사항" /></div>
+        </div>
+        <div class="domain-card" style="border-left:3px solid var(--c-spir);">
+          <div class="domain-head" style="color:var(--c-spir)">신성 — 말씀 & 영성</div>
+          <div class="domain-action"><span class="da-num">1</span><input class="da-input" id="d_s1" placeholder="이번 달 신성 영역 실천 행동" /></div>
+          <div class="domain-action"><span class="da-num">2</span><input class="da-input" id="d_s2" placeholder="말씀·기도·영적 성장 관련 행동" /></div>
+          <div class="domain-action"><span class="da-num">3</span><input class="da-input" id="d_s3" placeholder="선택사항" /></div>
+        </div>
+        <div class="domain-card" style="border-left:3px solid var(--c-env);">
+          <div class="domain-head" style="color:var(--c-env)">환경 — 상황 & 여건</div>
+          <div class="domain-action"><span class="da-num">1</span><input class="da-input" id="d_e1" placeholder="이번 달 환경 영역 실천 행동" /></div>
+          <div class="domain-action"><span class="da-num">2</span><input class="da-input" id="d_e2" placeholder="환경 개선·공동체 연결 관련 행동" /></div>
+          <div class="domain-action"><span class="da-num">3</span><input class="da-input" id="d_e3" placeholder="선택사항" /></div>
+        </div>
+        <div class="domain-card" style="border-left:3px solid var(--c-ene);">
+          <div class="domain-head" style="color:var(--c-ene)">에너지 — 변화 의지</div>
+          <div class="domain-action"><span class="da-num">1</span><input class="da-input" id="d_n1" placeholder="이번 달 에너지 영역 실천 행동" /></div>
+          <div class="domain-action"><span class="da-num">2</span><input class="da-input" id="d_n2" placeholder="동기·활력·참여 의지 관련 행동" /></div>
+          <div class="domain-action"><span class="da-num">3</span><input class="da-input" id="d_n3" placeholder="선택사항" /></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 05 -->
+  <div class="section">
+    <div class="sec-head">
+      <span class="sec-num">05</span>
+      <span class="sec-title">구체적 실천 목표</span>
+      <span class="sec-badge" style="background:#E6F1FB;color:#0C447C">주간 · 월간</span>
+    </div>
+    <div class="sec-body">
+      <div class="goal-section">
+        <div class="goal-head">
+          <span class="goal-period-badge" style="background:#FAECE7;color:#712B13">이번 주 · 1가지만</span>
+          <span style="font-size:11px;color:var(--light)">작고 확실하게 시작합니다</span>
+        </div>
+        <div class="goal-row">
+          <input type="checkbox" class="goal-check chk" />
+          <input class="goal-input" id="g_week" placeholder="이번 주 반드시 실천할 한 가지 행동을 구체적으로 기록하세요." />
+          <div class="goal-tag-wrap">
+            <select id="g_week_tag" style="border:none;background:transparent;font-family:'Noto Sans KR',sans-serif;font-size:11px;color:var(--muted);outline:none;cursor:pointer;">
+              <option>영역 선택</option><option>인성</option><option>신성</option><option>환경</option><option>에너지</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="goal-section">
+        <div class="goal-head">
+          <span class="goal-period-badge" style="background:#EAF3DE;color:#27500A">이번 달 · 3가지</span>
+          <span style="font-size:11px;color:var(--light)">4개 영역을 고르게 포함합니다</span>
+        </div>
+        <div id="month-goals"></div>
+      </div>
+      <div class="goal-section" style="margin-bottom:0">
+        <div class="goal-head">
+          <span class="goal-period-badge" style="background:#EEEDFE;color:#3C3489">3개월 핵심 목표 · 1가지</span>
+          <span style="font-size:11px;color:var(--light)">상담자와 내담자가 함께 설정합니다</span>
+        </div>
+        <div class="goal-row">
+          <input type="checkbox" class="goal-check chk" />
+          <input class="goal-input" id="g_qtr" placeholder="3개월 안에 반드시 이루고 싶은 신앙 성장 목표를 기록하세요." />
+          <span class="goal-tag" style="background:#EEEDFE;color:#3C3489">핵심</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 06 -->
+  <div class="section">
+    <div class="sec-head">
+      <span class="sec-num">06</span>
+      <span class="sec-title">케어 체크리스트</span>
+      <span class="sec-badge" style="background:#FBEAF0;color:#72243E">상담자 점검</span>
+    </div>
+    <div class="sec-body">
+      <div class="check-group">
+        <div class="check-group-head" style="color:#993556">
+          <span style="font-size:10px;font-weight:500;padding:3px 9px;border-radius:10px;background:#FBEAF0;color:#72243E;text-transform:uppercase;letter-spacing:.4px;">매 상담 전 필수 확인</span>
+        </div>
+        <div style="border:1px solid var(--border);border-radius:6px;overflow:hidden;">
+          <div class="check-row"><input type="checkbox" class="chk" /><span class="check-text">지난 주 실천 목표 이행 여부 확인 및 피드백</span><span class="check-badge" style="background:#FBEAF0;color:#72243E">필수</span></div>
+          <div class="check-row"><input type="checkbox" class="chk" /><span class="check-text">현재 에너지 수준 및 감정 상태 체크 (1–10점)</span><span class="check-badge" style="background:#FBEAF0;color:#72243E">필수</span></div>
+          <div class="check-row"><input type="checkbox" class="chk" /><span class="check-text">환경적 변화 또는 새로운 어려움 발생 여부</span><span class="check-badge" style="background:#FAEEDA;color:#633806">확인</span></div>
+          <div class="check-row"><input type="checkbox" class="chk" /><span class="check-text">공동체 연결 상태 유지 여부 (모임 참석, 관계 등)</span><span class="check-badge" style="background:#FAEEDA;color:#633806">확인</span></div>
+          <div class="check-row"><input type="checkbox" class="chk" /><span class="check-text">번아웃, 고립, 의욕 저하 신호 여부</span><span class="check-badge" style="background:#FCEBEB;color:#A32D2D">위험</span></div>
+          <div class="check-row"><input type="checkbox" class="chk" /><span class="check-text">말씀 또는 기도 생활 지속 여부</span><span class="check-badge" style="background:#FAEEDA;color:#633806">확인</span></div>
+        </div>
+      </div>
+      <div class="check-group">
+        <div class="check-group-head" style="color:#854F0B">
+          <span style="font-size:10px;font-weight:500;padding:3px 9px;border-radius:10px;background:#FAEEDA;color:#633806;text-transform:uppercase;letter-spacing:.4px;">3개월 중간 평가</span>
+        </div>
+        <div style="border:1px solid var(--border);border-radius:6px;overflow:hidden;">
+          <div class="check-row"><input type="checkbox" class="chk" /><span class="check-text">3개월 기대 모습 대비 실제 변화 비교 기록</span><span class="check-badge" style="background:#FAEEDA;color:#633806">평가</span></div>
+          <div class="check-row"><input type="checkbox" class="chk" /><span class="check-text">4개 영역별 체감 변화 탐색 (점수 변화 예측)</span><span class="check-badge" style="background:#FAEEDA;color:#633806">평가</span></div>
+          <div class="check-row"><input type="checkbox" class="chk" /><span class="check-text">적성 & 사명 유형 활용이 잘 되고 있는지 점검</span><span class="check-badge" style="background:#FAEEDA;color:#633806">평가</span></div>
+          <div class="check-row"><input type="checkbox" class="chk" /><span class="check-text">실천 목표 수정 및 2기 플랜 재설정 필요 여부</span><span class="check-badge" style="background:#FAEEDA;color:#633806">평가</span></div>
+          <div class="check-row"><input type="checkbox" class="chk" /><span class="check-text">내담자 스스로 체감하는 성장 확인 및 격려</span><span class="check-badge" style="background:#E1F5EE;color:#085041">격려</span></div>
+        </div>
+      </div>
+      <div class="check-group" style="margin-bottom:0">
+        <div class="check-group-head" style="color:#3B6D11">
+          <span style="font-size:10px;font-weight:500;padding:3px 9px;border-radius:10px;background:#EAF3DE;color:#27500A;text-transform:uppercase;letter-spacing:.4px;">1년 종료 점검 · 재검사</span>
+        </div>
+        <div style="border:1px solid var(--border);border-radius:6px;overflow:hidden;">
+          <div class="check-row"><input type="checkbox" class="chk" /><span class="check-text">신앙 유형 검사 재실시 및 점수 비교 분석</span><span class="check-badge" style="background:#EAF3DE;color:#27500A">재검사</span></div>
+          <div class="check-row"><input type="checkbox" class="chk" /><span class="check-text">신앙 유형 변화 또는 강화 여부 확인</span><span class="check-badge" style="background:#EAF3DE;color:#27500A">재검사</span></div>
+          <div class="check-row"><input type="checkbox" class="chk" /><span class="check-text">사명 유형 재확인 및 다음 단계 사명 연결</span><span class="check-badge" style="background:#EAF3DE;color:#27500A">재검사</span></div>
+          <div class="check-row"><input type="checkbox" class="chk" /><span class="check-text">2년차 플랜지 설계 여부 결정</span><span class="check-badge" style="background:#EEEDFE;color:#3C3489">다음단계</span></div>
+          <div class="check-row"><input type="checkbox" class="chk" /><span class="check-text">1년 동행에 대한 상호 감사 & 마무리</span><span class="check-badge" style="background:#EAF3DE;color:#27500A">마무리</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 07 -->
+  <div class="section">
+    <div class="sec-head">
+      <span class="sec-num">07</span>
+      <span class="sec-title">상담자 메모 & 기도 제목</span>
+      <span class="sec-badge" style="background:#F1EFE8;color:#444441">기록</span>
+    </div>
+    <div class="sec-body">
+      <div style="margin-bottom:16px;">
+        <div class="strat-memo-head" style="color:#5F5E5A;margin-bottom:8px;">상담 중 관찰 사항 & 특이 사항</div>
+        <textarea class="memo-area" id="memo_obs" rows="4" placeholder="상담 과정에서 관찰된 것, 내담자의 특징, 접근 시 유의할 점 등을 자유롭게 기록하세요."></textarea>
+      </div>
+      <div>
+        <div class="strat-memo-head" style="color:#534AB7;margin-bottom:10px;">이 내담자를 위한 기도 제목</div>
+        <div class="pray-row"><span class="pray-num">1</span><input class="pray-input" id="p1" placeholder="첫 번째 기도 제목" /></div>
+        <div class="pray-row"><span class="pray-num">2</span><input class="pray-input" id="p2" placeholder="두 번째 기도 제목" /></div>
+        <div class="pray-row"><span class="pray-num">3</span><input class="pray-input" id="p3" placeholder="세 번째 기도 제목" /></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── SCORE BARS ──
+function updateBar(barId, inputId, color){
+  const val = Math.min(100, Math.max(0, parseInt(document.getElementById(inputId).value)||0));
+  const bar = document.getElementById(barId);
+  bar.style.width = val+'%';
+  bar.style.background = color;
+}
+
+// ── MONTH GOALS (3 rows) ──
+const domainTags = ['인성','신성','환경','에너지'];
+const domainColors = {
+  '인성': {bg:'#E1F5EE',c:'#085041'},
+  '신성': {bg:'#FAECE7',c:'#712B13'},
+  '환경': {bg:'#E6F1FB',c:'#0C447C'},
+  '에너지': {bg:'#F0EAFE',c:'#4B2E74'},
+};
+function buildMonthGoals(){
+  const wrap = document.getElementById('month-goals');
+  wrap.innerHTML = '';
+  for(let i=1;i<=3;i++){
+    const row = document.createElement('div');
+    row.className = 'goal-row';
+    row.style.marginBottom = i<3?'6px':'0';
+    const chk = document.createElement('input');
+    chk.type='checkbox'; chk.className='goal-check chk';
+    const inp = document.createElement('input');
+    inp.className='goal-input'; inp.id='g_m'+i;
+    inp.placeholder='이번 달 실천 목표 '+i+' — 구체적 행동으로 기록하세요.';
+    const sel = document.createElement('select');
+    sel.id='g_m'+i+'_tag';
+    sel.style.cssText='border:none;background:transparent;font-family:\'Noto Sans KR\',sans-serif;font-size:11px;color:#B0A99E;outline:none;cursor:pointer;';
+    const defOpt = document.createElement('option');
+    defOpt.textContent='영역';
+    sel.appendChild(defOpt);
+    domainTags.forEach(d=>{const o=document.createElement('option');o.textContent=d;sel.appendChild(o);});
+    sel.onchange=()=>{
+      const v=sel.value, col=domainColors[v];
+      if(col){sel.style.color=col.c;sel.style.background=col.bg;sel.style.padding='2px 8px';sel.style.borderRadius='8px';}
+    };
+    row.appendChild(chk); row.appendChild(inp); row.appendChild(sel);
+    wrap.appendChild(row);
+  }
+}
+buildMonthGoals();
+
+// ── RESET ──
+function resetAll(){
+  if(!confirm('모든 입력 내용을 초기화하시겠습니까?')) return;
+  document.querySelectorAll('input[type="text"],input:not([type]),input[type="number"],input[type="date"],textarea').forEach(el=>{el.value='';});
+  document.querySelectorAll('input[type="checkbox"]').forEach(el=>{el.checked=false;});
+  document.querySelectorAll('select').forEach(el=>{el.selectedIndex=0;el.style.cssText='border:none;background:transparent;font-family:\'Noto Sans KR\',sans-serif;font-size:11px;color:#B0A99E;outline:none;cursor:pointer;';});
+  ['bar_char','bar_spir','bar_env','bar_ene'].forEach(id=>{const b=document.getElementById(id);if(b)b.style.width='0%';});
+}
+
+// ── AUTO-SAVE to localStorage ──
+function saveData(){
+  const data={};
+  document.querySelectorAll('[id]').forEach(el=>{
+    if(el.tagName==='INPUT'||el.tagName==='TEXTAREA'||el.tagName==='SELECT') data[el.id]=el.tagName==='INPUT'&&el.type==='checkbox'?el.checked:el.value;
+  });
+  try{localStorage.setItem('faithPlan',JSON.stringify(data));}catch(e){}
+}
+function loadData(){
+  try{
+    const raw=localStorage.getItem('faithPlan');
+    if(!raw) return;
+    const data=JSON.parse(raw);
+    Object.keys(data).forEach(id=>{
+      const el=document.getElementById(id);
+      if(!el) return;
+      if(el.tagName==='INPUT'&&el.type==='checkbox') el.checked=data[id];
+      else el.value=data[id];
+    });
+    ['char','spir','env','ene'].forEach(k=>{
+      const el=document.getElementById('s_'+k);
+      if(el&&el.value) updateBar('bar_'+k,'s_'+k,'var(--c-'+k+')');
+    });
+    document.querySelectorAll('select').forEach(sel=>{
+      if(sel.value&&domainColors[sel.value]){const col=domainColors[sel.value];sel.style.color=col.c;sel.style.background=col.bg;sel.style.padding='2px 8px';sel.style.borderRadius='8px';}
+    });
+  }catch(e){}
+}
+document.addEventListener('input',saveData);
+document.addEventListener('change',saveData);
+loadData();
+</script>
+</body>
+</html>
