@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>信仰类型评估</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500&family=Noto+Serif+SC:wght@400;600&display=swap');
+:root{--bg:#F8F6F1;--surface:#FFFFFF;--text:#1A1814;--text-muted:#7A7568;--text-light:#B0A99E;--border:#E8E3DC;--accent:#3D3526;--ph:3px;}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{font-family:'Noto Sans SC',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+.progress-bar{position:fixed;top:0;left:0;right:0;height:var(--ph);background:var(--border);z-index:100;}
+.progress-fill{height:100%;background:var(--accent);transition:width .4s ease;width:0%;}
+.screen{display:none;min-height:100vh;}.screen.active{display:flex;flex-direction:column;}
+#screen-intro{justify-content:center;align-items:center;padding:60px 28px;text-align:center;}
+.intro-line{width:48px;height:1px;background:var(--accent);margin:0 auto 32px;}
+.intro-title{font-family:'Noto Serif SC',serif;font-size:26px;font-weight:600;line-height:1.45;margin-bottom:14px;}
+.intro-sub{font-size:13px;color:var(--text-muted);line-height:1.9;margin-bottom:40px;}
+.intro-meta{display:flex;gap:28px;justify-content:center;margin-bottom:44px;}
+.meta-item{text-align:center;}
+.meta-num{font-family:'Noto Serif SC',serif;font-size:26px;font-weight:600;}
+.meta-lbl{font-size:11px;color:var(--text-light);margin-top:3px;}
+.btn-primary{display:block;width:100%;padding:16px;background:var(--accent);color:#fff;border:none;border-radius:2px;font-family:'Noto Sans SC',sans-serif;font-size:15px;font-weight:500;cursor:pointer;transition:opacity .2s;}
+.btn-primary:active{opacity:.85;}
+#screen-axis{justify-content:center;align-items:center;padding:56px 28px;text-align:center;}
+.axis-circle{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 22px;font-size:10px;font-weight:500;color:#fff;}
+.axis-intro-title{font-family:'Noto Serif SC',serif;font-size:22px;font-weight:600;margin-bottom:10px;}
+.axis-intro-desc{font-size:13px;color:var(--text-muted);line-height:1.85;margin-bottom:10px;}
+.axis-intro-range{font-size:11px;color:var(--text-light);}
+#screen-question{padding-top:var(--ph);}
+.q-top{padding:20px 24px 0;display:flex;align-items:center;justify-content:space-between;}
+.q-counter{font-size:11px;color:var(--text-light);}
+.q-axis-tag{font-size:10px;font-weight:500;padding:3px 10px;border-radius:20px;}
+.q-body{flex:1;padding:28px 24px 24px;display:flex;flex-direction:column;}
+.q-text{font-family:'Noto Serif SC',serif;font-size:17px;font-weight:400;line-height:1.75;flex:1;margin-bottom:40px;}
+.likert{display:flex;gap:8px;margin-bottom:20px;}
+.likert-btn{flex:1;aspect-ratio:1;border:1.5px solid var(--border);background:var(--surface);border-radius:4px;font-size:15px;font-weight:500;color:var(--text-muted);cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;}
+.likert-btn.selected{border-width:2px;color:#fff;}
+.likert-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--text-light);padding:0 2px;margin-bottom:32px;}
+.q-nav{display:flex;gap:10px;}
+.btn-prev{padding:14px 20px;border:1px solid var(--border);background:transparent;color:var(--text-muted);border-radius:2px;font-family:'Noto Sans SC',sans-serif;font-size:13px;cursor:pointer;}
+.btn-next{flex:1;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:2px;font-family:'Noto Sans SC',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:opacity .2s;}
+.btn-next:disabled{opacity:.35;cursor:default;}
+#screen-calc{justify-content:center;align-items:center;padding:48px 28px;text-align:center;}
+.calc-ring{width:64px;height:64px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 24px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.calc-text{font-size:14px;color:var(--text-muted);}
+#screen-result{padding:0;}
+.result-header{padding:52px 28px 32px;text-align:center;border-bottom:1px solid var(--border);}
+.result-badge{display:inline-block;font-size:11px;font-weight:500;padding:4px 14px;border-radius:20px;margin-bottom:16px;}
+.result-typename{font-family:'Noto Serif SC',serif;font-size:30px;font-weight:600;margin-bottom:6px;}
+.result-typesub{font-size:14px;color:var(--text-muted);margin-bottom:4px;}
+.result-quote{font-size:13px;color:var(--text-light);font-style:italic;margin-top:16px;line-height:1.7;}
+.result-section{padding:28px 24px;border-bottom:1px solid var(--border);}
+.section-label{font-size:10px;font-weight:500;letter-spacing:.6px;color:var(--text-light);text-transform:uppercase;margin-bottom:16px;}
+.radar-wrap{display:flex;justify-content:center;margin:4px 0 16px;}
+.axis-bar-row{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.axis-bar-label{font-size:12px;font-weight:500;width:52px;flex-shrink:0;}
+.axis-bar-bg{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden;}
+.axis-bar-fill{height:6px;border-radius:3px;transition:width .6s ease;}
+.axis-bar-val{font-size:13px;font-weight:500;width:32px;text-align:right;flex-shrink:0;}
+.analysis-block{margin-bottom:14px;border-radius:6px;overflow:hidden;border:1px solid var(--border);}
+.ab-head{padding:12px 16px;font-size:11px;font-weight:500;display:flex;align-items:center;gap:8px;}
+.ab-head-dot{width:6px;height:6px;border-radius:50%;}
+.ab-body{padding:14px 16px;background:#fff;}
+.ab-body p{font-size:13.5px;line-height:1.85;color:var(--text-muted);margin-bottom:10px;}
+.ab-body p:last-child{margin-bottom:0;}
+.flag-item{display:flex;align-items:flex-start;gap:8px;padding:10px 12px;background:#FFF8F0;border-left:3px solid #E8A44A;border-radius:0 4px 4px 0;margin-bottom:8px;font-size:13px;color:#7A5820;line-height:1.5;}
+.encourage-block{padding:36px 28px;text-align:center;background:var(--surface);border-bottom:1px solid var(--border);}
+.encourage-verse{font-family:'Noto Serif SC',serif;font-size:15px;line-height:1.9;color:var(--text);margin-bottom:8px;white-space:pre-line;}
+.encourage-ref{font-size:12px;color:var(--text-light);margin-bottom:20px;}
+.encourage-msg{font-size:13px;color:var(--text-muted);line-height:1.9;}
+.action-btns{padding:20px 24px 48px;display:flex;flex-direction:column;gap:10px;}
+.btn-outline{padding:14px;background:transparent;border:1px solid var(--border);border-radius:2px;font-family:'Noto Sans SC',sans-serif;font-size:13px;font-weight:500;color:var(--text-muted);cursor:pointer;text-align:center;}
+.btn-retry{padding:14px;background:transparent;border:1px solid var(--accent);border-radius:2px;font-family:'Noto Sans SC',sans-serif;font-size:14px;font-weight:500;color:var(--accent);cursor:pointer;text-align:center;}
+</style>
+</head>
+<body>
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+<div class="screen active" id="screen-intro">
+  <div class="intro-line"></div>
+  <h1 class="intro-title">我的信仰类型<br>是什么？</h1>
+  <p class="intro-sub">通过74个问题<br>更深入地了解您的信仰旅程。</p>
+  <div class="intro-meta">
+    <div class="meta-item"><div class="meta-num">74</div><div class="meta-lbl">题目</div></div>
+    <div class="meta-item"><div class="meta-num">5</div><div class="meta-lbl">领域</div></div>
+    <div class="meta-item"><div class="meta-num">8</div><div class="meta-lbl">类型</div></div>
+  </div>
+  <button class="btn-primary" onclick="startAssessment()">开始评估</button>
+</div>
+<div class="screen" id="screen-axis">
+  <div class="axis-circle" id="axisIcon"></div>
+  <div class="axis-intro-title" id="axisTitle"></div>
+  <div class="axis-intro-desc" id="axisDesc"></div>
+  <div class="axis-intro-range" id="axisRange"></div>
+  <button class="btn-primary" style="margin:36px 28px 0;width:calc(100% - 56px);" onclick="startAxis()">开始</button>
+</div>
+<div class="screen" id="screen-question">
+  <div class="q-top"><span class="q-counter" id="qCounter"></span><span class="q-axis-tag" id="qAxisTag"></span></div>
+  <div class="q-body">
+    <div class="q-text" id="qText"></div>
+    <div class="likert" id="likert"></div>
+    <div class="likert-labels"><span>完全不同意</span><span>非常同意</span></div>
+    <div class="q-nav">
+      <button class="btn-prev" id="btnPrev" onclick="prevQ()">返回</button>
+      <button class="btn-next" id="btnNext" onclick="nextQ()" disabled>下一步</button>
+    </div>
+  </div>
+</div>
+<div class="screen" id="screen-calc"><div class="calc-ring"></div><div class="calc-text">正在分析您的信仰类型...</div></div>
+<div class="screen" id="screen-result">
+  <div class="result-header" id="resultHeader"></div>
+  <div id="resultBody"></div>
+  <div class="action-btns">
+    <button class="btn-outline" onclick="saveAsJpg()">将结果保存为图片 (JPG)</button>
+    <button class="btn-outline" onclick="saveAsPdf()">保存完整报告 (PDF)</button>
+    <button class="btn-retry" onclick="retry()">重新评估</button>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+const AXES_INFO=[
+  {id:'品格',color:'#0F6E56',light:'#E1F5EE',dark:'#085041',title:'品格领域',desc:'我们探索您的性格、关系方式、情感健康和成长愿望。',range:'Q1 — Q20'},
+  {id:'灵性',color:'#993C1D',light:'#FAECE7',dark:'#712B13',title:'灵性领域',desc:'我们探索您的属灵信念、与圣经的关系、救恩的盼望和信仰成长。',range:'Q21 — Q40'},
+  {id:'环境',color:'#185FA5',light:'#E6F1FB',dark:'#0C447C',title:'环境领域',desc:'我们探索围绕您信仰生活的外部环境和支持系统。',range:'Q41 — Q59'},
+  {id:'能量',color:'#7A4F9B',light:'#F0EAFE',dark:'#4B2E74',title:'变化能量领域',desc:'我们探索您在信仰中寻求新成长的内在能量和准备程度。',range:'Q60 — Q64'},
+  {id:'才能',color:'#5F5E5A',light:'#F1EFE8',dark:'#2C2C2A',title:'成长才能领域',desc:'我们探索哪种方式和角色最适合您在信仰中成长。',range:'Q65 — Q74'},
+];
+const QUESTIONS=[
+  {a:'品格',n:1,t:'您是否觉得与新朋友敞开心扉、建立信任很自然？',r:false},
+  {a:'品格',n:2,t:'在社区中有没有您可以诚实倾诉的人？',r:false},
+  {a:'品格',n:3,t:'您是否从帮助或引导他人中获得满足感？',r:false},
+  {a:'品格',n:4,t:'主动接近并问候初次见面的人，对您来说是否自然？',r:false},
+  {a:'品格',n:5,t:'他人是否将您视为相处舒适且值得信赖的人？',r:false},
+  {a:'品格',n:6,t:'当冲突出现时，您是否倾向于在情绪化之前先寻求和解？',r:false},
+  {a:'品格',n:7,t:'您是否倾向于根据自己的信念做决定，而不是他人的意见？',r:false},
+  {a:'品格',n:8,t:'您是否认真遵守约定和会议时间？',r:false},
+  {a:'品格',n:9,t:'您是否对他人保持尊重和温和的态度？',r:false},
+  {a:'品格',n:10,t:'您是否能够放下痛苦的记忆，专注于当下？',r:false},
+  {a:'品格',n:11,t:'您是否积极寻求比眼前享乐更有价值的事物？',r:false},
+  {a:'品格',n:12,t:'发现自己不足时，您是否真心想要改变成为更好的人？',r:false},
+  {a:'品格',n:13,t:'遇到困难时，您是否会毫不犹豫地寻求帮助？',r:false},
+  {a:'品格',n:14,t:'您通常是否感到平静，能够克服沮丧或缺乏动力的感觉？',r:false},
+  {a:'品格',n:15,t:'您目前的生活与您对未来的梦想是否感到相互连接？',r:false},
+  {a:'品格',n:16,t:'您是否倾向于一旦开始就将事情做完？',r:false},
+  {a:'品格',n:17,t:'您是否将关心您的人的建议或纠正视为爱的行为？',r:false},
+  {a:'品格',n:18,t:'您是否努力在日常生活中保持稳定和一致？',r:false},
+  {a:'品格',n:19,t:'即使没有人看见，您是否努力诚实行事？',r:false},
+  {a:'品格',n:20,t:'对于在社区中被托付的小角色，您是否尽力而为？',r:false},
+  {a:'灵性',n:21,t:'您是否感到信仰生活在逐渐深化您的内心？',r:false},
+  {a:'灵性',n:22,t:'您是否有意愿用自己的恩赐和技能服务社区？',r:false},
+  {a:'灵性',n:23,t:'您目前的主要兴趣是否与属灵价值观相连？',r:false},
+  {a:'灵性',n:24,t:'系统学习圣经是否帮助您建立了坚实的信仰基础？',r:false},
+  {a:'灵性',n:25,t:'从圣经学习中所学到的内容是否在日常生活中真正有帮助？',r:false},
+  {a:'灵性',n:26,t:'您信仰的主要原因是否根植于真理和救恩？',r:false},
+  {a:'灵性',n:27,t:'您是否在日常生活中感受到属灵世界是真实的？',r:false},
+  {a:'灵性',n:28,t:'圣经话语是否让您感到是给您答案的不变真理？',r:false},
+  {a:'灵性',n:29,t:'在人生关键时刻，您是否经历过属灵的安慰或帮助？',r:false},
+  {a:'灵性',n:30,t:'您是否对选择过有信仰生活的自己感到积极？',r:false},
+  {a:'灵性',n:31,t:'学习圣经话语是否真正改变了您的思想或行为？',r:false},
+  {a:'灵性',n:32,t:'天国的盼望是否给您力量来忍受目前的困难？',r:false},
+  {a:'灵性',n:33,t:'您是否有渴望更完全地理解圣经的心？',r:false},
+  {a:'灵性',n:34,t:'您是否相信分辨是非对健康的信仰很重要？',r:false},
+  {a:'灵性',n:35,t:'您既有的假设有时是否影响您接受新学习的能力？',r:true},
+  {a:'灵性',n:36,t:'您是否尝试通过属灵的眼光解释日常发生的事情？',r:false},
+  {a:'灵性',n:37,t:'您是否能够为了属灵平安暂时放下身体的舒适？',r:false},
+  {a:'灵性',n:38,t:'您是否认为在神面前诚实比获得他人认可更重要？',r:false},
+  {a:'灵性',n:39,t:'无论任何情况，您是否有不可动摇的救恩确据？',r:false},
+  {a:'灵性',n:40,t:'您是否倾向于信任并遵循属灵导师或领袖的引导？',r:false},
+  {a:'环境',n:41,t:'从您家到聚会地点的距离是否适合？',r:false},
+  {a:'环境',n:42,t:'您通常使用的交通工具是否能够方便到达？',r:false},
+  {a:'环境',n:43,t:'您目前的工作或收入是否足够稳定以维持日常生活？',r:false},
+  {a:'环境',n:44,t:'您的经济状况是否为继续信仰活动提供了适当基础？',r:false},
+  {a:'环境',n:45,t:'您的家人是否尊重并支持您的信仰活动？',r:false},
+  {a:'环境',n:46,t:'家中是否有可以分享信仰困惑的人？',r:false},
+  {a:'环境',n:47,t:'即使日程繁忙，您是否努力参加敬拜或聚会？',r:false},
+  {a:'环境',n:48,t:'您目前的工作或学业安排是否允许您维持信仰生活？',r:false},
+  {a:'环境',n:49,t:'下班后或周末，您是否容易获得信仰的个人时间？',r:false},
+  {a:'环境',n:50,t:'您是否有可能阻碍属灵成长的习惯？',r:true},
+  {a:'环境',n:51,t:'您的身体健康状况是否足以参加信仰活动？',r:false},
+  {a:'环境',n:52,t:'您目前是否有足够的情感力量来维持日常生活？',r:false},
+  {a:'环境',n:53,t:'您周围是否有支持和鼓励您信仰成长的人？',r:false},
+  {a:'环境',n:54,t:'您是否感受到严重的财务压力或负担？',r:true},
+  {a:'环境',n:55,t:'家庭中是否经常有与信仰相关的冲突或争吵？',r:true},
+  {a:'环境',n:56,t:'您是否有可以独自安静祷告或学习的私人空间？',r:false},
+  {a:'环境',n:57,t:'您对智能手机等数字设备的使用是否严重影响日常生活？',r:true},
+  {a:'环境',n:58,t:'目前是否存在使您的生活变得复杂的法律或社会冲突？',r:true},
+  {a:'环境',n:59,t:'您是否相信未来的生活计划会与信仰生活很好地融合？',r:false},
+  {a:'能量',n:60,t:'您是否经常想在信仰生活中找到新的活力和动力？',r:false},
+  {a:'能量',n:61,t:'当您对信仰有疑问时，您是否感到好奇并想要探索？',r:false},
+  {a:'能量',n:62,t:'您是否有空间仔细审视自己的习惯和模式？',r:false},
+  {a:'能量',n:63,t:'您是否有动力去寻找在社区中可以贡献的方式？',r:false},
+  {a:'能量',n:64,t:'您是否想尝试和体验不熟悉的新领域？',r:false},
+  {a:'才能',n:65,t:'当深入研究和逻辑理解圣经话语时，您是否最感快乐？',r:false,apt:'学术型'},
+  {a:'才能',n:66,t:'在服务和帮助有需要的人时，您是否感到信仰最活跃？',r:false,apt:'服侍型'},
+  {a:'才能',n:67,t:'您是否更喜欢通过敬拜或祷告进行深度交流？',r:false,apt:'表达型'},
+  {a:'才能',n:68,t:'您是否有兴趣与他人分享圣经话语或陪伴他们？',r:false,apt:'传福音型'},
+  {a:'才能',n:69,t:'您是否在通过行政或规划在幕后支持中找到意义？',r:false,apt:'支持型'},
+  {a:'才能',n:70,t:'您是否更喜欢安静冥想来修炼内心？',r:false,apt:'默观型'},
+  {a:'才能',n:71,t:'您是否通过与许多人的团契和活动获得能量？',r:false,apt:'关系型'},
+  {a:'才能',n:72,t:'您是否梦想通过艺术、媒体或创意工作表达信仰？',r:false,apt:'创意型'},
+  {a:'才能',n:73,t:'您是否喜欢系统整理所学到的内容并与他人分享？',r:false,apt:'教导型'},
+  {a:'才能',n:74,t:'您是否擅长读懂社区氛围并为其带来活力？',r:false,apt:'催化型'},
+];
+const APT_TYPES={
+  学术型:{desc:'当深入研究和逻辑理解圣经时，您感到最有活力。'},
+  服侍型:{desc:'您通过在生活领域服务和给予而成长。'},
+  表达型:{desc:'您通过热情的敬拜、祷告和交流表达信仰。'},
+  传福音型:{desc:'您在与他人分享圣经话语并陪伴他们中找到意义。'},
+  支持型:{desc:'在幕后默默服侍是最适合您的方式。'},
+  默观型:{desc:'您通过安静的内心反思与神深度交流。'},
+  关系型:{desc:'您通过与人的团契和连接获得信仰能量。'},
+  创意型:{desc:'您通过艺术和创意表达展现神的美丽。'},
+  教导型:{desc:'您在整理真理并与他人分享中找到信仰的喜乐。'},
+  催化型:{desc:'您在读懂社区并为其带来生命力中找到意义。'},
+};
+const FAITH_TYPES=[
+  {name:'扎根型',sub:'信仰深根之人',quote:'"圣经话语已成为我生命的标准。"',color:'#534AB7',light:'#EEEDFE',
+   p:{品格:88,灵性:90,环境:72,能量:70},rankDesc:'信仰与品格均衡发展，信念能在整个生命中自然流露。',
+   encourage:{verse:'"我以你的名呼召你；你是我的。\n你经过水中，我必与你同在。"',ref:'以赛亚书 43:1–2',msg:'您是在神面前被呼召的宝贵存在。您迄今所走的信仰之路绝不是徒劳的。前方的旅程，祂的手也将同行。'},
+   analyze(norm,ans){const f=norm['灵性'],c=norm['品格'],e=norm['能量'];return{traits:[`您的灵性分数${f}显示，您对圣经话语的信靠和属灵确据已经稳固建立。${f>=75?'在对圣经真理和救恩确据方面出现了高分回应——这表明您的信仰建立在不受情绪或处境摇动的内心基础之上。':'您对圣经话语的渴慕在持续成长，这段旅程是宝贵的。'}`,`在品格领域，您的分数${c}显示${c>=75?'他人信任您，您坚持到底的责任感很强。信仰与日常生活相互连接是您最大的优势。':'信仰与品格正在走向和谐——这种平衡将成为前行的良好基础。'}`,`随着信仰加深，有时可能倾向于对自己设立高标准或试图独自承担他人的期望。在保持委身的同时，允许自己有宽容的空间，是长途旅行所需的智慧。`],growth:[`灵性(${f})和品格(${c})分数一致偏高，意味着您一直在努力使信仰与生活一致。从这里实现更大的成长，不是开始新的事情，而是在您已走的路上走得更深。`,`看您的能量分数(${e})：${e>=60?'仍有面向新方向的能量。将这能量引导到分享和连接中，会使您的信仰更加丰富。':'您的内在储备需要补充。在没有压力的情况下休息和优先考虑内心生活——这也是成长的一部分。'}`],counsel:[`现在对您有帮助的不是"更加努力"，而是"更加真诚"。承认您已经做得好的事情，并珍惜从那地方自然流露的信仰。`,'有意地在社区中创造空间来分享您的故事，并与同行者连接，将成为前路的巨大力量。']};}
+  },
+  {name:'幼苗型',sub:'潜力丰富之人',quote:'"我对真理充满好奇，想了解更多。"',color:'#0F6E56',light:'#E1F5EE',
+   p:{品格:82,灵性:55,环境:65,能量:72},rankDesc:'温暖的品格已具备，信仰的种子正在萌芽。',
+   encourage:{verse:'"那在你们心里动了善工的，必成全这工，\n直到耶稣基督的日子。"',ref:'腓立比书 1:6',msg:'种植在您心里的种子必然会生长。不必急于求成。就以现在的您，一步一步地走——这就够了。'},
+   analyze(norm,ans){const f=norm['灵性'],c=norm['品格'],e=norm['能量'];return{traits:[`您的品格分数${c}相当高。${c>=75?'您自然地以温暖接近他人，并保持尊重的态度。这些品质在信仰社区中是宝贵的礼物。':'在关系中真心分享温暖的渴望是真实的。'}`,`您的灵性分数目前是${f}，这可能意味着对圣经话语的完全确据尚未建立。${f>=50?'但渴望更深了解圣经的渴慕已经存在——这是种子准备发芽的信号。':'开始接触圣经话语的这个时期，在信仰旅程中是非常宝贵的。'}`,`品格良好而信仰仍在加深，意味着未来的成长潜力很大。然而，良好的品格和深厚的信仰并不总是同步前行——需要时间与有关真理的真实问题搏斗。`],growth:[`您现在最需要的是系统地与圣经话语互动，以及有人与您同行。因为品格的土壤已经准备好了，圣经话语的种子一旦种下，就能以惊人的速度成长。`,`您的能量分数(${e})显示${e>=65?'有面向新事物的能量。尝试将这能量与圣经学习连接起来。':'与其一次尝试太多，不如从一个轻松的小型聚会开始。'}`],counsel:['您可能会想，"我还不了解很多，这没关系吗？"但正是这种充满好奇和渴慕的季节，信仰往往成长最快。','以温暖的品格自然地停留在社区中，带着真实的问题去求教。不必急于找到答案。']};}
+  },
+  {name:'根基型',sub:'环境良好之人',quote:'"我很感激身边有好人。"',color:'#185FA5',light:'#E6F1FB',
+   p:{品格:65,灵性:60,环境:88,能量:68},rankDesc:'生活环境和支持网络稳定，为专注于信仰创造了理想条件。',
+   encourage:{verse:'"我感谢那给我力量的基督耶稣我们的主，\n因他以我有忠心，派我服事他。"',ref:'提摩太前书 1:12',msg:'您周围的良好环境和人们不是偶然的。在神给予您的礼物之上，现在开始让信仰的根扎得更深吧。'},
+   analyze(norm,ans){const env=norm['环境'],f=norm['灵性'];return{traits:[`您的环境分数${env}很高。${env>=80?'家人理解并支持您的信仰活动——这是信仰生活中巨大的力量来源。许多人正是因为这一个因素而在信仰上遭遇重大困难。':'围绕您信仰生活的环境已经准备好了——这是有意义的礼物。'}`,`您的灵性分数目前是${f}，这意味着内心的信仰确据可能仍在成长中，与您的外部环境相比。受益于良好的环境和拥有个人确据是略有不同的故事。`,`目前的良好环境是宝贵的礼物。在那基础上，是时候开始逐渐回答内心的问题了："我为什么选择这个信仰？"`],growth:[`高环境分数(${env})意味着专注信仰成长的最佳条件已经具备。现在是积极利用这个环境——加入圣经学习或小组——的好季节。`,`随着内心信仰(${f})与外部环境取得平衡，一个即使环境改变也不会动摇的信仰根基将会形成。`],counsel:['首先，向鼓励您和尊重您信仰的人表达感谢。那种感恩可以成为真实信仰的真正起点。','然后，独自安静地思考："我为什么有信仰？"当您找到自己对这个问题的答案时，信仰就又深了一步。']};}
+  },
+  {name:'结果型',sub:'生命中结出果实之人',quote:'"信仰已成为我的日常生活。"',color:'#3B6D11',light:'#EAF3DE',
+   p:{品格:83,灵性:87,环境:83,能量:75},rankDesc:'信仰、品格、环境和能量四个领域均已成熟均衡。',
+   encourage:{verse:'"我深信无论是死，是生，\n是什么别的被造之物，\n都不能叫我们与神的爱隔绝。"',ref:'罗马书 8:38–39',msg:'没有什么能阻止神对您的爱。我们真诚地为您加油，愿您所走的这条路在那爱中继续发光。'},
+   analyze(norm,ans){const f=norm['灵性'],c=norm['品格'],env=norm['环境'],e=norm['能量'];return{traits:[`四个领域都显示出一致的高分（品格${c}·灵性${f}·环境${env}·能量${e}）。这意味着信仰不是集中在某一个领域，而是自然地渗透到整个生命中。`,'信仰不只是停留在知识层面，而是流入生命。无论任何情况都有不可动摇的救恩确据，这也是结果型的宝贵标志。','在所有领域均衡的情况下，有时可能会因仅仅维持这种平衡而感到疲倦，或者想知道"我还在成长吗？"当这些时刻来临时，以慷慨的恩典将其作为旅程的自然一部分来接受——这就是所需要的。'],growth:['您的信仰正在生命的各个领域自然地表达出来。在这个季节，有意义的成长不是做更多的事情，而是更深地品味和感谢您正在走的地方。','在社区中诚实地分享您的故事，并互相鼓励旅程，是这个阶段的巨大力量来源。'],counsel:['承认现在的自己。确认您所做得好的事情，并在信仰中表达那感恩。','在信仰社区中自然地分享的行为本身，就是您在这个季节所能提供的最美信仰表达。']};}
+  },
+  {name:'旷野型',sub:'在艰难处境中坚守信仰之人',quote:'"处境很艰难，但我仍想继续我的信仰。"',color:'#854F0B',light:'#FAEEDA',
+   p:{品格:68,灵性:72,环境:28,能量:55},rankDesc:'有真诚的信仰意志，但周围环境和生活基础处于困难之中。',
+   encourage:{verse:'"我救赎了你，以你的名召你，\n你是属我的。\n你从水中经过，我必与你同在。"',ref:'以赛亚书 43:1',msg:'您所走的旷野有多宽阔粗糙——神知道。而且即使在那旷野中，祂也在呼唤您的名字。您并不孤单。'},
+   analyze(norm,ans){const env=norm['环境'],f=norm['灵性'];return{traits:[`您的环境分数${env}反映了这一困难。在这种情况下仍然想继续信仰这件事本身就是了不起的。`,`您的灵性分数${f}显示，即使在艰难的环境中，内心仍有对信仰的意志和渴慕。走过旷野不是软弱信仰的标志——而是因为您现在正在这条路上。`,`在如此困难的外部环境中，"为什么我是这样？"的想法可能会出现。但目前的困难不是您的不足——那只是您目前的处境。首先允许自己承认这一点。`],growth:['与其现在在属灵上更加努力，不如一次解决一个实际困难——这才是真正的成长。随着环境改善，信仰也会自然地更加深厚。','您不必独自解决一切。找到一个可以诚实分享您处境的人，与他交谈，是这个季节最重要的一步。'],counsel:['诚实地表达您面临的困难是完全可以的。说"这很难"不是软弱的信仰——而是懂得照顾自己。','练习每天找一件小事感恩。即使在黑暗的旷野中寻找一线光明的那双眼，最终会推动您向前。']};}
+  },
+  {name:'寻索型',sub:'正在寻找真理之人',quote:'"我还不确定信仰是否真实。"',color:'#993C1D',light:'#FAECE7',
+   p:{品格:62,灵性:33,环境:57,能量:78},rankDesc:'正在寻找对信仰的确据，带着对真理的认真问题。',
+   encourage:{verse:'"你们祈求，就给你们；\n寻找，就寻见；\n叩门，就给你们开门。"',ref:'马太福音 7:7',msg:'您所带着的问题正在引导您更接近真理。不必急于寻找答案。真诚寻找的人必然会找到。'},
+   analyze(norm,ans){const f=norm['灵性'],c=norm['品格'],e=norm['能量'];return{traits:[`您的灵性分数${f}不意味着软弱的信仰——它显示您正处于寻索的季节，确据尚未完全形成。渴望更深了解圣经是信仰旅程中最宝贵的起点。`,`您的品格分数${c}显示对关系的真诚投入。即使没有完全的信仰确据，珍视人的心也是一个信号，表明您可能比您意识到的更准备好接受信仰。`,`您的能量分数${e}值得注意。${e>=70?'有高度的内在能量面向新事物。这能量可以成为您寻索的驱动力。':'您目前可能承受着相当大的疲惫。寻索在有足够能量时也会变得更深。'}`],growth:['不要隐藏内心的问题——把它们带出来。问题在信仰中是受欢迎的。找到一个会与您一起寻找答案的人，是这个季节最重要的成长途径。','不必强迫自己相信，或假装有您没有的确据。诚实的寻索是走向深厚信仰最忠实的道路。'],counsel:['您现在需要的不是答案，而是安全提问的空间。寻找一个可以不带评判地听您问题的人，一个可以无愧疚地分享疑惑的关系。','信仰不是先理解才接受的——而是随着您走而逐渐变得清晰的。这种行走的步骤本身已经是寻索的信仰。']};}
+  },
+  {name:'忍耐型',sub:'虽疲惫却未放弃信仰之人',quote:'"我想相信，但坦白说我真的很累了。"',color:'#993556',light:'#FBEAF0',
+   p:{品格:48,灵性:76,环境:33,能量:38},rankDesc:'对信仰的渴慕很深，但情感和环境的耗竭相当显著。',
+   encourage:{verse:'"凡劳苦担重担的人，可以到我这里来，\n我就使你们得安息。\n我心里柔和谦卑，\n你们当负我的轭，学我的样式，\n你们心里就必得享安息。"',ref:'马太福音 11:28–29',msg:'您现在所需要的不是更加努力——而是暂时休息。那种休息也是神所赐予的。放下是可以的。'},
+   analyze(norm,ans){const f=norm['灵性'],e=norm['能量'];return{traits:[`您的灵性分数${f}显示内心有深度的属灵渴慕和信仰。即使疲惫和精疲力竭，仍然坚守信仰这件事——不是软弱信仰的证明，而是有信仰的证明。`,`低能量是耗竭的信号。在这种状态下试图在属灵上做更多，可能只会增加负担。`,`过去的痛苦或目前的艰难处境，与信仰交织在一起时可能感觉更沉重。如果信仰开始感觉像负担而不是医治的地方，那是一个暂停和回顾的信号——这需要勇气去做。`],growth:['"休息"是现在最需要的成长。在精疲力竭时强迫自己充填只会导致更大的空虚。先恢复自己是信仰成长真正的第一步。','练习向至少一个人诚实地说"我在挣扎"。寻求帮助不是软弱——而是智慧。'],counsel:['诚实地审视您心里现在的状态是完全可以的。您可以放下"我是信徒所以必须没事"的感觉。','信仰不会让事情变得更难。带着您的疲惫和痛苦，原封不动地来到神面前——这就是这个季节最诚实和最美丽的信仰表达。']};}
+  },
+  {name:'起步型',sub:'正在迈出信仰第一步之人',quote:'"一切都还很陌生，但我想慢慢了解。"',color:'#5F5E5A',light:'#F1EFE8',
+   p:{品格:50,灵性:40,环境:52,能量:60},rankDesc:'处于信仰的开始阶段，一切还是新的和陌生的。',
+   encourage:{verse:'"你是我的仆人，我拣选你，并不弃绝你。\n你不要害怕，因为我与你同在；\n我是你的神，我必坚固你，\n我必帮助你。"',ref:'以赛亚书 41:9–10',msg:'您迈出这一步——就在这里，就在现在——这本身已经足够了。第一次感到陌生和尴尬是非常自然的。您可以按照自己的节奏走。'},
+   analyze(norm,ans){const f=norm['灵性'],c=norm['品格'],e=norm['能量'];return{traits:[`总体而言，灵性(${f})、品格(${c})和环境都处于形成的初期阶段。这不是不足的标志——这意味着您正站在起点上。`,`想更多了解圣经话语的心，或者您完成了这个评估的事实，表明对信仰有兴趣和意愿。每一个开始都使成长成为可能。`,'感到陌生和尴尬是非常自然的。在这个阶段，比完全理解或完美行事更重要的是持续出现。'],growth:['您现在最需要的是一个可以舒适地学习信仰基础的环境，以及有人陪伴您。与其一次了解所有事情，不如一次经历和感受一件事，这是这个季节适合的成长步伐。','无压力地加入小组或基础圣经学习可以是一个良好的起点。'],counsel:['"还不太了解"完全不是令人羞耻的事。您现在感受到的陌生感，有一天将成为"那时我开始了"的宝贵记忆。','您可以按自己的节奏走。不要与任何人比较，先对今天在这里的自己温柔对待。']};}
+  },
+];
+const MISSION_TYPES=[
+  {name:'先锋型',icon:'◈',color:'#534AB7',light:'#EEEDFE',desc:'开辟新路的信仰者',detail:'这个人走在尚未走过的道路上。他们不惧怕改变，而是将勇气注入社区，推动新方向。',match:(n,a)=>n['能量']>=65&&(a[68]||3)>=4},
+  {name:'服侍型',icon:'◇',color:'#0F6E56',light:'#E1F5EE',desc:'默默在背后建立的信仰者',detail:'即使不被看见，这个人也坚定地支撑着社区。他们知道在隐秘处的忠心是最大的力量，并在这条路上稳步前行。',match:(n,a)=>((a[69]||3)+(a[66]||3))>=8},
+  {name:'见证型',icon:'◉',color:'#993C1D',light:'#FAECE7',desc:'用生命传递真理的信仰者',detail:'对这个人来说，生命先于言语。信仰在日常生活中自然显露，周围的人通过那种生命遇见神。',match:(n,a)=>n['灵性']>=65&&(a[68]||3)>=3&&(a[66]||3)>=3},
+  {name:'学者型',icon:'◎',color:'#185FA5',light:'#E6F1FB',desc:'深入挖掘真理的信仰者',detail:'知道得越多，就越想知道。逻辑理解和系统化圣经话语的能力成为社区的思想基础。',match:(n,a)=>((a[65]||3)+(a[73]||3))>=8},
+  {name:'安慰型',icon:'◐',color:'#993556',light:'#FBEAF0',desc:'接纳受伤者的信仰者',detail:'有一种只有了解痛苦的人才能给予的安慰。这个人自然地陪伴在社区中受伤的人旁边——温暖的存在。',match:(n,a)=>n['品格']>=65&&(a[67]||3)>=4},
+  {name:'连接型',icon:'◑',color:'#854F0B',light:'#FAEEDA',desc:'连接人与人的信仰者',detail:'这个人将散落的东西聚拢为一。他们搭建关系的桥梁，为社区带来生命和活力。',match:(n,a)=>((a[71]||3)+(a[74]||3))>=8},
+  {name:'祷告型',icon:'◔',color:'#7A4F9B',light:'#F0EAFE',desc:'通过祷告和默想支撑的信仰者',detail:'这个人知道祷告是最强大的呼召。在隐秘处，他们通过祷告支撑社区，内心的深度给周围的人带来平安。',match:(n,a)=>((a[70]||3)+(a[67]||3))>=8},
+  {name:'创造型',icon:'◕',color:'#3B6D11',light:'#EAF3DE',desc:'通过创意表达神的信仰者',detail:'这个人在美丽中发现神的踪迹。通过艺术、音乐、写作和媒体，他们表达信仰，使社区更加丰盛。',match:(n,a)=>(a[72]||3)>=4},
+];
+function getMissionType(norm,ans){
+  const matched=MISSION_TYPES.filter(m=>m.match(norm,ans));
+  if(matched.length>0)return matched[0];
+  const f=norm['灵性'],c=norm['品格'],e=norm['能量'];
+  if(f>=65&&e>=60)return MISSION_TYPES[0];
+  if(c>=65)return MISSION_TYPES[4];
+  if(e>=60)return MISSION_TYPES[5];
+  return MISSION_TYPES[6];
+}
+const WEIGHTS={品格:1.2,灵性:1.6,环境:1.0,能量:0.8};
+const AXIS_4=['品格','灵性','环境','能量'];
+const AXIS_COLORS={品格:'#0F6E56',灵性:'#993C1D',环境:'#185FA5',能量:'#7A4F9B'};
+let state={qIdx:0,answers:{},lastResult:null};
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('screen-'+id).classList.add('active');window.scrollTo(0,0);}
+function updateProgress(){document.getElementById('progressFill').style.width=Math.round((state.qIdx/QUESTIONS.length)*100)+'%';}
+function startAssessment(){state.qIdx=0;state.answers={};showAxisIntro('品格');}
+function showAxisIntro(axisId){const info=AXES_INFO.find(a=>a.id===axisId);const el=document.getElementById('axisIcon');el.style.background=info.color;el.textContent=axisId;document.getElementById('axisTitle').textContent=info.title;document.getElementById('axisDesc').textContent=info.desc;document.getElementById('axisRange').textContent=info.range;show('axis');}
+function startAxis(){renderQuestion();}
+function renderQuestion(){
+  if(state.qIdx>=QUESTIONS.length){runClassify();return;}
+  const q=QUESTIONS[state.qIdx];const axInfo=AXES_INFO.find(a=>a.id===q.a);
+  document.getElementById('qCounter').textContent=`${state.qIdx+1} / ${QUESTIONS.length}`;
+  const tag=document.getElementById('qAxisTag');tag.textContent=q.a;tag.style.background=axInfo.light;tag.style.color=axInfo.dark;
+  document.getElementById('qText').textContent=q.t;
+  const likert=document.getElementById('likert');likert.innerHTML='';const cur=state.answers[q.n];
+  [1,2,3,4,5].forEach(v=>{const btn=document.createElement('button');btn.className='likert-btn'+(cur===v?' selected':'');btn.textContent=v;if(cur===v){btn.style.background=axInfo.color;btn.style.borderColor=axInfo.color;}btn.onclick=()=>{state.answers[q.n]=v;document.querySelectorAll('.likert-btn').forEach(b=>{b.classList.remove('selected');b.style.background='';b.style.borderColor='';});btn.classList.add('selected');btn.style.background=axInfo.color;btn.style.borderColor=axInfo.color;document.getElementById('btnNext').disabled=false;};likert.appendChild(btn);});
+  document.getElementById('btnNext').disabled=!cur;document.getElementById('btnPrev').style.display=state.qIdx===0?'none':'block';
+  updateProgress();show('question');
+}
+function nextQ(){state.qIdx++;if(state.qIdx<QUESTIONS.length){const q=QUESTIONS[state.qIdx];if(q.a!==QUESTIONS[state.qIdx-1].a)showAxisIntro(q.a);else renderQuestion();}else{runClassify();}}
+function prevQ(){if(state.qIdx>0){state.qIdx--;renderQuestion();}}
+function runClassify(){show('calc');document.getElementById('progressFill').style.width='100%';setTimeout(doClassify,1400);}
+function doClassify(){
+  const raw={品格:0,灵性:0,环境:0,能量:0};const cnt={品格:0,灵性:0,环境:0,能量:0};
+  QUESTIONS.filter(q=>q.a!=='才能').forEach(q=>{const v=state.answers[q.n]||3;raw[q.a]+=(q.r?6-v:v);cnt[q.a]++;});
+  const norm={};AXIS_4.forEach(ax=>{norm[ax]=Math.round(raw[ax]/(cnt[ax]*5)*100);});
+  const aptScores={};QUESTIONS.filter(q=>q.a==='才能').forEach(q=>{aptScores[q.apt]=state.answers[q.n]||3;});
+  const aptRanked=Object.entries(aptScores).sort((a,b)=>b[1]-a[1]);
+  let ranked=FAITH_TYPES.map(t=>({...t,d:Math.sqrt(AXIS_4.reduce((s,ax)=>s+WEIGHTS[ax]*Math.pow(norm[ax]-t.p[ax],2),0))})).sort((a,b)=>a.d-b.d);
+  if(norm['灵性']<=40){const c=ranked.filter(t=>t.name==='寻索型'||t.name==='起步型');if(c.length&&c[0].d<ranked[0].d*1.3)ranked=[c[0],...ranked.filter(t=>t.name!==c[0].name)];}
+  if(norm['环境']<=35){const c=ranked.filter(t=>t.name==='旷野型'||t.name==='忍耐型');if(c.length&&c[0].d<ranked[0].d*1.3)ranked=[c[0],...ranked.filter(t=>t.name!==c[0].name)];}
+  if(AXIS_4.every(ax=>norm[ax]>=78)){const rf=ranked.find(t=>t.name==='结果型');if(rf)ranked=[rf,...ranked.filter(t=>t.name!=='结果型')];}
+  const flags=AXIS_4.filter(ax=>norm[ax]<=35).map(ax=>ax+'领域显示出困难的迹象。请随时与辅导者讨论。');
+  state.lastResult={ranked,norm,flags,aptRanked};renderResult(ranked,norm,flags,aptRanked);
+}
+function renderResult(ranked,norm,flags,aptRanked){
+  const best=ranked[0];const analysis=best.analyze(norm,state.answers);const mission=getMissionType(norm,state.answers);
+  document.getElementById('resultHeader').innerHTML=`<div class="result-badge" style="background:${best.light};color:${best.color}">我的信仰类型</div><div class="result-typename" style="color:${best.color}">${best.name}</div><div class="result-typesub">${best.sub}</div><div class="result-quote">${best.quote}</div>`;
+  let body='';
+  if(flags.length){body+=`<div class="result-section"><div class="section-label">需要关注的领域</div>${flags.map(f=>`<div class="flag-item">${f}</div>`).join('')}</div>`;}
+  body+=`<div class="result-section"><div class="section-label">各领域分数</div><div class="radar-wrap">${buildRadar(norm,best)}</div>${AXIS_4.map(ax=>`<div class="axis-bar-row"><span class="axis-bar-label" style="color:${AXIS_COLORS[ax]}">${ax}</span><div class="axis-bar-bg"><div class="axis-bar-fill" style="width:${norm[ax]}%;background:${AXIS_COLORS[ax]}"></div></div><span class="axis-bar-val">${norm[ax]}</span></div>`).join('')}</div>`;
+  body+=`<div class="result-section"><div class="section-label">核心特质</div><div class="analysis-block"><div class="ab-head" style="background:${best.light}"><div class="ab-head-dot" style="background:${best.color}"></div><span style="color:${best.color};font-weight:500">我的故事</span></div><div class="ab-body">${analysis.traits.map(t=>`<p>${t}</p>`).join('')}</div></div></div>`;
+  body+=`<div class="result-section"><div class="section-label">前进方向</div><div class="analysis-block"><div class="ab-head" style="background:#EAF3DE"><div class="ab-head-dot" style="background:#3B6D11"></div><span style="color:#3B6D11;font-weight:500">我可以成长的地方</span></div><div class="ab-body">${analysis.growth.map(t=>`<p>${t}</p>`).join('')}</div></div></div>`;
+  body+=`<div class="result-section"><div class="section-label">对自己说的话</div><div class="analysis-block"><div class="ab-head" style="background:#E6F1FB"><div class="ab-head-dot" style="background:#185FA5"></div><span style="color:#185FA5;font-weight:500">我现在需要的</span></div><div class="ab-body">${analysis.counsel.map(t=>`<p>${t}</p>`).join('')}</div></div></div>`;
+  const aptTop=aptRanked.slice(0,2);const aptBot=aptRanked.slice(-2).reverse();const aptColors=['#534AB7','#0F6E56'];
+  body+=`<div class="result-section"><div class="section-label">我的成长才能</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;"><div style="background:#F8F6F1;border-radius:8px;border:1px solid #E8E3DC;padding:16px;"><div style="font-size:10px;font-weight:500;letter-spacing:.4px;color:#0F6E56;text-transform:uppercase;margin-bottom:12px;">成长才能</div>${aptTop.map(([name,score],i)=>{const info=APT_TYPES[name]||{desc:''};const col=aptColors[i];return`<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;"><div style="font-size:16px;font-weight:600;width:20px;color:${col};font-family:'Noto Serif SC',serif">${i+1}</div><div style="flex:1;"><div style="font-size:13px;font-weight:500;color:#1A1814;margin-bottom:2px;">${name}</div><div style="font-size:11px;color:#B0A99E;line-height:1.5;">${info.desc}</div></div><div style="font-size:12px;font-weight:500;color:${col};flex-shrink:0;">${score}分</div></div>`;}).join('')}</div><div style="background:#F8F6F1;border-radius:8px;border:1px solid #E8E3DC;padding:16px;"><div style="font-size:10px;font-weight:500;letter-spacing:.4px;color:#B0A99E;text-transform:uppercase;margin-bottom:12px;">较不适合</div>${aptBot.map(([name,score])=>{const info=APT_TYPES[name]||{desc:''};return`<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;"><div style="font-size:11px;color:#B0A99E;width:20px;text-align:center;">—</div><div style="flex:1;"><div style="font-size:13px;font-weight:500;color:#7A7568;margin-bottom:2px;">${name}</div><div style="font-size:11px;color:#B0A99E;line-height:1.5;">${info.desc}</div></div><div style="font-size:12px;color:#B0A99E;flex-shrink:0;">${score}分</div></div>`;}).join('')}</div></div></div>`;
+  const top3=ranked.slice(0,3);const maxD=Math.max(...ranked.map(r=>r.d));
+  body+=`<div class="result-section"><div class="section-label">信仰类型相似度</div>${top3.map((t,i)=>`<div style="padding:12px 0;border-bottom:1px solid #F4F0EB;"><div style="display:flex;align-items:center;gap:10px;margin-bottom:5px;"><span style="font-size:11px;color:#B0A99E;width:16px;flex-shrink:0;">${i+1}</span><span style="width:8px;height:8px;border-radius:50%;background:${t.color};display:inline-block;flex-shrink:0;"></span><span style="font-size:14px;font-weight:500;flex:1;">${t.name}</span><div style="width:80px;height:5px;background:#E8E3DC;border-radius:3px;overflow:hidden;flex-shrink:0;"><div style="height:5px;border-radius:3px;width:${Math.round((1-t.d/maxD)*100)}%;background:${t.color};"></div></div></div><div style="font-size:12px;color:#B0A99E;line-height:1.6;padding-left:26px;">${t.rankDesc}</div></div>`).join('')}</div>`;
+  const otherMissions=MISSION_TYPES.filter(m=>m.name!==mission.name);
+  body+=`<div class="result-section"><div class="section-label">呼召类型</div><div style="background:${mission.light};border-radius:8px;padding:18px 20px;margin-bottom:14px;"><div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;"><div style="width:40px;height:40px;border-radius:50%;background:${mission.color};display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;flex-shrink:0;">${mission.icon}</div><div><div style="font-size:17px;font-weight:500;color:${mission.color};margin-bottom:2px;">${mission.name}</div><div style="font-size:12px;color:#7A7568;">${mission.desc}</div></div></div><div style="font-size:13px;color:#444441;line-height:1.8;border-top:1px solid rgba(0,0,0,.07);padding-top:12px;">${mission.detail}</div></div><div style="background:#fff;border-radius:8px;border:1px solid #E8E3DC;padding:14px 16px;"><div style="font-size:10px;font-weight:500;letter-spacing:.4px;color:#B0A99E;text-transform:uppercase;margin-bottom:10px;">其他呼召类型 — 点击了解</div><div style="display:flex;flex-wrap:wrap;gap:7px;" id="missionChips">${otherMissions.map((m,idx)=>`<button onclick="toggleMissionChip(${idx})" data-idx="${idx}" style="font-size:12px;padding:5px 13px;border-radius:20px;background:#F8F6F1;color:#7A7568;border:1px solid #E8E3DC;cursor:pointer;transition:all .15s;font-family:'Noto Sans SC',sans-serif;">${m.name}</button>`).join('')}</div><div id="missionDetail" style="margin-top:0;overflow:hidden;transition:all .3s;max-height:0;"></div></div></div>`;
+  body+=`<script>window._otherMissions=${JSON.stringify(otherMissions.map(m=>({name:m.name,desc:m.desc,detail:m.detail,color:m.color,light:m.light,icon:m.icon})))};window._activeMissionIdx=null;function toggleMissionChip(idx){const btns=document.querySelectorAll('#missionChips button');const detail=document.getElementById('missionDetail');const m=window._otherMissions[idx];if(window._activeMissionIdx===idx){window._activeMissionIdx=null;detail.style.maxHeight='0';detail.innerHTML='';btns.forEach(b=>{b.style.background='#F8F6F1';b.style.color='#7A7568';b.style.borderColor='#E8E3DC';});}else{window._activeMissionIdx=idx;btns.forEach((b,i)=>{if(i===idx){b.style.background=m.light;b.style.color=m.color;b.style.borderColor=m.color;}else{b.style.background='#F8F6F1';b.style.color='#7A7568';b.style.borderColor='#E8E3DC';}});detail.innerHTML=\`<div style="background:\${m.light};border-radius:6px;padding:14px 16px;margin-top:10px;"><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><div style="width:28px;height:28px;border-radius:50%;background:\${m.color};display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;flex-shrink:0;">\${m.icon}</div><div><div style="font-size:13px;font-weight:500;color:\${m.color};">\${m.name}</div><div style="font-size:11px;color:#7A7568;">\${m.desc}</div></div></div><div style="font-size:12px;color:#444441;line-height:1.75;">\${m.detail}</div></div>\`;detail.style.maxHeight='300px';}}<\/script>`;
+  const enc=best.encourage;
+  body+=`<div class="encourage-block"><div class="encourage-verse">${enc.verse}</div><div class="encourage-ref">${enc.ref}</div><div class="encourage-msg">${enc.msg}</div></div>`;
+  document.getElementById('resultBody').innerHTML=body;show('result');
+}
+function buildRadar(norm,best){
+  const W=300,H=300,cx=150,cy=150,r=80,N=4;
+  const pts=AXIS_4.map((ax,i)=>{const a=Math.PI*2*i/N-Math.PI/2,v=norm[ax]/100;return[cx+r*v*Math.cos(a),cy+r*v*Math.sin(a)];});
+  const bg=AXIS_4.map((_,i)=>{const a=Math.PI*2*i/N-Math.PI/2;return[cx+r*Math.cos(a),cy+r*Math.sin(a)];});
+  const toP=arr=>arr.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ')+'Z';
+  const grid=[.25,.5,.75,1].map(s=>{const gp=AXIS_4.map((_,i)=>{const a=Math.PI*2*i/N-Math.PI/2;return[cx+r*s*Math.cos(a),cy+r*s*Math.sin(a)];});return`<path d="${toP(gp)}" fill="none" stroke="#E8E3DC" stroke-width="1"/>`;}).join('');
+  const lblDefs=[{ax:'品格',x:150,y:48,anchor:'middle'},{ax:'灵性',x:252,y:154,anchor:'start'},{ax:'环境',x:150,y:260,anchor:'middle'},{ax:'能量',x:68,y:154,anchor:'middle'}];
+  const lbls=lblDefs.map(d=>`<text x="${d.x}" y="${d.y}" text-anchor="${d.anchor}" font-size="12" fill="${AXIS_COLORS[d.ax]}" font-family="'Noto Sans SC',sans-serif" font-weight="500">${d.ax}</text>`).join('');
+  return`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${grid}<path d="${toP(bg)}" fill="none" stroke="#D5CEC5" stroke-width="1"/><path d="${toP(pts)}" fill="${best.color}" fill-opacity="0.15" stroke="${best.color}" stroke-width="2"/>${pts.map(p=>`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="3.5" fill="${best.color}"/>`).join('')}${lbls}</svg>`;
+}
+function saveAsJpg(){
+  const btn=event.target;btn.textContent='正在生成图片...';btn.disabled=true;
+  const el=document.getElementById('screen-result');const prevScroll=window.scrollY;window.scrollTo(0,0);
+  setTimeout(()=>{html2canvas(el,{scale:2,useCORS:true,backgroundColor:'#F8F6F1',scrollY:0,windowWidth:document.documentElement.scrollWidth,windowHeight:el.scrollHeight}).then(canvas=>{
+    const reset=()=>{btn.textContent='将结果保存为图片 (JPG)';btn.disabled=false;window.scrollTo(0,prevScroll);};
+    canvas.toBlob(blob=>{
+      const fileName='信仰类型评估结果.jpg';const isIOS=/iPhone|iPad|iPod/i.test(navigator.userAgent);
+      if(isIOS&&navigator.share){const file=new File([blob],fileName,{type:'image/jpeg'});if(navigator.canShare&&navigator.canShare({files:[file]})){navigator.share({files:[file],title:'我的信仰类型评估结果'}).then(reset).catch(()=>{const url=URL.createObjectURL(blob);window.open(url,'_blank');reset();});return;}}
+      const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=fileName;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(url);document.body.removeChild(a);},3000);reset();
+    },'image/jpeg',0.92);
+  }).catch(()=>{btn.textContent='将结果保存为图片 (JPG)';btn.disabled=false;window.scrollTo(0,prevScroll);});},120);
+}
+function saveAsPdf(){
+  const best=state.lastResult.ranked[0],norm=state.lastResult.norm,analysis=best.analyze(norm,state.answers),enc=best.encourage,aptRanked=state.lastResult.aptRanked;
+  const mission=getMissionType(norm,state.answers);const aptTop=aptRanked.slice(0,2);const top3=state.lastResult.ranked.slice(0,3);
+  const win=window.open('','_blank');
+  win.document.write(`<!DOCTYPE html><html lang="zh"><head><meta charset="UTF-8"><title>信仰类型评估结果</title><style>body{font-family:'Noto Sans SC',sans-serif;background:#fff;color:#1A1814;padding:40px 48px;max-width:700px;margin:0 auto;}h1{font-family:'Noto Serif SC',serif;font-size:24px;color:${best.color};margin-bottom:6px;}.divider{height:1px;background:#E8E3DC;margin:20px 0;}.label{font-size:10px;font-weight:500;letter-spacing:.4px;color:#B0A99E;text-transform:uppercase;margin-bottom:10px;}.score-row{display:flex;align-items:center;gap:12px;margin-bottom:8px;}.score-name{width:44px;font-size:12px;font-weight:500;}.bar-bg{flex:1;height:6px;background:#F0EDE8;border-radius:3px;overflow:hidden;}.bar-fill{height:6px;border-radius:3px;}p{font-size:13px;line-height:1.8;color:#7A7568;margin-bottom:6px;}.verse{font-family:'Noto Serif SC',serif;font-size:14px;line-height:1.9;color:#1A1814;text-align:center;white-space:pre-line;font-style:italic;margin:20px 0 6px;}.enc-ref{font-size:11px;color:#B0A99E;text-align:center;margin-bottom:10px;}.enc-msg{font-size:12px;color:#7A7568;line-height:1.8;text-align:center;}.q-row{display:flex;gap:8px;padding:5px 0;border-bottom:1px solid #F4F0EB;font-size:11px;color:#7A7568;}.q-num{width:24px;flex-shrink:0;color:#B0A99E;}.q-text{flex:1;}.q-ans{width:24px;text-align:right;font-weight:500;color:#1A1814;}@media print{body{padding:24px 32px;}@page{margin:0;}}</style></head><body>
+  <h1>${best.name}</h1><p style="color:#7A7568;margin-bottom:4px;">${best.sub}</p><p style="font-size:13px;color:#B0A99E;font-style:italic;margin-bottom:28px;">${best.quote}</p><div class="divider"></div>
+  <div class="label">各领域分数</div>${AXIS_4.map(ax=>`<div class="score-row"><div class="score-name" style="color:${AXIS_COLORS[ax]}">${ax}</div><div class="bar-bg"><div class="bar-fill" style="width:${norm[ax]}%;background:${AXIS_COLORS[ax]}"></div></div><span style="font-size:12px;font-weight:500;width:28px;text-align:right;">${norm[ax]}</span></div>`).join('')}
+  <div class="divider"></div><div class="label">核心特质</div>${analysis.traits.map(t=>`<p>${t}</p>`).join('')}
+  <div class="label" style="margin-top:14px">前进方向</div>${analysis.growth.map(t=>`<p>${t}</p>`).join('')}
+  <div class="divider"></div><div class="verse">${enc.verse}</div><div class="enc-ref">${enc.ref}</div><div class="enc-msg">${enc.msg}</div>
+  <div class="divider"></div><div class="label">答题记录（74题）</div>${QUESTIONS.map(q=>`<div class="q-row"><span class="q-num">${q.n}</span><span class="q-text">${q.t}</span><span class="q-ans">${state.answers[q.n]||'—'}</span></div>`).join('')}
+  <script>window.onload=()=>{setTimeout(()=>window.print(),400);}<\/script></body></html>`);win.document.close();
+}
+function retry(){startAssessment();}
+</script>
+</body>
+</html>

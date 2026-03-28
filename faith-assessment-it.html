@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Valutazione del Tipo di Fede</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@300;400;500&display=swap');
+:root{--bg:#F8F6F1;--surface:#FFFFFF;--text:#1A1814;--text-muted:#7A7568;--text-light:#B0A99E;--border:#E8E3DC;--accent:#3D3526;--ph:3px;}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html{font-size:16px;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+.progress-bar{position:fixed;top:0;left:0;right:0;height:var(--ph);background:var(--border);z-index:100;}
+.progress-fill{height:100%;background:var(--accent);transition:width .4s ease;width:0%;}
+.screen{display:none;min-height:100vh;}
+.screen.active{display:flex;flex-direction:column;}
+#screen-intro{justify-content:center;align-items:center;padding:60px 28px;text-align:center;}
+.intro-line{width:48px;height:1px;background:var(--accent);margin:0 auto 32px;}
+.intro-title{font-family:'Playfair Display',serif;font-size:26px;font-weight:600;line-height:1.35;margin-bottom:14px;}
+.intro-sub{font-size:13px;color:var(--text-muted);line-height:1.9;margin-bottom:40px;}
+.intro-meta{display:flex;gap:28px;justify-content:center;margin-bottom:44px;}
+.meta-item{text-align:center;}
+.meta-num{font-family:'Playfair Display',serif;font-size:26px;font-weight:600;}
+.meta-lbl{font-size:11px;color:var(--text-light);margin-top:3px;}
+.btn-primary{display:block;width:100%;padding:16px;background:var(--accent);color:#fff;border:none;border-radius:2px;font-family:'Inter',sans-serif;font-size:15px;font-weight:500;letter-spacing:.5px;cursor:pointer;transition:opacity .2s;}
+.btn-primary:active{opacity:.85;}
+#screen-axis{justify-content:center;align-items:center;padding:56px 28px;text-align:center;}
+.axis-circle{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 22px;font-size:10px;font-weight:500;color:#fff;letter-spacing:.3px;}
+.axis-intro-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:600;margin-bottom:10px;}
+.axis-intro-desc{font-size:13px;color:var(--text-muted);line-height:1.85;margin-bottom:10px;}
+.axis-intro-range{font-size:11px;color:var(--text-light);}
+#screen-question{padding-top:var(--ph);}
+.q-top{padding:20px 24px 0;display:flex;align-items:center;justify-content:space-between;}
+.q-counter{font-size:11px;color:var(--text-light);letter-spacing:.5px;}
+.q-axis-tag{font-size:10px;font-weight:500;padding:3px 10px;border-radius:20px;letter-spacing:.3px;}
+.q-body{flex:1;padding:28px 24px 24px;display:flex;flex-direction:column;}
+.q-text{font-family:'Playfair Display',serif;font-size:18px;font-weight:400;line-height:1.7;flex:1;margin-bottom:40px;}
+.likert{display:flex;gap:8px;margin-bottom:20px;}
+.likert-btn{flex:1;aspect-ratio:1;border:1.5px solid var(--border);background:var(--surface);border-radius:4px;font-size:15px;font-weight:500;color:var(--text-muted);cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;}
+.likert-btn.selected{border-width:2px;color:#fff;}
+.likert-btn:active{transform:scale(.95);}
+.likert-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--text-light);padding:0 2px;margin-bottom:32px;}
+.q-nav{display:flex;gap:10px;}
+.btn-prev{padding:14px 20px;border:1px solid var(--border);background:transparent;color:var(--text-muted);border-radius:2px;font-family:'Inter',sans-serif;font-size:13px;cursor:pointer;}
+.btn-next{flex:1;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:2px;font-family:'Inter',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:opacity .2s;}
+.btn-next:disabled{opacity:.35;cursor:default;}
+#screen-calc{justify-content:center;align-items:center;padding:48px 28px;text-align:center;}
+.calc-ring{width:64px;height:64px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 24px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.calc-text{font-size:14px;color:var(--text-muted);}
+#screen-result{padding:0;}
+.result-header{padding:52px 28px 32px;text-align:center;border-bottom:1px solid var(--border);}
+.result-badge{display:inline-block;font-size:11px;font-weight:500;padding:4px 14px;border-radius:20px;letter-spacing:.3px;margin-bottom:16px;}
+.result-typename{font-family:'Playfair Display',serif;font-size:32px;font-weight:600;margin-bottom:6px;}
+.result-typesub{font-size:14px;color:var(--text-muted);margin-bottom:4px;}
+.result-quote{font-size:13px;color:var(--text-light);font-style:italic;margin-top:16px;line-height:1.7;}
+.result-section{padding:28px 24px;border-bottom:1px solid var(--border);}
+.section-label{font-size:10px;font-weight:500;letter-spacing:.8px;color:var(--text-light);text-transform:uppercase;margin-bottom:16px;}
+.radar-wrap{display:flex;justify-content:center;margin:4px 0 16px;}
+.axis-bar-row{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.axis-bar-label{font-size:12px;font-weight:500;width:64px;flex-shrink:0;}
+.axis-bar-bg{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden;}
+.axis-bar-fill{height:6px;border-radius:3px;transition:width .6s ease;}
+.axis-bar-val{font-size:13px;font-weight:500;width:32px;text-align:right;flex-shrink:0;}
+.analysis-block{margin-bottom:14px;border-radius:6px;overflow:hidden;border:1px solid var(--border);}
+.ab-head{padding:12px 16px;font-size:11px;font-weight:500;letter-spacing:.5px;display:flex;align-items:center;gap:8px;}
+.ab-head-dot{width:6px;height:6px;border-radius:50%;}
+.ab-body{padding:14px 16px;background:#fff;}
+.ab-body p{font-size:13.5px;line-height:1.85;color:var(--text-muted);margin-bottom:10px;}
+.ab-body p:last-child{margin-bottom:0;}
+.rank-item{padding:12px 0;border-bottom:1px solid var(--border);}
+.rank-item:last-child{border-bottom:none;}
+.rank-top{display:flex;align-items:center;gap:10px;margin-bottom:5px;}
+.rank-num{font-size:11px;color:var(--text-light);width:16px;}
+.rank-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.rank-name{font-size:14px;font-weight:500;flex:1;}
+.rank-bar-bg{width:80px;height:4px;background:var(--border);border-radius:2px;overflow:hidden;}
+.rank-bar-fill{height:4px;border-radius:2px;}
+.rank-dist{font-size:11px;color:var(--text-light);width:36px;text-align:right;}
+.rank-desc{font-size:12px;color:var(--text-light);line-height:1.6;padding-left:26px;}
+.flag-item{display:flex;align-items:flex-start;gap:8px;padding:10px 12px;background:#FFF8F0;border-left:3px solid #E8A44A;border-radius:0 4px 4px 0;margin-bottom:8px;font-size:13px;color:#7A5820;line-height:1.5;}
+.encourage-block{padding:36px 28px;text-align:center;background:var(--surface);border-bottom:1px solid var(--border);}
+.encourage-verse{font-family:'Playfair Display',serif;font-size:16px;font-weight:400;line-height:1.9;color:var(--text);margin-bottom:8px;white-space:pre-line;}
+.encourage-ref{font-size:12px;color:var(--text-light);margin-bottom:20px;}
+.encourage-msg{font-size:13px;color:var(--text-muted);line-height:1.9;}
+.action-btns{padding:20px 24px 48px;display:flex;flex-direction:column;gap:10px;}
+.btn-outline{padding:14px;background:transparent;border:1px solid var(--border);border-radius:2px;font-family:'Inter',sans-serif;font-size:13px;font-weight:500;color:var(--text-muted);cursor:pointer;text-align:center;transition:all .2s;}
+.btn-outline:active{background:var(--bg);}
+.btn-retry{padding:14px;background:transparent;border:1px solid var(--accent);border-radius:2px;font-family:'Inter',sans-serif;font-size:14px;font-weight:500;color:var(--accent);cursor:pointer;text-align:center;}
+</style>
+</head>
+<body>
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+<div class="screen active" id="screen-intro">
+  <div class="intro-line"></div>
+  <h1 class="intro-title">Qual è il mio<br>tipo di fede?</h1>
+  <p class="intro-sub">74 domande per aiutarti a comprendere<br>il tuo cammino di fede più profondamente.</p>
+  <div class="intro-meta">
+    <div class="meta-item"><div class="meta-num">74</div><div class="meta-lbl">Domande</div></div>
+    <div class="meta-item"><div class="meta-num">5</div><div class="meta-lbl">Domini</div></div>
+    <div class="meta-item"><div class="meta-num">8</div><div class="meta-lbl">Tipi</div></div>
+  </div>
+  <button class="btn-primary" onclick="startAssessment()">Inizia la Valutazione</button>
+</div>
+<div class="screen" id="screen-axis">
+  <div class="axis-circle" id="axisIcon"></div>
+  <div class="axis-intro-title" id="axisTitle"></div>
+  <div class="axis-intro-desc" id="axisDesc"></div>
+  <div class="axis-intro-range" id="axisRange"></div>
+  <button class="btn-primary" style="margin:36px 28px 0;width:calc(100% - 56px);" onclick="startAxis()">Inizia</button>
+</div>
+<div class="screen" id="screen-question">
+  <div class="q-top">
+    <span class="q-counter" id="qCounter"></span>
+    <span class="q-axis-tag" id="qAxisTag"></span>
+  </div>
+  <div class="q-body">
+    <div class="q-text" id="qText"></div>
+    <div class="likert" id="likert"></div>
+    <div class="likert-labels"><span>Per niente</span><span>Moltissimo</span></div>
+    <div class="q-nav">
+      <button class="btn-prev" id="btnPrev" onclick="prevQ()">Indietro</button>
+      <button class="btn-next" id="btnNext" onclick="nextQ()" disabled>Avanti</button>
+    </div>
+  </div>
+</div>
+<div class="screen" id="screen-calc">
+  <div class="calc-ring"></div>
+  <div class="calc-text">Analisi del tipo di fede in corso...</div>
+</div>
+<div class="screen" id="screen-result">
+  <div class="result-header" id="resultHeader"></div>
+  <div id="resultBody"></div>
+  <div class="action-btns">
+    <button class="btn-outline" onclick="saveAsJpg()">Salva Risultato come Immagine (JPG)</button>
+    <button class="btn-outline" onclick="saveAsPdf()">Salva Rapporto Completo (PDF)</button>
+    <button class="btn-retry" onclick="retry()">Ripeti la Valutazione</button>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+const AXES_INFO=[
+  {id:'Carattere',color:'#0F6E56',light:'#E1F5EE',dark:'#085041',title:'Dominio del Carattere',desc:'Esploriamo la tua personalità, stile relazionale, salute emotiva e desiderio di crescita.',range:'D1 — D20'},
+  {id:'Spiritualità',color:'#993C1D',light:'#FAECE7',dark:'#712B13',title:'Dominio della Spiritualità',desc:'Esploriamo la tua convinzione spirituale, il rapporto con la Scrittura, la speranza di salvezza e la crescita nella fede.',range:'D21 — D40'},
+  {id:'Ambiente',color:'#185FA5',light:'#E6F1FB',dark:'#0C447C',title:"Dominio dell'Ambiente",desc:'Esploriamo le circostanze esterne e i sistemi di supporto che circondano la tua vita di fede.',range:'D41 — D59'},
+  {id:'Energia',color:'#7A4F9B',light:'#F0EAFE',dark:'#4B2E74',title:'Dominio dell\'Energia di Cambiamento',desc:'Esploriamo la tua energia interiore e la disponibilità per nuova crescita nella fede.',range:'D60 — D64'},
+  {id:'Attitudine',color:'#5F5E5A',light:'#F1EFE8',dark:'#2C2C2A',title:'Dominio dell\'Attitudine alla Crescita',desc:'Esploriamo quale stile e ruolo ti si addice meglio per crescere nella fede.',range:'D65 — D74'},
+];
+const QUESTIONS=[
+  {a:'Carattere',n:1,t:'Do you find it easy to open up and build trust with new people?',r:false},
+  {a:'Carattere',n:2,t:'Is there someone in the community you can honestly share your heart with?',r:false},
+  {a:'Carattere',n:3,t:'Do you find fulfillment in helping or guiding others?',r:false},
+  {a:'Carattere',n:4,t:'Does it feel natural to approach and greet someone you\'ve just met?',r:false},
+  {a:'Carattere',n:5,t:'Do others see you as someone who is comfortable and trustworthy to be around?',r:false},
+  {a:'Carattere',n:6,t:'When conflict arises, do you tend to seek reconciliation before acting on emotion?',r:false},
+  {a:'Carattere',n:7,t:'Do you tend to make decisions based on your own convictions rather than others\' opinions?',r:false},
+  {a:'Carattere',n:8,t:'Do you make a genuine effort to keep appointments and meeting times?',r:false},
+  {a:'Carattere',n:9,t:'Do you maintain a respectful and gentle attitude toward others?',r:false},
+  {a:'Carattere',n:10,t:'Have you been able to move past painful memories and focus on the present?',r:false},
+  {a:'Carattere',n:11,t:'Do you actively seek things of deeper value rather than immediate pleasure?',r:false},
+  {a:'Carattere',n:12,t:'When you notice your shortcomings, do you genuinely want to change for the better?',r:false},
+  {a:'Carattere',n:13,t:'When things are hard, do you reach out for help without hesitation?',r:false},
+  {a:'Carattere',n:14,t:'Do you generally feel at peace, able to overcome feelings of depression or low motivation?',r:false},
+  {a:'Carattere',n:15,t:'Do your current life and your dreams for the future feel connected?',r:false},
+  {a:'Carattere',n:16,t:'Do you tend to see things through to completion once you start?',r:false},
+  {a:'Carattere',n:17,t:'Do you receive advice or correction from those who care about you as an act of love?',r:false},
+  {a:'Carattere',n:18,t:'Do you work to stay centered and consistent in daily life regardless of your mood?',r:false},
+  {a:'Carattere',n:19,t:'Do you strive to act honestly, even when no one is watching?',r:false},
+  {a:'Carattere',n:20,t:'Do you give your best even to small roles you are given in the community?',r:false},
+  {a:'Spiritualità',n:21,t:'Do you sense that your faith life is gradually deepening your inner self?',r:false},
+  {a:'Spiritualità',n:22,t:'Do you have a desire to use your gifts and skills to serve the community?',r:false},
+  {a:'Spiritualità',n:23,t:'Are your main interests these days connected to spiritual values?',r:false},
+  {a:'Spiritualità',n:24,t:'Has studying Scripture systematically helped build a solid foundation for your faith?',r:false},
+  {a:'Spiritualità',n:25,t:'Is what you\'ve learned from Bible study practically helpful in your daily life?',r:false},
+  {a:'Spiritualità',n:26,t:'Is your primary reason for faith rooted in truth and salvation?',r:false},
+  {a:'Spiritualità',n:27,t:'Do you sense in daily life that the spiritual world is real?',r:false},
+  {a:'Spiritualità',n:28,t:'Does Scripture feel like an unchanging truth that gives you answers?',r:false},
+  {a:'Spiritualità',n:29,t:'Have you experienced spiritual comfort or help at critical moments in life?',r:false},
+  {a:'Spiritualità',n:30,t:'Do you feel positive about yourself for choosing to live as a person of faith?',r:false},
+  {a:'Spiritualità',n:31,t:'Has studying the Word actually changed your thinking or behavior?',r:false},
+  {a:'Spiritualità',n:32,t:'Does the hope of heaven give you strength to endure present difficulties?',r:false},
+  {a:'Spiritualità',n:33,t:'Do you have a deep longing to understand the Word more fully?',r:false},
+  {a:'Spiritualità',n:34,t:'Do you believe that discernment between right and wrong is important for healthy faith?',r:false},
+  {a:'Spiritualità',n:35,t:'Do your existing assumptions sometimes affect your ability to receive new learning?',r:true},
+  {a:'Spiritualità',n:36,t:'Do you try to interpret everyday events through a spiritual lens?',r:false},
+  {a:'Spiritualità',n:37,t:'Are you able to set aside physical comfort for the sake of spiritual peace?',r:false},
+  {a:'Spiritualità',n:38,t:'Do you consider being honest before God more important than gaining others\' approval?',r:false},
+  {a:'Spiritualità',n:39,t:'Do you have an unshakeable assurance of salvation, regardless of circumstances?',r:false},
+  {a:'Spiritualità',n:40,t:'Do you tend to trust and follow the guidance of spiritual mentors or leaders?',r:false},
+  {a:'Ambiente',n:41,t:'Is the distance from your home to the gathering place reasonably convenient?',r:false},
+  {a:'Ambiente',n:42,t:'Is your usual means of transportation adequate for getting there without major difficulty?',r:false},
+  {a:'Ambiente',n:43,t:'Is your current work or income stable enough to sustain your daily life?',r:false},
+  {a:'Ambiente',n:44,t:'Does your financial situation provide an adequate foundation for continuing your faith activities?',r:false},
+  {a:'Ambiente',n:45,t:'Does your family respect and encourage your faith activities?',r:false},
+  {a:'Ambiente',n:46,t:'Is there a family member with whom you can share your faith struggles?',r:false},
+  {a:'Ambiente',n:47,t:'Do you make an effort to attend services or gatherings even in a busy schedule?',r:false},
+  {a:'Ambiente',n:48,t:'Does your current work or academic schedule allow you to maintain your faith life?',r:false},
+  {a:'Ambiente',n:49,t:'Is it easy to secure personal time for faith after work or on weekends?',r:false},
+  {a:'Ambiente',n:50,t:'Do you have habits that could hinder your spiritual growth?',r:true},
+  {a:'Ambiente',n:51,t:'Is your physical health adequate to participate in faith activities?',r:false},
+  {a:'Ambiente',n:52,t:'Do you currently have enough emotional strength to sustain daily life?',r:false},
+  {a:'Ambiente',n:53,t:'Do you have people around you who support and encourage your faith growth?',r:false},
+  {a:'Ambiente',n:54,t:'Do you feel significant financial pressure or burden?',r:true},
+  {a:'Ambiente',n:55,t:'Are there frequent conflicts or arguments in your family related to faith?',r:true},
+  {a:'Ambiente',n:56,t:'Do you have a quiet, private space where you can pray or study alone?',r:false},
+  {a:'Ambiente',n:57,t:'Does your smartphone or digital device use seriously disrupt your daily life?',r:true},
+  {a:'Ambiente',n:58,t:'Are there legal or social conflicts currently complicating your life?',r:true},
+  {a:'Ambiente',n:59,t:'Do you believe your future life plans will align well with your faith life?',r:false},
+  {a:'Energia',n:60,t:'Do you often find yourself wanting to find fresh energy and vitality in your faith life?',r:false},
+  {a:'Energia',n:61,t:'When you have questions about faith, do you feel curious and want to explore them?',r:false},
+  {a:'Energia',n:62,t:'Do you have space to reflect carefully on your own habits and patterns?',r:false},
+  {a:'Energia',n:63,t:'Do you feel motivated to find ways you can contribute within the community?',r:false},
+  {a:'Energia',n:64,t:'Do you want to try and experience new areas that are unfamiliar to you?',r:false},
+  {a:'Attitudine',n:65,t:'Do you most enjoy deeply studying and logically understanding the Word?',r:false,apt:'Intellectual'},
+  {a:'Attitudine',n:66,t:'Do you feel faith most alive when serving and helping those in need?',r:false,apt:'Servant'},
+  {a:'Attitudine',n:67,t:'Do you prefer connecting deeply through worship or prayer?',r:false,apt:'Expressive'},
+  {a:'Attitudine',n:68,t:'Are you interested in sharing the Word with others or walking alongside them?',r:false,apt:'Missionary'},
+  {a:'Attitudine',n:69,t:'Do you find purpose in supporting behind the scenes through admin or planning?',r:false,apt:'Support'},
+  {a:'Attitudine',n:70,t:'Do you prefer quiet meditation to refine your inner self?',r:false,apt:'Contemplative'},
+  {a:'Attitudine',n:71,t:'Do you gain energy from fellowship and activities with many people?',r:false,apt:'Relational'},
+  {a:'Attitudine',n:72,t:'Do you dream of expressing your faith through art, media, or creative work?',r:false,apt:'Creative'},
+  {a:'Attitudine',n:73,t:'Do you enjoy systematically organizing what you\'ve learned in order to share it?',r:false,apt:'Teaching'},
+  {a:'Attitudine',n:74,t:'Are you good at reading the atmosphere of a community and bringing energy to it?',r:false,apt:'Catalyst'},
+];
+const APT_TYPES={
+  Intellectual:{desc:'Ti senti più vivo studiando e comprendendo la Scrittura in modo profondo e logico.'},
+  Servant:     {desc:'Cresci attraverso atti di servizio e donazione nel campo della vita.'},
+  Expressive:  {desc:'Esprimi la fede attraverso la lode appassionata, la preghiera e la connessione.'},
+  Missionary:  {desc:'Trovi significato nel condividere la Parola e accompagnare gli altri.'},
+  Support:     {desc:'Servire fedelmente dietro le quinte è lo stile che ti si addice meglio.'},
+  Contemplative:{desc:'Ti unisci a Dio profondamente attraverso la riflessione interiore tranquilla.'},
+  Relational:  {desc:'Ricevi energia di fede attraverso la comunione e la connessione con le persone.'},
+  Creative:    {desc:"Riveli la bellezza di Dio attraverso l\'arte e l\'espressione creativa."},
+  Teaching:    {desc:'Trovi gioia nell\'organizzare la verità e condividerla con gli altri.'},
+  Catalyst:    {desc:'Trovi scopo nel leggere la comunità e portare vita in essa.'},
+};
+const FAITH_TYPES=[
+  {name:'Radicato',sub:'Una persona di fede profondamente radicata',quote:'"La Parola è diventata il mio standard di vita."',color:'#534AB7',light:'#EEEDFE',
+   p:{Character:88,Spirituality:90,Environment:72,Energy:70},
+   rankDesc:'Fede e carattere sono entrambi ben sviluppati, permettendo alla fede di risplendere naturalmente nella vita quotidiana.',
+   encourage:{verse:'"I have called you by name; you are mine.\nWhen you pass through the waters, I will be with you."',ref:'Isaia 43:1–2',msg:'You are a precious person called by name before God. The faith journey you have walked until now has not been in vain. His hand will accompany you on every step ahead.'},
+   analyze(norm,ans){const f=norm['Spiritualità'],c=norm['Carattere'],e=norm['Energia'],hf=f>=75,hc=c>=75;return{traits:[`Your Spirituality score of ${f} shows that your trust in the Word and spiritual conviction are firmly established. ${hf?'High responses appeared in areas of biblical conviction and assurance of salvation — a sign that your faith stands on an inner foundation that is not shaken by emotion or circumstance.':'Your longing for the Word is steadily growing, and that journey is precious.'}`,`In the Character domain, your score of ${c} shows ${hc?'that others trust you, and your sense of responsibility to follow through is notable. The fact that faith and daily life are connected in you is your greatest strength.':'that faith and character are coming into harmony — a balance that will serve as a good foundation ahead.'}`,`As faith deepens, there can be a tendency to set high standards for yourself or try to carry others\' expectations alone. Maintaining your commitment while also allowing yourself moments of grace is the wisdom needed for the long journey.`],growth:[`Your Spirituality (${f}) and Character (${c}) scores being consistently high means you have steadily worked to align belief and life. Greater growth from here comes not from starting something new, but from going deeper along the path you are already walking.`,`Looking at your Energy score (${e}): ${e>=60?'there is still energy for new directions. Channeling this into sharing and connection will make your faith richer.':'your inner reservoir needs refilling. Resting and prioritizing your inner life — without pressure — is also part of growth.'}`],counsel:[`What will help you now is not "more effort" but "more honesty." Acknowledge what you are already doing well, and treasure the faith that flows naturally from that place.`,'Intentionally creating space to share your story with others in the community and walk alongside them will be a great source of strength for the road ahead.']};}
+  },
+  {name:'Germoglio',sub:'Una persona ricca di potenziale',quote:'"Sono curioso della verità — voglio sapere di più."',color:'#0F6E56',light:'#E1F5EE',
+   p:{Character:82,Spirituality:55,Environment:65,Energy:72},
+   rankDesc:'Il carattere caldo è già presente e i semi della fede stanno cominciando a crescere.',
+   encourage:{verse:'"He who began a good work in you will carry it\non to completion until the day of Christ Jesus."',ref:'Filippesi 1:6',msg:'The seed planted in you will surely grow. There is no need to rush. Just as you are, one step at a time — that is enough.'},
+   analyze(norm,ans){const f=norm['Spiritualità'],c=norm['Carattere'],e=norm['Energia'],q33s=ans[33]||3;return{traits:[`Your Character score of ${c} is notably high. ${c>=75?'You naturally approach others with warmth and maintain a respectful attitude. These qualities are precious gifts within a faith community.':'There is a genuine desire to share warmth in relationships.'}`,`Your Spirituality score is currently ${f}, which may mean that full conviction in the Word has not yet taken root. ${q33s>=4?'Yet a deep longing to know Scripture more is already present — a sign that the seed is ready to sprout.':'This season of beginning to engage with the Word is precious in your faith journey.'}`,`Having strong character while faith is still deepening means the potential for growth ahead is significant. However, character and deep faith are not always the same thing — time to wrestle honestly with questions about truth is needed.`],growth:[`What you need most right now is systematic engagement with the Word and someone to walk alongside you. Because the soil of character is already prepared, the seed of the Word, once planted, can grow with remarkable speed.`,`Your Energy score (${e}) suggests ${e>=65?'there is energy for something new. Try connecting that energy to Bible study.':'starting with one small, low-pressure gathering rather than attempting too much at once.'}`],counsel:['You may wonder, "Is it okay that I still don\'t know much?" But this season of curiosity and longing is precisely when faith tends to grow fastest.','Remain naturally present in the community with your warm character, and bring your honest questions. There is no need to rush toward answers.']};}
+  },
+  {name:'Fondato',sub:'Una persona con un ambiente ben preparato',quote:'"Sono grato di avere buone persone intorno a me."',color:'#185FA5',light:'#E6F1FB',
+   p:{Character:65,Spirituality:60,Environment:88,Energy:68},
+   rankDesc:'Le circostanze di vita e le reti di supporto sono stabili, creando condizioni ideali per concentrarsi sulla fede.',
+   encourage:{verse:'"I thank Christ Jesus our Lord, who has given me strength,\nthat he considered me trustworthy, appointing me to his service."',ref:'1 Timoteo 1:12',msg:'The good environment and people around you are not a coincidence. Upon the gift God has given you, now begin to let the roots of faith grow deeper.'},
+   analyze(norm,ans){const env=norm['Ambiente'],f=norm['Spiritualità'],c=norm['Carattere'],q45s=ans[45]||3,q53s=ans[53]||3;return{traits:[`Your Environment score of ${env} is high. ${q45s>=4?'The fact that your family understands and supports your faith activities is a tremendous source of strength. Many people face significant difficulty in their faith precisely because of this one factor.':'The circumstances surrounding your faith life are well-prepared — that is a meaningful gift.'} ${q53s>=4?'It also appears you have people who encourage your faith growth.':''}`,`Your Spirituality score is currently ${f}, which means inner faith conviction may still be developing compared to your external circumstances. Benefiting from a good environment and having personal conviction are slightly different stories.`,`Your current good environment is a precious gift. On that foundation, the time has come to gradually begin answering the inner question: "Why do I choose this faith?"`],growth:[`Your high Environment score (${env}) means the optimal conditions for focused faith growth are already in place. This is a good season to actively use that environment — to join a Bible study or small group.`,`As inner faith (${f}) comes into balance with the external environment, a faith root forms that cannot be shaken even when circumstances change.`],counsel:['First, express gratitude for the people who encourage you and the environment that honors your faith. That gratitude can become the true starting point of faith.','Then, take time alone to quietly reflect: "Why do I have faith?" When you find your own answer to that question, faith deepens by another step.']};}
+  },
+  {name:'Fruttuoso',sub:'Una persona che porta frutto nella vita',quote:'"La fede è diventata la mia vita quotidiana."',color:'#3B6D11',light:'#EAF3DE',
+   p:{Character:83,Spirituality:87,Environment:83,Energy:75},
+   rankDesc:'Tutti e quattro i domini — fede, carattere, ambiente ed energia — sono maturi e ben bilanciati.',
+   encourage:{verse:'"For I am convinced that neither death nor life, nor angels\nnor demons, neither the present nor the future, nor any powers,\nnor anything else in all creation, will be able to separate us\nfrom the love of God."',ref:'Romani 8:38–39',msg:'Nothing can stop God\'s love for you. We sincerely cheer you on as this path you are walking continues to shine within that love.'},
+   analyze(norm,ans){const f=norm['Spiritualità'],c=norm['Carattere'],env=norm['Ambiente'],e=norm['Energia'],q31s=ans[31]||3,q39s=ans[39]||3;return{traits:[`All four domains show consistently high scores (Character ${c} · Spirituality ${f} · Environment ${env} · Energy ${e}). This means faith is not concentrated in any one area but has naturally permeated all of life.`,`${q31s>=4?'There was a response indicating that studying the Word has actually changed your thinking and behavior — concrete evidence that faith is not remaining as knowledge but flowing into life. ':''} ${q39s>=4?'Having unwavering assurance of salvation regardless of circumstances is also a precious mark of the Fruitful type.':''}`,`With all domains in balance, there can be times of feeling tired simply from maintaining that balance, or wondering, "Am I still growing?" When those moments come, receiving them as a natural part of the journey — with generous grace — is what is needed.`],growth:['Your faith is being naturally expressed in various areas of life. Meaningful growth in this season is not doing more things, but more deeply savoring and giving thanks for the very place you are walking.','Time to honestly share your story within the community and encourage one another\'s journey is a great source of strength in this stage.'],counsel:['Acknowledge who you are right now. Confirm what you have done well and express that gratitude within your faith.','The very act of sharing naturally within the faith community is the most beautiful expression of faith you can offer in this season.']};}
+  },
+  {name:'Nel Deserto',sub:'Una persona che mantiene la fede in circostanze difficili',quote:'"Le cose sono molto difficili, ma voglio continuare nella fede."',color:'#854F0B',light:'#FAEEDA',
+   p:{Character:68,Spirituality:72,Environment:28,Energy:55},
+   rankDesc:"C'è una genuina volontà di fede, ma l'ambiente circostante e le fondamenta di vita sono in un posto difficile.",
+   encourage:{verse:'"Do not fear, for I have redeemed you;\nI have called you by name; you are mine.\nWhen you pass through the waters, I will be with you."',ref:'Isaia 43:1',msg:'How wide and rough the wilderness you are walking — God knows. And even in that wilderness, He is calling your name. You are not alone.'},
+   analyze(norm,ans){const env=norm['Ambiente'],f=norm['Spiritualità'],hard=[];if((6-(ans[54]||3))<=2)hard.push('financial pressure');if((6-(ans[55]||3))<=2)hard.push('family conflict');if((6-(ans[50]||3))<=2)hard.push('daily habit struggles');return{traits:[`Your Environment score of ${env} reflects the difficulty. ${hard.length>0?`Looking at the responses, ${hard.join(', ')} appear to be creating real barriers to your faith life.`:'External circumstances are placing a burden on your faith life.'} The very fact that you still want to continue your faith in these conditions is remarkable.`,`Your Spirituality score of ${f} shows that even amid a difficult environment, there remains a will and longing for faith within. Walking through the wilderness is not a sign of weak faith — it is because you are on that path right now.`,`In such difficult external circumstances, thoughts like "Why am I like this?" can arise. But the difficulty right now is not your inadequacy — it is simply your current situation. Allow yourself to first acknowledge that.`],growth:['More than trying harder spiritually right now, working through one practical difficulty at a time is genuine growth. As circumstances improve, faith will naturally deepen as well.','You do not have to resolve everything alone. Finding one person you can honestly share your situation with and talking it through is the most important single step in this season.'],counsel:['It is okay to honestly express the difficulties you are facing. Saying "this is hard" is not weak faith — it is knowing how to care for yourself.','Practice finding one small thing to be grateful for each day. That eye which searches for one ray of light even in a dark wilderness is ultimately what moves you forward.']};}
+  },
+  {name:'Cercatore',sub:'Una persona in cammino verso la verità',quote:'"Non sono ancora sicuro se la fede sia reale."',color:'#993C1D',light:'#FAECE7',
+   p:{Character:62,Spirituality:33,Environment:57,Energy:78},
+   rankDesc:'Alla ricerca di convinzione sulla fede, portando domande sincere e serie sulla verità.',
+   encourage:{verse:'"Ask and it will be given to you;\nseek and you will find;\nknock and the door will be opened to you."',ref:'Matteo 7:7',msg:'The questions you are carrying are drawing you closer to truth. There is no need to rush toward an answer. Those who seek sincerely will surely find.'},
+   analyze(norm,ans){const f=norm['Spiritualità'],c=norm['Carattere'],e=norm['Energia'],q33s=ans[33]||3;return{traits:[`Your Spirituality score of ${f} does not mean weak faith — it shows that you are in a season of searching where conviction has not yet fully formed. ${q33s>=4?'A deep longing to know Scripture more was evident in the responses — and this very longing is the most precious starting point of a faith journey.':''}`,`Your Character score of ${c} shows a genuine investment in relationships. Even without full faith conviction, the heart that values people is a signal that you may be more ready to receive faith than you realize.`,`Your Energy score of ${e} is notable. ${e>=70?'High inner energy for new things is present. This energy can be a great driver of your searching.':'You may be carrying significant exhaustion right now. Searching also goes deeper when there is sufficient energy.'}`],growth:['Do not hide the questions within you — bring them out. Questions are welcome in faith. Finding someone who will join you in searching for answers is the most important growth path in this season.','There is no need to force yourself to believe, or to pretend to have conviction you do not have. Honest searching is the most faithful path to deep faith.'],counsel:['What you need right now is not an answer but a safe space for questions. Look for someone who can hear your questions without judgment, someone whose relationship allows you to share doubts without guilt.','Faith is not something understood before it is accepted — it is something that becomes clearer as you walk. This very step of walking is already a seeking faith.']};}
+  },
+  {name:'Resistente',sub:'Una persona che non ha abbandonato la fede nonostante la stanchezza',quote:'"Voglio credere, ma onestamente sono molto stanco/a."',color:'#993556',light:'#FBEAF0',
+   p:{Character:48,Spirituality:76,Environment:33,Energy:38},
+   rankDesc:'Il desiderio di fede è profondo, ma il depauperamento emotivo e ambientale è significativo.',
+   encourage:{verse:'"Come to me, all you who are weary and burdened,\nand I will give you rest.\nTake my yoke upon you and learn from me,\nfor I am gentle and humble in heart,\nand you will find rest for your souls."',ref:'Matteo 11:28',msg:'What you need right now is not to try harder — it is to rest for a moment. Even that rest is something God provides. It is okay to set things down.'},
+   analyze(norm,ans){const f=norm['Spiritualità'],c=norm['Carattere'],env=norm['Ambiente'],e=norm['Energia'],q14s=ans[14]||3,q52s=ans[52]||3,tired=q14s<=2||q52s<=2;return{traits:[`Your Spirituality score of ${f} shows there is deep spiritual longing and faith within. The fact that you are still holding on even while tired and worn down is not evidence of weak faith — it is evidence of faith.`,`${tired?'Looking at the responses, it appears you are currently experiencing significant emotional depletion in the areas of inner peace and daily motivation. Trying to do more spiritually in this state may only add to the weight.':` Difficulty is showing in the Character domain (${c}) and Environment domain (${env}). It is worth exploring what is draining you right now.`}`,`Past pain or current difficult circumstances may feel heavier when intertwined with faith. If faith is beginning to feel like a burden rather than a place of healing, that is a signal to pause and look back — and it takes courage to do so.`],growth:['"Resting" is the most needed growth right now. Forcing yourself to fill up when depleted only leads to greater emptiness. Restoring yourself first is the true first step of faith growth.','Practice honestly telling at least one person, "I\'m struggling." Asking for help is not weakness — it is wisdom.'],counsel:['It is okay to look honestly at where your heart is right now. You can put down the feeling that "I need to be okay because I have faith."','Faith does not make things harder. Bringing your exhaustion and pain exactly as they are before God — that is the most honest and beautiful expression of faith in this season.']};}
+  },
+  {name:'Inizio',sub:'Una persona che muove i primi passi nella fede',quote:'"Tutto è ancora sconosciuto, ma voglio imparare gradualmente."',color:'#5F5E5A',light:'#F1EFE8',
+   p:{Character:50,Spirituality:40,Environment:52,Energy:60},
+   rankDesc:'Nella fase iniziale della fede, dove tutto è ancora nuovo e sconosciuto.',
+   encourage:{verse:'"You are my servant; I have chosen you and have not rejected you.\nDo not fear, for I am with you.\nI am your God; I will strengthen you\nand help you."',ref:'Isaia 41:9–10',msg:'The fact that you took a step — right here, right now — is already enough. It is completely natural to feel unfamiliar and awkward at first. You can walk at your own pace.'},
+   analyze(norm,ans){const f=norm['Spiritualità'],c=norm['Carattere'],base=norm['Ambiente'],e=norm['Energia'],q21s=ans[21]||3,q33s=ans[33]||3;return{traits:[`Across the board, Spirituality (${f}), Character (${c}), and Environment (${base}) are all in the early stages of formation. This is not a sign of deficiency — it means you are standing at the starting point. ${q21s>=3?'There was a response indicating a sense that your inner self is gradually deepening through faith life — hold onto that feeling.':''}`,`${q33s>=3?'A desire to know more of the Word already exists':'The fact that you have completed this assessment'} shows there is interest and willingness when it comes to faith. Every beginning makes growth possible.`,'Feeling unfamiliar and awkward is completely natural. What matters more at this stage than fully understanding or doing things perfectly is simply showing up consistently.'],growth:['What you need most right now is an environment where you can comfortably learn the basics of faith and someone to be there with you. Rather than trying to know everything at once, experiencing and feeling things one at a time is the right pace for this season.','Joining a small group or introductory Bible study without pressure can be a good starting point.'],counsel:['"Not knowing much yet" is nothing to be ashamed of. The unfamiliarity you feel now will one day become the precious memory of "that\'s when I began."','You can walk at your own pace. Without comparing yourself to anyone else, first be gentle with yourself for being right here today.']};}
+  },
+];
+const MISSION_TYPES=[
+  {name:'Pioniere',icon:'◈',color:'#534AB7',light:'#EEEDFE',desc:'Una persona di fede che apre nuovi percorsi',detail:'This person walks ahead into roads not yet taken. They do not fear change, but breathe courage into the community to move in new directions.',match:(n,a)=>n['Energia']>=65&&(a[68]||3)>=4},
+  {name:'Cuore di Servitore',icon:'◇',color:'#0F6E56',light:'#E1F5EE',desc:'Una persona di fede che costruisce silenziosamente da dietro',detail:'Even without being seen, this person firmly supports the community. They know that faithfulness in unseen places is the greatest strength, and they walk that path steadily.',match:(n,a)=>((a[69]||3)+(a[66]||3))>=8},
+  {name:'Testimone',icon:'◉',color:'#993C1D',light:'#FAECE7',desc:'Una persona di fede la cui vita proclama la verita',detail:'For this person, life comes before words. Faith is naturally displayed in daily life, and those around them encounter God through that life.',match:(n,a)=>n['Spiritualità']>=65&&(a[68]||3)>=3&&(a[66]||3)>=3},
+  {name:'Studioso',icon:'◎',color:'#185FA5',light:'#E6F1FB',desc:'Una persona di fede che scava in profondita nella verita',detail:'The more they know, the more they want to know. Their ability to logically understand and systematize the Word becomes the intellectual foundation of the community.',match:(n,a)=>((a[65]||3)+(a[73]||3))>=8},
+  {name:'Consolatore',icon:'◐',color:'#993556',light:'#FBEAF0',desc:'Una persona di fede che abbraccia i feriti',detail:'There is a comfort that only those who know pain can give. This person naturally stays beside those who are hurting within the community — a warm presence.',match:(n,a)=>n['Carattere']>=65&&(a[67]||3)>=4},
+  {name:'Connettore',icon:'◑',color:'#854F0B',light:'#FAEEDA',desc:'Una persona di fede che unisce le persone',detail:'This person gathers scattered pieces into one. They build bridges of relationship and bring life and vitality into the community.',match:(n,a)=>((a[71]||3)+(a[74]||3))>=8},
+  {name:'Intercessore',icon:'◔',color:'#7A4F9B',light:'#F0EAFE',desc:'Una persona di fede che sostiene attraverso la preghiera',detail:'This person knows that prayer is the most powerful calling. In unseen places, they hold the community through prayer, and the depth within them brings peace to those nearby.',match:(n,a)=>((a[70]||3)+(a[67]||3))>=8},
+  {name:'Creatore',icon:'◕',color:'#3B6D11',light:'#EAF3DE',desc:'Una persona di fede che esprime Dio attraverso la creativita',detail:'This person finds traces of God in beauty. Through art, music, writing, and media, they express faith and make the community richer.',match:(n,a)=>(a[72]||3)>=4},
+];
+function getMissionType(norm,ans){
+  const matched=MISSION_TYPES.filter(m=>m.match(norm,ans));
+  if(matched.length>0)return matched[0];
+  const f=norm['Spiritualità'],c=norm['Carattere'],e=norm['Energia'];
+  if(f>=65&&e>=60)return MISSION_TYPES[0];
+  if(c>=65)return MISSION_TYPES[4];
+  if(e>=60)return MISSION_TYPES[5];
+  return MISSION_TYPES[6];
+}
+const WEIGHTS={Carattere:1.2,Spiritualità:1.6,Ambiente:1.0,Energia:0.8};
+const AXIS_4=['Carattere','Spiritualità','Ambiente','Energia'];
+const AXIS_COLORS={Carattere:'#0F6E56',Spiritualità:'#993C1D',Ambiente:'#185FA5',Energia:'#7A4F9B'};
+let state={qIdx:0,answers:{},lastResult:null};
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('screen-'+id).classList.add('active');window.scrollTo(0,0);}
+function updateProgress(){document.getElementById('progressFill').style.width=Math.round((state.qIdx/QUESTIONS.length)*100)+'%';}
+function startAssessment(){state.qIdx=0;state.answers={};showAxisIntro('Carattere');}
+function showAxisIntro(axisId){const info=AXES_INFO.find(a=>a.id===axisId);const el=document.getElementById('axisIcon');el.style.background=info.color;el.textContent=axisId;document.getElementById('axisTitle').textContent=info.title;document.getElementById('axisDesc').textContent=info.desc;document.getElementById('axisRange').textContent=info.range;show('axis');}
+function startAxis(){renderQuestion();}
+function renderQuestion(){
+  if(state.qIdx>=QUESTIONS.length){runClassify();return;}
+  const q=QUESTIONS[state.qIdx];const axInfo=AXES_INFO.find(a=>a.id===q.a);
+  document.getElementById('qCounter').textContent=`${state.qIdx+1} / ${QUESTIONS.length}`;
+  const tag=document.getElementById('qAxisTag');tag.textContent=q.a;tag.style.background=axInfo.light;tag.style.color=axInfo.dark;
+  document.getElementById('qText').textContent=q.t;
+  const likert=document.getElementById('likert');likert.innerHTML='';const cur=state.answers[q.n];
+  [1,2,3,4,5].forEach(v=>{const btn=document.createElement('button');btn.className='likert-btn'+(cur===v?' selected':'');btn.textContent=v;if(cur===v){btn.style.background=axInfo.color;btn.style.borderColor=axInfo.color;}btn.onclick=()=>{state.answers[q.n]=v;document.querySelectorAll('.likert-btn').forEach(b=>{b.classList.remove('selected');b.style.background='';b.style.borderColor='';});btn.classList.add('selected');btn.style.background=axInfo.color;btn.style.borderColor=axInfo.color;document.getElementById('btnNext').disabled=false;};likert.appendChild(btn);});
+  document.getElementById('btnNext').disabled=!cur;document.getElementById('btnPrev').style.display=state.qIdx===0?'none':'block';
+  updateProgress();show('question');
+}
+function nextQ(){state.qIdx++;if(state.qIdx<QUESTIONS.length){const q=QUESTIONS[state.qIdx];if(q.a!==QUESTIONS[state.qIdx-1].a)showAxisIntro(q.a);else renderQuestion();}else{runClassify();}}
+function prevQ(){if(state.qIdx>0){state.qIdx--;renderQuestion();}}
+function runClassify(){show('calc');document.getElementById('progressFill').style.width='100%';setTimeout(doClassify,1400);}
+function doClassify(){
+  const raw={Character:0,Spirituality:0,Environment:0,Energy:0};const cnt={Character:0,Spirituality:0,Environment:0,Energy:0};
+  QUESTIONS.filter(q=>q.a!=='Attitudine').forEach(q=>{const v=state.answers[q.n]||3;raw[q.a]+=(q.r?6-v:v);cnt[q.a]++;});
+  const norm={};AXIS_4.forEach(ax=>{norm[ax]=Math.round(raw[ax]/(cnt[ax]*5)*100);});
+  const aptScores={};QUESTIONS.filter(q=>q.a==='Attitudine').forEach(q=>{aptScores[q.apt]=state.answers[q.n]||3;});
+  const aptRanked=Object.entries(aptScores).sort((a,b)=>b[1]-a[1]);
+  let ranked=FAITH_TYPES.map(t=>({...t,d:Math.sqrt(AXIS_4.reduce((s,ax)=>s+WEIGHTS[ax]*Math.pow(norm[ax]-t.p[ax],2),0))})).sort((a,b)=>a.d-b.d);
+  if(norm['Spiritualità']<=40){const c=ranked.filter(t=>t.name==='Cercatore'||t.name==='Inizio');if(c.length&&c[0].d<ranked[0].d*1.3)ranked=[c[0],...ranked.filter(t=>t.name!==c[0].name)];}
+  if(norm['Ambiente']<=35){const c=ranked.filter(t=>t.name==='Nel Deserto'||t.name==='Resistente');if(c.length&&c[0].d<ranked[0].d*1.3)ranked=[c[0],...ranked.filter(t=>t.name!==c[0].name)];}
+  if(AXIS_4.every(ax=>norm[ax]>=78)){const rf=ranked.find(t=>t.name==='Fruttuoso');if(rf)ranked=[rf,...ranked.filter(t=>t.name!=='Fruitful')];}
+  const flags=AXIS_4.filter(ax=>norm[ax]<=35).map(ax=>ax+' mostra segni di difficoltà. Discuterne con un consulente.');
+  state.lastResult={ranked,norm,flags,aptRanked};renderResult(ranked,norm,flags,aptRanked);
+}
+function renderResult(ranked,norm,flags,aptRanked){
+  const best=ranked[0];const analysis=best.analyze(norm,state.answers);
+  const mission=getMissionType(norm,state.answers);
+  document.getElementById('resultHeader').innerHTML=`<div class="result-badge" style="background:${best.light};color:${best.color}">My Faith Type</div><div class="result-typename" style="color:${best.color}">${best.name}</div><div class="result-typesub">${best.sub}</div><div class="result-quote">${best.quote}</div>`;
+  let body='';
+  if(flags.length){body+=`<div class="result-section"><div class="section-label">Areas to Explore Together</div>${flags.map(f=>`<div class="flag-item">${f}</div>`).join('')}</div>`;}
+  body+=`<div class="result-section"><div class="section-label">Domain Scores</div><div class="radar-wrap">${buildRadar(norm,best)}</div>${AXIS_4.map(ax=>`<div class="axis-bar-row"><span class="axis-bar-label" style="color:${AXIS_COLORS[ax]}">${ax}</span><div class="axis-bar-bg"><div class="axis-bar-fill" style="width:${norm[ax]}%;background:${AXIS_COLORS[ax]}"></div></div><span class="axis-bar-val">${norm[ax]}</span></div>`).join('')}</div>`;
+  body+=`<div class="result-section"><div class="section-label">Core Traits</div><div class="analysis-block"><div class="ab-head" style="background:${best.light}"><div class="ab-head-dot" style="background:${best.color}"></div><span style="color:${best.color};font-weight:500">My Story</span></div><div class="ab-body">${analysis.traits.map(t=>`<p>${t}</p>`).join('')}</div></div></div>`;
+  body+=`<div class="result-section"><div class="section-label">Path Forward</div><div class="analysis-block"><div class="ab-head" style="background:#EAF3DE"><div class="ab-head-dot" style="background:#3B6D11"></div><span style="color:#3B6D11;font-weight:500">Where I Can Grow</span></div><div class="ab-body">${analysis.growth.map(t=>`<p>${t}</p>`).join('')}</div></div></div>`;
+  body+=`<div class="result-section"><div class="section-label">A Word to Myself</div><div class="analysis-block"><div class="ab-head" style="background:#E6F1FB"><div class="ab-head-dot" style="background:#185FA5"></div><span style="color:#185FA5;font-weight:500">What I Need Right Now</span></div><div class="ab-body">${analysis.counsel.map(t=>`<p>${t}</p>`).join('')}</div></div></div>`;
+  const aptTop=aptRanked.slice(0,2);const aptBot=aptRanked.slice(-2).reverse();
+  const aptColors=['#534AB7','#0F6E56'];
+  body+=`<div class="result-section"><div class="section-label">My Growth Aptitude</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;"><div style="background:#F8F6F1;border-radius:8px;border:1px solid #E8E3DC;padding:16px;"><div style="font-size:10px;font-weight:500;letter-spacing:.6px;color:#0F6E56;text-transform:uppercase;margin-bottom:12px;">Growth Aptitude</div>${aptTop.map(([name,score],i)=>{const info=APT_TYPES[name]||{desc:''};const col=aptColors[i];return`<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;"><div style="font-size:16px;font-weight:600;width:20px;color:${col};font-family:'Playfair Display',serif">${i+1}</div><div style="flex:1;"><div style="font-size:13px;font-weight:500;color:#1A1814;margin-bottom:2px;">${name}</div><div style="font-size:11px;color:#B0A99E;line-height:1.5;">${info.desc}</div></div><div style="font-size:12px;font-weight:500;color:${col};flex-shrink:0;">${score}pt</div></div>`;}).join('')}</div><div style="background:#F8F6F1;border-radius:8px;border:1px solid #E8E3DC;padding:16px;"><div style="font-size:10px;font-weight:500;letter-spacing:.6px;color:#B0A99E;text-transform:uppercase;margin-bottom:12px;">Less Suited</div>${aptBot.map(([name,score])=>{const info=APT_TYPES[name]||{desc:''};return`<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;"><div style="font-size:11px;color:#B0A99E;width:20px;text-align:center;">—</div><div style="flex:1;"><div style="font-size:13px;font-weight:500;color:#7A7568;margin-bottom:2px;">${name}</div><div style="font-size:11px;color:#B0A99E;line-height:1.5;">${info.desc}</div></div><div style="font-size:12px;color:#B0A99E;flex-shrink:0;">${score}pt</div></div>`;}).join('')}</div></div></div>`;
+  const top3=ranked.slice(0,3);const maxD=Math.max(...ranked.map(r=>r.d));
+  body+=`<div class="result-section"><div class="section-label">Faith Type Similarity</div>${top3.map((t,i)=>`<div style="padding:12px 0;border-bottom:1px solid #F4F0EB;"><div style="display:flex;align-items:center;gap:10px;margin-bottom:5px;"><span style="font-size:11px;color:#B0A99E;width:16px;flex-shrink:0;">${i+1}</span><span style="width:8px;height:8px;border-radius:50%;background:${t.color};display:inline-block;flex-shrink:0;"></span><span style="font-size:14px;font-weight:500;flex:1;">${t.name}</span><div style="width:80px;height:5px;background:#E8E3DC;border-radius:3px;overflow:hidden;flex-shrink:0;"><div style="height:5px;border-radius:3px;width:${Math.round((1-t.d/maxD)*100)}%;background:${t.color};"></div></div></div><div style="font-size:12px;color:#B0A99E;line-height:1.6;padding-left:26px;">${t.rankDesc}</div></div>`).join('')}</div>`;
+  const otherMissions=MISSION_TYPES.filter(m=>m.name!==mission.name);
+  body+=`<div class="result-section"><div class="section-label">Calling Type</div><div style="background:${mission.light};border-radius:8px;padding:18px 20px;margin-bottom:14px;"><div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;"><div style="width:40px;height:40px;border-radius:50%;background:${mission.color};display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;flex-shrink:0;">${mission.icon}</div><div><div style="font-size:17px;font-weight:500;color:${mission.color};margin-bottom:2px;">${mission.name}</div><div style="font-size:12px;color:#7A7568;">${mission.desc}</div></div></div><div style="font-size:13px;color:#444441;line-height:1.8;border-top:1px solid rgba(0,0,0,.07);padding-top:12px;">${mission.detail}</div></div><div style="background:#fff;border-radius:8px;border:1px solid #E8E3DC;padding:14px 16px;"><div style="font-size:10px;font-weight:500;letter-spacing:.6px;color:#B0A99E;text-transform:uppercase;margin-bottom:10px;">Other Calling Types — tap to learn more</div><div style="display:flex;flex-wrap:wrap;gap:7px;" id="missionChips">${otherMissions.map((m,idx)=>`<button onclick="toggleMissionChip(${idx})" data-idx="${idx}" style="font-size:12px;padding:5px 13px;border-radius:20px;background:#F8F6F1;color:#7A7568;border:1px solid #E8E3DC;cursor:pointer;transition:all .15s;font-family:'Inter',sans-serif;">${m.name}</button>`).join('')}</div><div id="missionDetail" style="margin-top:0;overflow:hidden;transition:all .3s;max-height:0;"></div></div></div>`;
+  body+=`<script>window._otherMissions=${JSON.stringify(otherMissions.map(m=>({name:m.name,desc:m.desc,detail:m.detail,color:m.color,light:m.light,icon:m.icon})))};window._activeMissionIdx=null;function toggleMissionChip(idx){const btns=document.querySelectorAll('#missionChips button');const detail=document.getElementById('missionDetail');const m=window._otherMissions[idx];if(window._activeMissionIdx===idx){window._activeMissionIdx=null;detail.style.maxHeight='0';detail.innerHTML='';btns.forEach(b=>{b.style.background='#F8F6F1';b.style.color='#7A7568';b.style.borderColor='#E8E3DC';});}else{window._activeMissionIdx=idx;btns.forEach((b,i)=>{if(i===idx){b.style.background=m.light;b.style.color=m.color;b.style.borderColor=m.color;}else{b.style.background='#F8F6F1';b.style.color='#7A7568';b.style.borderColor='#E8E3DC';}});detail.innerHTML=\`<div style="background:\${m.light};border-radius:6px;padding:14px 16px;margin-top:10px;"><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><div style="width:28px;height:28px;border-radius:50%;background:\${m.color};display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;flex-shrink:0;">\${m.icon}</div><div><div style="font-size:13px;font-weight:500;color:\${m.color};">\${m.name}</div><div style="font-size:11px;color:#7A7568;">\${m.desc}</div></div></div><div style="font-size:12px;color:#444441;line-height:1.75;">\${m.detail}</div></div>\`;detail.style.maxHeight='300px';}}<\/script>`;
+  const enc=best.encourage;
+  body+=`<div class="encourage-block"><div class="encourage-verse">${enc.verse}</div><div class="encourage-ref">${enc.ref}</div><div class="encourage-msg">${enc.msg}</div></div>`;
+  document.getElementById('resultBody').innerHTML=body;show('result');
+}
+function buildRadar(norm,best){
+  const W=300,H=300,cx=150,cy=150,r=80,N=4;
+  const pts=AXIS_4.map((ax,i)=>{const a=Math.PI*2*i/N-Math.PI/2,v=norm[ax]/100;return[cx+r*v*Math.cos(a),cy+r*v*Math.sin(a)];});
+  const bg=AXIS_4.map((_,i)=>{const a=Math.PI*2*i/N-Math.PI/2;return[cx+r*Math.cos(a),cy+r*Math.sin(a)];});
+  const toP=arr=>arr.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ')+'Z';
+  const grid=[.25,.5,.75,1].map(s=>{const gp=AXIS_4.map((_,i)=>{const a=Math.PI*2*i/N-Math.PI/2;return[cx+r*s*Math.cos(a),cy+r*s*Math.sin(a)];});return`<path d="${toP(gp)}" fill="none" stroke="#E8E3DC" stroke-width="1"/>`;}).join('');
+  const lblDefs=[
+    {ax:'Carattere',  x:150, y:48,  anchor:'middle'},
+    {ax:'Spiritualità',x:252, y:154, anchor:'start'},
+    {ax:'Ambiente',x:150, y:260, anchor:'middle'},
+    {ax:'Energia',     x:68,  y:154, anchor:'middle'},
+  ];
+  const lbls=lblDefs.map(d=>`<text x="${d.x}" y="${d.y}" text-anchor="${d.anchor}" font-size="11" fill="${AXIS_COLORS[d.ax]}" font-family="'Inter',sans-serif" font-weight="500">${d.ax}</text>`).join('');
+  return`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${grid}<path d="${toP(bg)}" fill="none" stroke="#D5CEC5" stroke-width="1"/><path d="${toP(pts)}" fill="${best.color}" fill-opacity="0.15" stroke="${best.color}" stroke-width="2"/>${pts.map(p=>`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="3.5" fill="${best.color}"/>`).join('')}${lbls}</svg>`;
+}
+function saveAsJpg(){
+  const btn=event.target;btn.textContent='Creazione immagine...';btn.disabled=true;
+  const el=document.getElementById('screen-result');const prevScroll=window.scrollY;window.scrollTo(0,0);
+  setTimeout(()=>{html2canvas(el,{scale:2,useCORS:true,backgroundColor:'#F8F6F1',scrollY:0,windowWidth:document.documentElement.scrollWidth,windowHeight:el.scrollHeight}).then(canvas=>{
+    const reset=()=>{btn.textContent='Salva Risultato come Immagine (JPG)';btn.disabled=false;window.scrollTo(0,prevScroll);};
+    canvas.toBlob(blob=>{
+      const fileName='risultato-tipo-fede.jpg';const isIOS=/iPhone|iPad|iPod/i.test(navigator.userAgent);
+      if(isIOS&&navigator.share){const file=new File([blob],fileName,{type:'image/jpeg'});if(navigator.canShare&&navigator.canShare({files:[file]})){navigator.share({files:[file],title:'Il Mio Risultato della Valutazione del Tipo di Fede'}).then(reset).catch(()=>{const url=URL.createObjectURL(blob);const w=window.open(url,'_blank');if(w)setTimeout(()=>URL.revokeObjectURL(url),10000);reset();});return;}}
+      const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=fileName;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(url);document.body.removeChild(a);},3000);reset();
+    },'image/jpeg',0.92);
+  }).catch(()=>{btn.textContent='Salva Risultato come Immagine (JPG)';btn.disabled=false;window.scrollTo(0,prevScroll);alert('Si è verificato un errore durante la generazione dell\'immagine.');});},120);
+}
+function saveAsPdf(){
+  const best=state.lastResult.ranked[0],norm=state.lastResult.norm,analysis=best.analyze(norm,state.answers),enc=best.encourage,aptRanked=state.lastResult.aptRanked;
+  const mission=getMissionType(norm,state.answers);const aptTop=aptRanked.slice(0,2);const aptBot=aptRanked.slice(-2).reverse();const top3=state.lastResult.ranked.slice(0,3);const maxD=Math.max(...state.lastResult.ranked.map(r=>r.d));
+  const win=window.open('','_blank','width=800,height=900');
+  win.document.write(`<!DOCTYPE html><html lang="it"><head><meta charset="UTF-8"><title>Faith Type Assessment Result</title><style>@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@300;400;500&display=swap');*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Inter',sans-serif;background:#fff;color:#1A1814;padding:48px 56px;max-width:720px;margin:0 auto;}h1{font-family:'Playfair Display',serif;font-size:28px;font-weight:600;color:${best.color};margin-bottom:6px;}.sub{font-size:14px;color:#7A7568;margin-bottom:4px;}.quote{font-size:13px;color:#B0A99E;font-style:italic;margin-bottom:32px;}.divider{height:1px;background:#E8E3DC;margin:24px 0;}.label{font-size:10px;font-weight:500;letter-spacing:.8px;color:#B0A99E;text-transform:uppercase;margin-bottom:12px;}.score-row{display:flex;align-items:center;gap:12px;margin-bottom:10px;}.score-name{width:80px;font-size:13px;font-weight:500;}.bar-bg{flex:1;height:7px;background:#F0EDE8;border-radius:4px;overflow:hidden;}.bar-fill{height:7px;border-radius:4px;}.score-val{width:30px;text-align:right;font-size:13px;font-weight:500;}p{font-size:13.5px;line-height:1.85;color:#7A7568;margin-bottom:8px;}.verse{font-family:'Playfair Display',serif;font-size:15px;line-height:1.9;color:#1A1814;margin:24px 0 6px;text-align:center;white-space:pre-line;font-style:italic;}.enc-ref{font-size:12px;color:#B0A99E;text-align:center;margin-bottom:12px;}.enc-msg{font-size:13px;color:#7A7568;line-height:1.85;text-align:center;}.badge{display:inline-block;padding:4px 14px;border-radius:20px;font-size:11px;font-weight:500;background:${best.light};color:${best.color};margin-bottom:14px;}.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}.apt-box{background:#F8F6F1;border-radius:6px;padding:14px;}.apt-box-label{font-size:10px;font-weight:500;letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px;}.apt-row{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;font-size:12px;}.apt-num{width:16px;font-weight:500;flex-shrink:0;}.apt-name{font-weight:500;margin-bottom:2px;}.apt-desc{color:#7A7568;font-size:11px;line-height:1.5;}.mission-box{background:${mission.light};border-radius:6px;padding:14px;}.mission-name{font-size:15px;font-weight:500;color:${mission.color};margin-bottom:4px;}.mission-desc{font-size:11px;color:#7A7568;margin-bottom:8px;}.mission-detail{font-size:12px;color:#444441;line-height:1.7;}.rank-row{display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px solid #F4F0EB;font-size:12px;}.q-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:600;margin-bottom:16px;border-bottom:1px solid #E8E3DC;padding-bottom:8px;margin-top:40px;}.q-row{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid #F4F0EB;font-size:12px;color:#7A7568;}.q-num{width:26px;flex-shrink:0;color:#B0A99E;}.q-text{flex:1;}.q-ans{width:30px;text-align:right;font-weight:500;color:#1A1814;}@media print{body{padding:28px 36px;}@page{margin:0;}}</style></head><body>
+  <div class="badge">My Faith Type</div><h1>${best.name}</h1><div class="sub">${best.sub}</div><div class="quote">${best.quote}</div><div class="divider"></div>
+  <div class="label">Domain Scores</div>${AXIS_4.map(ax=>`<div class="score-row"><div class="score-name" style="color:${AXIS_COLORS[ax]}">${ax}</div><div class="bar-bg"><div class="bar-fill" style="width:${norm[ax]}%;background:${AXIS_COLORS[ax]}"></div></div><div class="score-val">${norm[ax]}</div></div>`).join('')}
+  <div class="divider"></div><div class="label">Core Traits</div>${analysis.traits.map(t=>`<p>${t}</p>`).join('')}
+  <div class="label" style="margin-top:16px">Path Forward</div>${analysis.growth.map(t=>`<p>${t}</p>`).join('')}
+  <div class="label" style="margin-top:16px">A Word to Myself</div>${analysis.counsel.map(t=>`<p>${t}</p>`).join('')}
+  <div class="divider"></div><div class="two-col">
+    <div class="apt-box"><div class="apt-box-label" style="color:#0F6E56">Growth Aptitude</div>${aptTop.map(([name,score],i)=>`<div class="apt-row"><div class="apt-num" style="color:${i===0?'#534AB7':'#0F6E56'}">${i+1}</div><div><div class="apt-name">${name}</div><div class="apt-desc">${APT_TYPES[name]?.desc||''}</div></div></div>`).join('')}</div>
+    <div class="apt-box"><div class="apt-box-label" style="color:#B0A99E">Less Suited</div>${aptBot.map(([name])=>`<div class="apt-row"><div class="apt-num" style="color:#B0A99E">—</div><div><div class="apt-name" style="color:#7A7568">${name}</div><div class="apt-desc">${APT_TYPES[name]?.desc||''}</div></div></div>`).join('')}</div>
+  </div>
+  <div class="divider"></div><div class="two-col">
+    <div><div class="label">Faith Type Similarity</div>${top3.map((t,i)=>`<div class="rank-row"><span style="color:#B0A99E;width:14px;">${i+1}</span><span style="width:7px;height:7px;border-radius:50%;background:${t.color};display:inline-block;margin-top:3px;flex-shrink:0;"></span><div><div style="font-weight:500;font-size:13px;">${t.name}</div><div style="font-size:11px;color:#7A7568;">${t.rankDesc}</div></div></div>`).join('')}</div>
+    <div><div class="label">Calling Type</div><div class="mission-box"><div class="mission-name">${mission.name}</div><div class="mission-desc">${mission.desc}</div><div class="mission-detail">${mission.detail}</div></div></div>
+  </div>
+  <div class="divider"></div><div class="verse">${enc.verse}</div><div class="enc-ref">${enc.ref}</div><div class="enc-msg">${enc.msg}</div>
+  <div class="q-title">My Response Record (74 Questions)</div>${QUESTIONS.map(q=>`<div class="q-row"><span class="q-num">${q.n}</span><span class="q-text">${q.t}</span><span class="q-ans">${state.answers[q.n]||'—'}</span></div>`).join('')}
+  <script>window.onload=()=>{setTimeout(()=>window.print(),400);}<\/script></body></html>`);win.document.close();
+}
+function retry(){startAssessment();}
+</script>
+</body>
+</html>

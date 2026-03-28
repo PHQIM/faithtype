@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Penilaian Tipe Iman</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@300;400;500&display=swap');
+:root{--bg:#F8F6F1;--surface:#FFFFFF;--text:#1A1814;--text-muted:#7A7568;--text-light:#B0A99E;--border:#E8E3DC;--accent:#3D3526;--ph:3px;}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+.progress-bar{position:fixed;top:0;left:0;right:0;height:var(--ph);background:var(--border);z-index:100;}
+.progress-fill{height:100%;background:var(--accent);transition:width .4s ease;width:0%;}
+.screen{display:none;min-height:100vh;}
+.screen.active{display:flex;flex-direction:column;}
+#screen-intro{justify-content:center;align-items:center;padding:60px 28px;text-align:center;}
+.intro-line{width:48px;height:1px;background:var(--accent);margin:0 auto 32px;}
+.intro-title{font-family:'Playfair Display',serif;font-size:26px;font-weight:600;line-height:1.35;margin-bottom:14px;}
+.intro-sub{font-size:13px;color:var(--text-muted);line-height:1.9;margin-bottom:40px;}
+.intro-meta{display:flex;gap:28px;justify-content:center;margin-bottom:44px;}
+.meta-item{text-align:center;}
+.meta-num{font-family:'Playfair Display',serif;font-size:26px;font-weight:600;}
+.meta-lbl{font-size:11px;color:var(--text-light);margin-top:3px;}
+.btn-primary{display:block;width:100%;padding:16px;background:var(--accent);color:#fff;border:none;border-radius:2px;font-family:'Inter',sans-serif;font-size:15px;font-weight:500;letter-spacing:.5px;cursor:pointer;transition:opacity .2s;}
+.btn-primary:active{opacity:.85;}
+#screen-axis{justify-content:center;align-items:center;padding:56px 28px;text-align:center;}
+.axis-circle{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 22px;font-size:10px;font-weight:500;color:#fff;letter-spacing:.3px;}
+.axis-intro-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:600;margin-bottom:10px;}
+.axis-intro-desc{font-size:13px;color:var(--text-muted);line-height:1.85;margin-bottom:10px;}
+.axis-intro-range{font-size:11px;color:var(--text-light);}
+#screen-question{padding-top:var(--ph);}
+.q-top{padding:20px 24px 0;display:flex;align-items:center;justify-content:space-between;}
+.q-counter{font-size:11px;color:var(--text-light);letter-spacing:.5px;}
+.q-axis-tag{font-size:10px;font-weight:500;padding:3px 10px;border-radius:20px;letter-spacing:.3px;}
+.q-body{flex:1;padding:28px 24px 24px;display:flex;flex-direction:column;}
+.q-text{font-family:'Playfair Display',serif;font-size:17px;font-weight:400;line-height:1.7;flex:1;margin-bottom:40px;}
+.likert{display:flex;gap:8px;margin-bottom:20px;}
+.likert-btn{flex:1;aspect-ratio:1;border:1.5px solid var(--border);background:var(--surface);border-radius:4px;font-size:15px;font-weight:500;color:var(--text-muted);cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;}
+.likert-btn.selected{border-width:2px;color:#fff;}
+.likert-btn:active{transform:scale(.95);}
+.likert-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--text-light);padding:0 2px;margin-bottom:32px;}
+.q-nav{display:flex;gap:10px;}
+.btn-prev{padding:14px 20px;border:1px solid var(--border);background:transparent;color:var(--text-muted);border-radius:2px;font-family:'Inter',sans-serif;font-size:13px;cursor:pointer;}
+.btn-next{flex:1;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:2px;font-family:'Inter',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:opacity .2s;}
+.btn-next:disabled{opacity:.35;cursor:default;}
+#screen-calc{justify-content:center;align-items:center;padding:48px 28px;text-align:center;}
+.calc-ring{width:64px;height:64px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 24px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.calc-text{font-size:14px;color:var(--text-muted);}
+#screen-result{padding:0;}
+.result-header{padding:52px 28px 32px;text-align:center;border-bottom:1px solid var(--border);}
+.result-badge{display:inline-block;font-size:11px;font-weight:500;padding:4px 14px;border-radius:20px;letter-spacing:.3px;margin-bottom:16px;}
+.result-typename{font-family:'Playfair Display',serif;font-size:32px;font-weight:600;margin-bottom:6px;}
+.result-typesub{font-size:14px;color:var(--text-muted);margin-bottom:4px;}
+.result-quote{font-size:13px;color:var(--text-light);font-style:italic;margin-top:16px;line-height:1.7;}
+.result-section{padding:28px 24px;border-bottom:1px solid var(--border);}
+.section-label{font-size:10px;font-weight:500;letter-spacing:.8px;color:var(--text-light);text-transform:uppercase;margin-bottom:16px;}
+.radar-wrap{display:flex;justify-content:center;margin:4px 0 16px;}
+.axis-bar-row{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.axis-bar-label{font-size:12px;font-weight:500;width:80px;flex-shrink:0;}
+.axis-bar-bg{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden;}
+.axis-bar-fill{height:6px;border-radius:3px;transition:width .6s ease;}
+.axis-bar-val{font-size:13px;font-weight:500;width:32px;text-align:right;flex-shrink:0;}
+.analysis-block{margin-bottom:14px;border-radius:6px;overflow:hidden;border:1px solid var(--border);}
+.ab-head{padding:12px 16px;font-size:11px;font-weight:500;letter-spacing:.5px;display:flex;align-items:center;gap:8px;}
+.ab-head-dot{width:6px;height:6px;border-radius:50%;}
+.ab-body{padding:14px 16px;background:#fff;}
+.ab-body p{font-size:13.5px;line-height:1.85;color:var(--text-muted);margin-bottom:10px;}
+.ab-body p:last-child{margin-bottom:0;}
+.flag-item{display:flex;align-items:flex-start;gap:8px;padding:10px 12px;background:#FFF8F0;border-left:3px solid #E8A44A;border-radius:0 4px 4px 0;margin-bottom:8px;font-size:13px;color:#7A5820;line-height:1.5;}
+.encourage-block{padding:36px 28px;text-align:center;background:var(--surface);border-bottom:1px solid var(--border);}
+.encourage-verse{font-family:'Playfair Display',serif;font-size:16px;font-weight:400;line-height:1.9;color:var(--text);margin-bottom:8px;white-space:pre-line;}
+.encourage-ref{font-size:12px;color:var(--text-light);margin-bottom:20px;}
+.encourage-msg{font-size:13px;color:var(--text-muted);line-height:1.9;}
+.action-btns{padding:20px 24px 48px;display:flex;flex-direction:column;gap:10px;}
+.btn-outline{padding:14px;background:transparent;border:1px solid var(--border);border-radius:2px;font-family:'Inter',sans-serif;font-size:13px;font-weight:500;color:var(--text-muted);cursor:pointer;text-align:center;}
+.btn-retry{padding:14px;background:transparent;border:1px solid var(--accent);border-radius:2px;font-family:'Inter',sans-serif;font-size:14px;font-weight:500;color:var(--accent);cursor:pointer;text-align:center;}
+</style>
+</head>
+<body>
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+<div class="screen active" id="screen-intro">
+  <div class="intro-line"></div>
+  <h1 class="intro-title">Apa tipe iman<br>Anda?</h1>
+  <p class="intro-sub">74 pertanyaan untuk membantu Anda<br>memahami perjalanan iman Anda lebih dalam.</p>
+  <div class="intro-meta">
+    <div class="meta-item"><div class="meta-num">74</div><div class="meta-lbl">Pertanyaan</div></div>
+    <div class="meta-item"><div class="meta-num">5</div><div class="meta-lbl">Domain</div></div>
+    <div class="meta-item"><div class="meta-num">8</div><div class="meta-lbl">Tipe</div></div>
+  </div>
+  <button class="btn-primary" onclick="startAssessment()">Mulai Penilaian</button>
+</div>
+<div class="screen" id="screen-axis">
+  <div class="axis-circle" id="axisIcon"></div>
+  <div class="axis-intro-title" id="axisTitle"></div>
+  <div class="axis-intro-desc" id="axisDesc"></div>
+  <div class="axis-intro-range" id="axisRange"></div>
+  <button class="btn-primary" style="margin:36px 28px 0;width:calc(100% - 56px);" onclick="startAxis()">Mulai</button>
+</div>
+<div class="screen" id="screen-question">
+  <div class="q-top"><span class="q-counter" id="qCounter"></span><span class="q-axis-tag" id="qAxisTag"></span></div>
+  <div class="q-body">
+    <div class="q-text" id="qText"></div>
+    <div class="likert" id="likert"></div>
+    <div class="likert-labels"><span>Sangat tidak setuju</span><span>Sangat setuju</span></div>
+    <div class="q-nav">
+      <button class="btn-prev" id="btnPrev" onclick="prevQ()">Kembali</button>
+      <button class="btn-next" id="btnNext" onclick="nextQ()" disabled>Lanjut</button>
+    </div>
+  </div>
+</div>
+<div class="screen" id="screen-calc">
+  <div class="calc-ring"></div>
+  <div class="calc-text">Menganalisis tipe iman Anda...</div>
+</div>
+<div class="screen" id="screen-result">
+  <div class="result-header" id="resultHeader"></div>
+  <div id="resultBody"></div>
+  <div class="action-btns">
+    <button class="btn-outline" onclick="saveAsJpg()">Simpan Hasil sebagai Gambar (JPG)</button>
+    <button class="btn-outline" onclick="saveAsPdf()">Simpan Laporan Lengkap (PDF)</button>
+    <button class="btn-retry" onclick="retry()">Ulangi Penilaian</button>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+const AXES_INFO=[
+  {id:'Karakter',color:'#0F6E56',light:'#E1F5EE',dark:'#085041',title:'Domain Karakter',desc:'Kami menelusuri kepribadian, gaya hubungan, kesehatan emosional, dan keinginan Anda untuk bertumbuh.',range:'P1 — P20'},
+  {id:'Spiritualitas',color:'#993C1D',light:'#FAECE7',dark:'#712B13',title:'Domain Spiritualitas',desc:'Kami menelusuri keyakinan spiritual, hubungan dengan Kitab Suci, harapan keselamatan, dan pertumbuhan iman.',range:'P21 — P40'},
+  {id:'Lingkungan',color:'#185FA5',light:'#E6F1FB',dark:'#0C447C',title:'Domain Lingkungan',desc:'Kami menelusuri keadaan eksternal dan sistem dukungan yang mengelilingi kehidupan iman Anda.',range:'P41 — P59'},
+  {id:'Energi',color:'#7A4F9B',light:'#F0EAFE',dark:'#4B2E74',title:'Domain Energi Perubahan',desc:'Kami menelusuri energi batin dan kesiapan Anda untuk pertumbuhan baru dalam iman.',range:'P60 — P64'},
+  {id:'Bakat',color:'#5F5E5A',light:'#F1EFE8',dark:'#2C2C2A',title:'Domain Bakat Pertumbuhan',desc:'Kami menelusuri gaya dan peran mana yang paling cocok bagi Anda untuk bertumbuh dalam iman.',range:'P65 — P74'},
+];
+const QUESTIONS=[
+  {a:'Karakter',n:1,t:'Apakah Anda merasa nyaman untuk membuka diri dan membangun kepercayaan dengan orang baru?',r:false},
+  {a:'Karakter',n:2,t:'Apakah ada seseorang di komunitas yang dapat Anda ceritai isi hati Anda dengan jujur?',r:false},
+  {a:'Karakter',n:3,t:'Apakah Anda merasa puas ketika membantu atau membimbing orang lain?',r:false},
+  {a:'Karakter',n:4,t:'Apakah terasa alami untuk mendekati dan menyapa seseorang yang baru Anda temui?',r:false},
+  {a:'Karakter',n:5,t:'Apakah orang lain memandang Anda sebagai seseorang yang nyaman dan dapat dipercaya?',r:false},
+  {a:'Karakter',n:6,t:'Ketika konflik muncul, apakah Anda cenderung mencari rekonsiliasi sebelum bertindak atas emosi?',r:false},
+  {a:'Karakter',n:7,t:'Apakah Anda cenderung membuat keputusan berdasarkan keyakinan Anda sendiri daripada pendapat orang lain?',r:false},
+  {a:'Karakter',n:8,t:'Apakah Anda benar-benar berusaha untuk menepati janji dan waktu pertemuan?',r:false},
+  {a:'Karakter',n:9,t:'Apakah Anda mempertahankan sikap yang hormat dan lembut terhadap orang lain?',r:false},
+  {a:'Karakter',n:10,t:'Apakah Anda mampu melepaskan kenangan menyakitkan dan fokus pada masa kini?',r:false},
+  {a:'Karakter',n:11,t:'Apakah Anda aktif mencari hal-hal yang lebih bernilai daripada kesenangan sesaat?',r:false},
+  {a:'Karakter',n:12,t:'Ketika Anda menyadari kekurangan Anda, apakah Anda sungguh-sungguh ingin berubah menjadi lebih baik?',r:false},
+  {a:'Karakter',n:13,t:'Ketika sesuatu sulit, apakah Anda meminta bantuan tanpa ragu?',r:false},
+  {a:'Karakter',n:14,t:'Apakah Anda umumnya merasa damai dan mampu mengatasi perasaan depresi atau motivasi rendah?',r:false},
+  {a:'Karakter',n:15,t:'Apakah kehidupan Anda saat ini dan impian Anda untuk masa depan terasa terhubung?',r:false},
+  {a:'Karakter',n:16,t:'Apakah Anda cenderung menyelesaikan sesuatu sampai tuntas setelah memulainya?',r:false},
+  {a:'Karakter',n:17,t:'Apakah Anda menerima nasihat atau koreksi dari orang yang peduli kepada Anda sebagai tindakan kasih?',r:false},
+  {a:'Karakter',n:18,t:'Apakah Anda berusaha tetap stabil dan konsisten dalam kehidupan sehari-hari?',r:false},
+  {a:'Karakter',n:19,t:'Apakah Anda berusaha bertindak jujur, bahkan ketika tidak ada yang melihat?',r:false},
+  {a:'Karakter',n:20,t:'Apakah Anda memberikan yang terbaik bahkan untuk peran kecil yang dipercayakan kepada Anda dalam komunitas?',r:false},
+  {a:'Spiritualitas',n:21,t:'Apakah Anda merasakan bahwa kehidupan iman Anda secara bertahap semakin memperdalam diri batin Anda?',r:false},
+  {a:'Spiritualitas',n:22,t:'Apakah Anda memiliki keinginan untuk menggunakan karunia dan keahlian Anda untuk melayani komunitas?',r:false},
+  {a:'Spiritualitas',n:23,t:'Apakah minat utama Anda saat ini terhubung dengan nilai-nilai spiritual?',r:false},
+  {a:'Spiritualitas',n:24,t:'Apakah mempelajari Kitab Suci secara sistematis membantu membangun fondasi iman yang kuat?',r:false},
+  {a:'Spiritualitas',n:25,t:'Apakah apa yang Anda pelajari dari studi Alkitab benar-benar bermanfaat dalam kehidupan sehari-hari Anda?',r:false},
+  {a:'Spiritualitas',n:26,t:'Apakah alasan utama Anda beriman berakar pada kebenaran dan keselamatan?',r:false},
+  {a:'Spiritualitas',n:27,t:'Apakah Anda merasakan dalam kehidupan sehari-hari bahwa dunia spiritual itu nyata?',r:false},
+  {a:'Spiritualitas',n:28,t:'Apakah Kitab Suci terasa seperti kebenaran yang tidak berubah yang memberi Anda jawaban?',r:false},
+  {a:'Spiritualitas',n:29,t:'Apakah Anda pernah mengalami penghiburan atau pertolongan spiritual di saat-saat kritis dalam hidup?',r:false},
+  {a:'Spiritualitas',n:30,t:'Apakah Anda merasa positif tentang diri Anda karena memilih untuk hidup sebagai orang beriman?',r:false},
+  {a:'Spiritualitas',n:31,t:'Apakah mempelajari Firman benar-benar mengubah cara berpikir atau perilaku Anda?',r:false},
+  {a:'Spiritualitas',n:32,t:'Apakah pengharapan akan surga memberi Anda kekuatan untuk bertahan dalam kesulitan saat ini?',r:false},
+  {a:'Spiritualitas',n:33,t:'Apakah Anda memiliki kerinduan yang mendalam untuk memahami Firman lebih penuh?',r:false},
+  {a:'Spiritualitas',n:34,t:'Apakah Anda percaya bahwa membedakan yang benar dan salah penting untuk iman yang sehat?',r:false},
+  {a:'Spiritualitas',n:35,t:'Apakah asumsi yang ada kadang memengaruhi kemampuan Anda untuk menerima pembelajaran baru?',r:true},
+  {a:'Spiritualitas',n:36,t:'Apakah Anda mencoba menafsirkan peristiwa sehari-hari melalui lensa spiritual?',r:false},
+  {a:'Spiritualitas',n:37,t:'Apakah Anda dapat mengesampingkan kenyamanan fisik demi ketenangan spiritual?',r:false},
+  {a:'Spiritualitas',n:38,t:'Apakah Anda menganggap jujur di hadapan Tuhan lebih penting daripada mendapat persetujuan orang lain?',r:false},
+  {a:'Spiritualitas',n:39,t:'Apakah Anda memiliki keyakinan keselamatan yang tidak tergoyahkan, terlepas dari keadaan?',r:false},
+  {a:'Spiritualitas',n:40,t:'Apakah Anda cenderung mempercayai dan mengikuti bimbingan mentor atau pemimpin spiritual?',r:false},
+  {a:'Lingkungan',n:41,t:'Apakah jarak dari rumah Anda ke tempat pertemuan cukup nyaman?',r:false},
+  {a:'Lingkungan',n:42,t:'Apakah alat transportasi Anda memadai untuk pergi ke sana tanpa kesulitan besar?',r:false},
+  {a:'Lingkungan',n:43,t:'Apakah pekerjaan atau penghasilan Anda saat ini cukup stabil untuk menopang kehidupan sehari-hari?',r:false},
+  {a:'Lingkungan',n:44,t:'Apakah situasi keuangan Anda memberikan dasar yang memadai untuk melanjutkan aktivitas iman?',r:false},
+  {a:'Lingkungan',n:45,t:'Apakah keluarga Anda menghormati dan mendukung aktivitas iman Anda?',r:false},
+  {a:'Lingkungan',n:46,t:'Apakah ada anggota keluarga yang dapat berbagi pergumulan iman dengan Anda?',r:false},
+  {a:'Lingkungan',n:47,t:'Apakah Anda berusaha menghadiri kebaktian atau pertemuan meski jadwal padat?',r:false},
+  {a:'Lingkungan',n:48,t:'Apakah jadwal kerja atau studi Anda saat ini memungkinkan Anda untuk menjalani kehidupan iman?',r:false},
+  {a:'Lingkungan',n:49,t:'Apakah mudah bagi Anda untuk mendapatkan waktu pribadi untuk beriman setelah kerja atau akhir pekan?',r:false},
+  {a:'Lingkungan',n:50,t:'Apakah Anda memiliki kebiasaan yang dapat menghambat pertumbuhan spiritual Anda?',r:true},
+  {a:'Lingkungan',n:51,t:'Apakah kesehatan fisik Anda memadai untuk berpartisipasi dalam aktivitas iman?',r:false},
+  {a:'Lingkungan',n:52,t:'Apakah Anda saat ini memiliki kekuatan emosional yang cukup untuk menjalani kehidupan sehari-hari?',r:false},
+  {a:'Lingkungan',n:53,t:'Apakah Anda memiliki orang-orang di sekitar Anda yang mendukung dan mendorong pertumbuhan iman Anda?',r:false},
+  {a:'Lingkungan',n:54,t:'Apakah Anda merasakan tekanan atau beban keuangan yang signifikan?',r:true},
+  {a:'Lingkungan',n:55,t:'Apakah ada konflik atau pertengkaran sering dalam keluarga Anda terkait iman?',r:true},
+  {a:'Lingkungan',n:56,t:'Apakah Anda memiliki ruang pribadi yang tenang untuk berdoa atau belajar sendiri?',r:false},
+  {a:'Lingkungan',n:57,t:'Apakah penggunaan smartphone atau perangkat digital Anda mengganggu kehidupan sehari-hari secara serius?',r:true},
+  {a:'Lingkungan',n:58,t:'Apakah ada konflik hukum atau sosial yang saat ini memperumit kehidupan Anda?',r:true},
+  {a:'Lingkungan',n:59,t:'Apakah Anda percaya bahwa rencana hidup Anda ke depan akan selaras dengan kehidupan iman Anda?',r:false},
+  {a:'Energi',n:60,t:'Apakah Anda sering ingin menemukan semangat dan vitalitas baru dalam kehidupan iman Anda?',r:false},
+  {a:'Energi',n:61,t:'Ketika Anda memiliki pertanyaan tentang iman, apakah Anda merasa ingin tahu dan ingin mengeksplorasinya?',r:false},
+  {a:'Energi',n:62,t:'Apakah Anda memiliki ruang untuk merefleksikan kebiasaan dan pola Anda sendiri dengan cermat?',r:false},
+  {a:'Energi',n:63,t:'Apakah Anda termotivasi untuk menemukan cara berkontribusi dalam komunitas?',r:false},
+  {a:'Energi',n:64,t:'Apakah Anda ingin mencoba dan mengalami area baru yang belum familiar?',r:false},
+  {a:'Bakat',n:65,t:'Apakah Anda paling menikmati mempelajari dan memahami Firman secara mendalam dan logis?',r:false,apt:'Intelektual'},
+  {a:'Bakat',n:66,t:'Apakah Anda merasakan iman paling hidup ketika melayani dan membantu mereka yang membutuhkan?',r:false,apt:'Pelayan'},
+  {a:'Bakat',n:67,t:'Apakah Anda lebih suka terhubung secara mendalam melalui penyembahan atau doa?',r:false,apt:'Ekspresif'},
+  {a:'Bakat',n:68,t:'Apakah Anda tertarik untuk berbagi Firman dengan orang lain atau mendampingi mereka?',r:false,apt:'Misionaris'},
+  {a:'Bakat',n:69,t:'Apakah Anda menemukan tujuan dalam mendukung di balik layar melalui administrasi atau perencanaan?',r:false,apt:'Pendukung'},
+  {a:'Bakat',n:70,t:'Apakah Anda lebih suka meditasi diam untuk memperhalus diri batin Anda?',r:false,apt:'Kontemplatif'},
+  {a:'Bakat',n:71,t:'Apakah Anda mendapatkan energi dari persekutuan dan aktivitas bersama banyak orang?',r:false,apt:'Relasional'},
+  {a:'Bakat',n:72,t:'Apakah Anda bermimpi untuk mengekspresikan iman melalui seni, media, atau karya kreatif?',r:false,apt:'Kreatif'},
+  {a:'Bakat',n:73,t:'Apakah Anda menikmati pengorganisasian sistematis apa yang telah Anda pelajari untuk dibagikan?',r:false,apt:'Pengajar'},
+  {a:'Bakat',n:74,t:'Apakah Anda pandai membaca suasana komunitas dan membawa semangat padanya?',r:false,apt:'Katalis'},
+];
+const APT_TYPES={
+  Intelektual:{desc:'Anda merasa paling hidup saat mempelajari dan memahami Kitab Suci secara mendalam dan logis.'},
+  Pelayan:{desc:'Anda bertumbuh melalui pelayanan dan pemberian di lapangan kehidupan.'},
+  Ekspresif:{desc:'Anda mengekspresikan iman melalui penyembahan, doa, dan koneksi yang penuh semangat.'},
+  Misionaris:{desc:'Anda menemukan makna dalam berbagi Firman dan mendampingi orang lain.'},
+  Pendukung:{desc:'Melayani dengan setia di balik layar adalah gaya yang paling cocok bagi Anda.'},
+  Kontemplatif:{desc:'Anda bersekutu dengan Tuhan secara mendalam melalui refleksi batin yang tenang.'},
+  Relasional:{desc:'Anda mendapatkan energi iman melalui persekutuan dan koneksi dengan orang-orang.'},
+  Kreatif:{desc:'Anda mengungkapkan keindahan Tuhan melalui seni dan ekspresi kreatif.'},
+  Pengajar:{desc:'Anda menemukan kegembiraan dalam mengorganisir kebenaran dan membagikannya kepada orang lain.'},
+  Katalis:{desc:'Anda menemukan tujuan dalam membaca komunitas dan membawa kehidupan padanya.'},
+};
+const FAITH_TYPES=[
+  {name:'Berakar',sub:'Orang beriman yang mengakar dalam',quote:'"Firman telah menjadi standar hidupku."',color:'#534AB7',light:'#EEEDFE',
+   p:{Karakter:88,Spiritualitas:90,Lingkungan:72,Energi:70},
+   rankDesc:'Iman dan karakter keduanya berkembang dengan baik, memungkinkan kepercayaan bersinar secara alami.',
+   encourage:{verse:'"Aku telah memanggil engkau dengan namamu; engkau adalah milik-Ku.\nApabila engkau menyeberangi air, Aku akan menyertai engkau."',ref:'Yesaya 43:1–2',msg:'Anda adalah pribadi berharga yang dipanggil oleh nama di hadapan Tuhan. Perjalanan iman yang telah Anda jalani tidak sia-sia. Tangan-Nya akan menyertai setiap langkah ke depan.'},
+   analyze(norm,ans){const f=norm['Spiritualitas'],c=norm['Karakter'],e=norm['Energi'];return{traits:[`Skor Spiritualitas Anda ${f} menunjukkan kepercayaan pada Firman dan keyakinan spiritual Anda telah teguh. ${f>=75?'Respons tinggi muncul dalam keyakinan alkitabiah dan jaminan keselamatan — tanda bahwa iman Anda berdiri di atas fondasi batin yang tidak tergoyahkan.':'Kerinduan Anda terhadap Firman terus bertumbuh, dan perjalanan itu berharga.'}`,`Dalam domain Karakter, skor Anda ${c} menunjukkan ${c>=75?'orang lain mempercayai Anda, dan rasa tanggung jawab Anda untuk menyelesaikan sesuatu sangat menonjol. Fakta bahwa iman dan kehidupan sehari-hari terhubung dalam diri Anda adalah kekuatan terbesar Anda.':'bahwa iman dan karakter semakin selaras — keseimbangan yang akan menjadi fondasi yang baik ke depannya.'}`,`Seiring iman semakin dalam, ada kecenderungan untuk menetapkan standar tinggi bagi diri sendiri atau mencoba menanggung harapan orang lain sendirian. Mempertahankan komitmen Anda sambil mengizinkan diri momen-momen kelonggaran adalah kebijaksanaan yang diperlukan untuk perjalanan panjang.`],growth:[`Skor Spiritualitas (${f}) dan Karakter (${c}) yang secara konsisten tinggi berarti Anda telah bekerja keras untuk menyelaraskan iman dan kehidupan. Pertumbuhan yang lebih besar dari sini bukan dengan memulai sesuatu yang baru, tetapi dengan semakin mendalam di sepanjang jalan yang sedang Anda jalani.`,`Melihat skor Energi Anda (${e}): ${e>=60?'masih ada energi untuk arah baru. Menyalurkan ini ke berbagi dan koneksi akan membuat iman Anda semakin kaya.':'reservoir batin Anda perlu diisi kembali. Beristirahat dan memprioritaskan kehidupan batin — tanpa tekanan — juga merupakan bagian dari pertumbuhan.'}`],counsel:[`Apa yang akan membantu Anda sekarang bukan "usaha lebih keras" tetapi "lebih jujur". Akui apa yang sudah Anda lakukan dengan baik, dan hargai iman yang mengalir secara alami dari tempat itu.`,'Sengaja menciptakan ruang untuk berbagi cerita Anda dengan orang lain dalam komunitas dan berjalan bersama mereka akan menjadi sumber kekuatan besar di jalan ke depan.']};}
+  },
+  {name:'Bibit',sub:'Orang beriman yang kaya akan potensi',quote:'"Saya penasaran dengan kebenaran — saya ingin tahu lebih banyak."',color:'#0F6E56',light:'#E1F5EE',
+   p:{Karakter:82,Spiritualitas:55,Lingkungan:65,Energi:72},
+   rankDesc:'Karakter yang hangat sudah ada, dan benih-benih iman mulai bertumbuh.',
+   encourage:{verse:'"Dia yang telah memulai pekerjaan baik dalam dirimu\nakan membawanya kepada kesempurnaan hingga hari Kristus Yesus."',ref:'Filipi 1:6',msg:'Benih yang ditanam dalam diri Anda pasti akan bertumbuh. Tidak perlu terburu-buru. Seperti apa adanya Anda, selangkah demi selangkah — itu sudah cukup.'},
+   analyze(norm,ans){const f=norm['Spiritualitas'],c=norm['Karakter'],e=norm['Energi'];return{traits:[`Skor Karakter Anda ${c} sangat tinggi. ${c>=75?'Anda secara alami mendekati orang lain dengan kehangatan dan mempertahankan sikap yang hormat. Kualitas-kualitas ini adalah karunia berharga dalam komunitas iman.':'Ada keinginan tulus untuk berbagi kehangatan dalam hubungan.'}`,`Skor Spiritualitas Anda saat ini ${f}, yang mungkin berarti keyakinan penuh pada Firman belum berakar. ${f>=50?'Namun kerinduan mendalam untuk lebih mengenal Kitab Suci sudah ada — tanda bahwa benih siap bertunas.':'Musim mulai terlibat dengan Firman ini sangat berharga dalam perjalanan iman.'}`,`Memiliki karakter yang kuat sementara iman masih semakin dalam berarti potensi pertumbuhan ke depan sangat besar. Namun, karakter dan iman yang mendalam tidak selalu berjalan beriringan — waktu untuk bergumul dengan pertanyaan-pertanyaan jujur tentang kebenaran diperlukan.`],growth:[`Yang paling Anda butuhkan sekarang adalah keterlibatan sistematis dengan Firman dan seseorang yang berjalan bersama Anda. Karena tanah karakter sudah siap, benih Firman, begitu ditanam, dapat bertumbuh dengan kecepatan yang luar biasa.`,`Skor Energi Anda (${e}) menunjukkan ${e>=65?'ada energi untuk sesuatu yang baru. Coba hubungkan energi itu dengan studi Alkitab.':'memulai dengan satu pertemuan kecil yang tidak memberatkan daripada mencoba terlalu banyak sekaligus.'}`],counsel:['Anda mungkin bertanya-tanya, "Apakah tidak apa-apa bahwa saya masih belum banyak tahu?" Namun musim penasaran dan kerinduan seperti sekarang inilah saat iman cenderung tumbuh paling cepat.','Tetaplah hadir secara alami di komunitas dengan karakter hangat Anda, dan bawalah pertanyaan-pertanyaan jujur Anda. Tidak perlu terburu-buru menuju jawaban.']};}
+  },
+  {name:'Beralas',sub:'Orang beriman dengan lingkungan yang baik',quote:'"Saya bersyukur memiliki orang-orang baik di sekitar saya."',color:'#185FA5',light:'#E6F1FB',
+   p:{Karakter:65,Spiritualitas:60,Lingkungan:88,Energi:68},
+   rankDesc:'Keadaan hidup dan jaringan dukungan stabil, menciptakan kondisi ideal untuk berfokus pada iman.',
+   encourage:{verse:'"Aku bersyukur kepada Kristus Yesus Tuhan kita\nyang telah menganggap aku layak dan mempercayakan pelayanan kepadaku."',ref:'1 Timotius 1:12',msg:'Lingkungan yang baik dan orang-orang di sekitar Anda bukan kebetulan. Di atas karunia yang Tuhan berikan, mulailah membiarkan akar iman semakin dalam bertumbuh.'},
+   analyze(norm,ans){const env=norm['Lingkungan'],f=norm['Spiritualitas'],c=norm['Karakter'];return{traits:[`Skor Lingkungan Anda ${env} tinggi. ${env>=80?'Fakta bahwa keluarga Anda memahami dan mendukung aktivitas iman Anda adalah sumber kekuatan yang luar biasa. Banyak orang menghadapi kesulitan signifikan dalam iman mereka justru karena faktor ini.':'Keadaan yang mengelilingi kehidupan iman Anda sudah disiapkan dengan baik — itu adalah karunia yang berarti.'}`,`Skor Spiritualitas Anda saat ini ${f}, yang berarti keyakinan iman batin mungkin masih berkembang dibandingkan keadaan eksternal Anda. Mendapat manfaat dari lingkungan yang baik dan memiliki keyakinan pribadi adalah cerita yang sedikit berbeda.`,`Lingkungan yang baik saat ini adalah karunia berharga. Di atas fondasi itu, saatnya untuk secara bertahap mulai menjawab pertanyaan batin: "Mengapa saya memilih iman ini?"`],growth:[`Skor Lingkungan yang tinggi (${env}) berarti kondisi optimal untuk pertumbuhan iman yang terfokus sudah ada. Ini adalah musim yang baik untuk secara aktif menggunakan lingkungan itu — untuk bergabung dengan studi Alkitab atau kelompok kecil.`,`Seiring iman batin (${f}) datang ke keseimbangan dengan lingkungan eksternal, akar iman terbentuk yang tidak dapat tergoyahkan bahkan ketika keadaan berubah.`],counsel:['Pertama, ungkapkan rasa syukur kepada orang-orang yang mendorong Anda dan lingkungan yang menghormati iman Anda. Rasa syukur itu bisa menjadi titik awal iman yang sejati.','Kemudian, luangkan waktu untuk merenungkan dengan tenang: "Mengapa saya beriman?" Ketika Anda menemukan jawaban Anda sendiri untuk pertanyaan itu, iman semakin dalam satu langkah lagi.']};}
+  },
+  {name:'Berbuah',sub:'Orang beriman yang berbuah dalam kehidupan',quote:'"Iman telah menjadi kehidupan sehari-hari saya."',color:'#3B6D11',light:'#EAF3DE',
+   p:{Karakter:83,Spiritualitas:87,Lingkungan:83,Energi:75},
+   rankDesc:'Semua empat domain — iman, karakter, lingkungan, dan energi — sudah matang dan seimbang.',
+   encourage:{verse:'"Karena aku yakin bahwa baik maut maupun hidup\ntidak akan dapat memisahkan kita dari kasih Allah."',ref:'Roma 8:38–39',msg:'Tidak ada yang dapat menghentikan kasih Tuhan bagi Anda. Kami sungguh-sungguh menyemangati Anda saat jalan yang sedang Anda jalani ini terus bersinar dalam kasih itu.'},
+   analyze(norm,ans){const f=norm['Spiritualitas'],c=norm['Karakter'],env=norm['Lingkungan'],e=norm['Energi'];return{traits:[`Semua empat domain menunjukkan skor yang konsisten tinggi (Karakter ${c} · Spiritualitas ${f} · Lingkungan ${env} · Energi ${e}). Ini berarti iman tidak terkonsentrasi di satu area tetapi telah meresap secara alami ke seluruh kehidupan.`,`Iman tidak hanya tetap sebagai pengetahuan tetapi mengalir ke dalam kehidupan. Memiliki jaminan keselamatan yang tidak tergoyahkan terlepas dari keadaan juga merupakan tanda berharga dari tipe ini.`,`Dengan semua domain seimbang, ada kalanya merasa lelah hanya dari mempertahankan keseimbangan itu, atau bertanya-tanya, "Apakah saya masih bertumbuh?" Ketika momen-momen itu datang, menerimanya sebagai bagian alami dari perjalanan — dengan anugerah yang berlimpah — adalah yang diperlukan.`],growth:['Iman Anda sedang diekspresikan secara alami di berbagai bidang kehidupan. Pertumbuhan yang berarti di musim ini bukan melakukan lebih banyak hal, tetapi lebih dalam menghayati dan bersyukur atas tempat yang sedang Anda jalani.','Waktu untuk berbagi cerita Anda dengan jujur dalam komunitas dan saling mendorong perjalanan masing-masing adalah sumber kekuatan besar di tahap ini.'],counsel:['Akui siapa Anda sekarang. Konfirmasi apa yang telah Anda lakukan dengan baik dan ungkapkan rasa syukur itu dalam iman Anda.','Tindakan berbagi secara alami dalam komunitas iman adalah ekspresi iman paling indah yang dapat Anda tawarkan di musim ini.']};}
+  },
+  {name:'Padang Gurun',sub:'Orang beriman yang mempertahankan iman meski sulit',quote:'"Keadaan sangat sulit, tapi saya masih ingin melanjutkan iman saya."',color:'#854F0B',light:'#FAEEDA',
+   p:{Karakter:68,Spiritualitas:72,Lingkungan:28,Energi:55},
+   rankDesc:'Ada kemauan tulus untuk beriman, tetapi lingkungan sekitar dan fondasi kehidupan berada di tempat yang sulit.',
+   encourage:{verse:'"Janganlah takut, sebab Aku telah menebus engkau,\nAku telah memanggil engkau dengan namamu; engkau adalah milik-Ku."',ref:'Yesaya 43:1',msg:'Betapa luas dan kasarnya padang gurun yang sedang Anda jalani — Tuhan tahu. Dan bahkan di padang gurun itu, Dia memanggil nama Anda. Anda tidak sendirian.'},
+   analyze(norm,ans){const env=norm['Lingkungan'],f=norm['Spiritualitas'];return{traits:[`Skor Lingkungan Anda ${env} mencerminkan kesulitan. Fakta bahwa Anda masih ingin melanjutkan iman dalam kondisi ini sungguh luar biasa.`,`Skor Spiritualitas Anda ${f} menunjukkan bahwa bahkan di tengah lingkungan yang sulit, masih ada kemauan dan kerinduan terhadap iman dari dalam. Berjalan di padang gurun bukan tanda iman yang lemah — itu karena Anda sedang di jalan itu sekarang.`,`Dalam keadaan eksternal yang sesulit ini, pikiran seperti "Mengapa saya seperti ini?" bisa muncul. Namun kesulitan sekarang bukan ketidakmampuan Anda — itu hanyalah situasi Anda saat ini. Izinkan diri Anda untuk pertama-tama mengakui itu.`],growth:['Daripada berusaha lebih keras secara spiritual sekarang, mengatasi satu kesulitan praktis pada satu waktu adalah pertumbuhan yang nyata. Seiring keadaan membaik, iman juga akan semakin dalam secara alami.','Anda tidak harus menyelesaikan semuanya sendiri. Menemukan satu orang yang dapat berbagi situasi Anda dengan jujur adalah langkah tunggal terpenting di musim ini.'],counsel:['Tidak apa-apa untuk mengungkapkan secara jujur kesulitan yang Anda hadapi. Mengatakan "ini sulit" bukan iman yang lemah — itu mengetahui cara merawat diri Anda.','Berlatihlah menemukan satu hal kecil untuk disyukuri setiap hari. Mata yang mencari satu berkas cahaya bahkan di padang gurun yang gelap itulah yang akhirnya membawa Anda maju.']};}
+  },
+  {name:'Pencari',sub:'Orang dalam perjalanan menuju kebenaran',quote:'"Saya belum yakin apakah iman itu nyata."',color:'#993C1D',light:'#FAECE7',
+   p:{Karakter:62,Spiritualitas:33,Lingkungan:57,Energi:78},
+   rankDesc:'Mencari keyakinan tentang iman, membawa pertanyaan-pertanyaan serius dan tulus tentang kebenaran.',
+   encourage:{verse:'"Mintalah, maka akan diberikan kepadamu;\ncagilah, maka kamu akan mendapat;\nketuklah, maka pintu akan dibukakan bagimu."',ref:'Matius 7:7',msg:'Pertanyaan-pertanyaan yang Anda bawa mendekatkan Anda pada kebenaran. Tidak perlu terburu-buru menuju jawaban. Mereka yang mencari dengan tulus pasti akan menemukan.'},
+   analyze(norm,ans){const f=norm['Spiritualitas'],c=norm['Karakter'],e=norm['Energi'];return{traits:[`Skor Spiritualitas Anda ${f} tidak berarti iman yang lemah — ini menunjukkan bahwa Anda sedang dalam musim pencarian di mana keyakinan belum sepenuhnya terbentuk. Kerinduan mendalam untuk lebih mengenal Kitab Suci adalah titik awal paling berharga dari perjalanan iman.`,`Skor Karakter Anda ${c} menunjukkan investasi tulus dalam hubungan. Bahkan tanpa keyakinan iman penuh, hati yang menghargai orang-orang adalah sinyal bahwa Anda mungkin lebih siap menerima iman daripada yang Anda sadari.`,`Skor Energi Anda ${e} patut dicatat. ${e>=70?'Ada energi batin tinggi untuk hal-hal baru. Energi ini bisa menjadi pendorong pencarian Anda.':'Anda mungkin membawa kelelahan yang signifikan saat ini. Pencarian juga semakin dalam ketika ada energi yang cukup.'}`],growth:['Jangan sembunyikan pertanyaan-pertanyaan dalam diri Anda — bawa keluar. Pertanyaan disambut dalam iman. Menemukan seseorang yang akan bergabung dalam pencarian jawaban adalah jalur pertumbuhan terpenting di musim ini.','Tidak perlu memaksakan diri untuk percaya, atau berpura-pura memiliki keyakinan yang tidak Anda miliki. Pencarian yang jujur adalah jalan paling setia menuju iman yang mendalam.'],counsel:['Yang Anda butuhkan sekarang bukan jawaban tetapi ruang yang aman untuk pertanyaan. Carilah seseorang yang dapat mendengar pertanyaan Anda tanpa menghakimi, seseorang yang hubungannya memungkinkan Anda berbagi keraguan tanpa rasa bersalah.','Iman bukan sesuatu yang dipahami sebelum diterima — iman adalah sesuatu yang semakin jelas seiring Anda berjalan. Langkah berjalan ini sendiri sudah merupakan iman yang mencari.']};}
+  },
+  {name:'Bertahan',sub:'Orang yang belum melepaskan iman meski kelelahan',quote:'"Saya ingin percaya, tapi sejujurnya saya sangat lelah."',color:'#993556',light:'#FBEAF0',
+   p:{Karakter:48,Spiritualitas:76,Lingkungan:33,Energi:38},
+   rankDesc:'Kerinduan akan iman sangat dalam, tetapi kelelahan emosional dan lingkungan sangat signifikan.',
+   encourage:{verse:'"Marilah kepada-Ku, semua yang kelelahan dan berbeban berat,\nAku akan memberi kelegaan kepadamu.\nPikulah kuk yang Aku pasang dan belajarlah dari-Ku,\nmaka kamu akan mendapat ketenangan jiwamu."',ref:'Matius 11:28–29',msg:'Yang Anda butuhkan sekarang bukan untuk berusaha lebih keras — melainkan untuk beristirahat sejenak. Bahkan istirahat itu adalah sesuatu yang Tuhan sediakan. Tidak apa-apa untuk meletakkan semuanya.'},
+   analyze(norm,ans){const f=norm['Spiritualitas'],e=norm['Energi'];return{traits:[`Skor Spiritualitas Anda ${f} menunjukkan ada kerinduan spiritual mendalam dan iman dari dalam. Fakta bahwa Anda masih berpegang teguh meski lelah dan kelelahan bukan bukti iman yang lemah — melainkan bukti iman.`,`Energi yang rendah adalah sinyal kelelahan. Mencoba melakukan lebih banyak secara spiritual dalam keadaan ini mungkin hanya menambah beban.`,`Rasa sakit masa lalu atau keadaan yang sulit saat ini mungkin terasa lebih berat ketika terkait dengan iman. Jika iman mulai terasa seperti beban daripada tempat penyembuhan, itu adalah sinyal untuk berhenti sejenak dan melihat ke belakang — dan butuh keberanian untuk melakukannya.`],growth:['"Beristirahat" adalah pertumbuhan yang paling dibutuhkan sekarang. Memaksakan diri untuk mengisi ketika kelelahan hanya mengarah pada kekosongan yang lebih besar. Memulihkan diri terlebih dahulu adalah langkah pertama yang sesungguhnya dari pertumbuhan iman.','Berlatihlah untuk secara jujur mengatakan kepada setidaknya satu orang, "Saya berjuang." Meminta bantuan bukan kelemahan — melainkan kebijaksanaan.'],counsel:['Tidak apa-apa untuk melihat dengan jujur ke mana hati Anda sekarang. Anda bisa meletakkan perasaan "Saya harus baik-baik saja karena saya beriman."','Iman tidak membuat segalanya lebih sulit. Membawa kelelahan dan rasa sakit Anda persis seperti adanya ke hadapan Tuhan — itulah ekspresi iman yang paling jujur dan indah di musim ini.']};}
+  },
+  {name:'Awal Mula',sub:'Orang yang mengambil langkah pertama iman',quote:'"Segalanya masih asing, tapi saya ingin belajar perlahan-lahan."',color:'#5F5E5A',light:'#F1EFE8',
+   p:{Karakter:50,Spiritualitas:40,Lingkungan:52,Energi:60},
+   rankDesc:'Pada tahap awal iman, di mana segalanya masih baru dan asing.',
+   encourage:{verse:'"Engkau adalah hamba-Ku; Aku telah memilih engkau dan tidak menolak engkau.\nJanganlah takut, sebab Aku menyertai engkau.\nAku adalah Allahmu; Aku akan meneguhkan engkau\ndan menolong engkau."',ref:'Yesaya 41:9–10',msg:'Fakta bahwa Anda mengambil langkah — tepat di sini, tepat sekarang — sudah cukup. Sangat alami merasa asing dan canggung pada awalnya. Anda bisa berjalan dengan kecepatan Anda sendiri.'},
+   analyze(norm,ans){const f=norm['Spiritualitas'],c=norm['Karakter'],e=norm['Energi'];return{traits:[`Secara keseluruhan, Spiritualitas (${f}), Karakter (${c}), dan Lingkungan semuanya dalam tahap pembentukan awal. Ini bukan tanda kekurangan — ini berarti Anda berdiri di titik awal.`,`Keinginan untuk lebih mengenal Firman atau fakta bahwa Anda menyelesaikan penilaian ini menunjukkan ada minat dan kemauan terhadap iman. Setiap awal memungkinkan pertumbuhan.`,'Merasa asing dan canggung adalah hal yang sangat alami. Yang lebih penting di tahap ini daripada memahami sepenuhnya atau melakukan segalanya dengan sempurna adalah sekadar hadir secara konsisten.'],growth:['Yang paling Anda butuhkan sekarang adalah lingkungan di mana Anda dapat dengan nyaman mempelajari dasar-dasar iman dan seseorang untuk menemani Anda. Daripada mencoba mengetahui segalanya sekaligus, mengalami dan merasakan satu hal pada satu waktu adalah langkah yang tepat untuk musim ini.','Bergabung dengan kelompok kecil atau studi Alkitab dasar tanpa tekanan bisa menjadi titik awal yang baik.'],counsel:['"Belum banyak tahu" sama sekali bukan hal yang memalukan. Ketidakbiasaan yang Anda rasakan sekarang suatu hari akan menjadi kenangan berharga "itulah saat saya mulai."','Anda bisa berjalan dengan kecepatan Anda sendiri. Tanpa membandingkan diri dengan siapapun, pertama-tama bersikap lembut kepada diri sendiri karena berada tepat di sini hari ini.']};}
+  },
+];
+const MISSION_TYPES=[
+  {name:'Pelopor',icon:'◈',color:'#534AB7',light:'#EEEDFE',desc:'Orang beriman yang membuka jalan baru',detail:'Orang ini berjalan terlebih dahulu ke jalan yang belum dilalui. Mereka tidak takut perubahan, tetapi meniupkan keberanian ke dalam komunitas untuk bergerak ke arah baru.',match:(n,a)=>n['Energi']>=65&&(a[68]||3)>=4},
+  {name:'Pelayan Setia',icon:'◇',color:'#0F6E56',light:'#E1F5EE',desc:'Orang beriman yang membangun dari belakang',detail:'Bahkan tanpa terlihat, orang ini dengan kokoh mendukung komunitas. Mereka tahu bahwa kesetiaan di tempat tersembunyi adalah kekuatan terbesar, dan mereka berjalan di jalan itu dengan tekun.',match:(n,a)=>((a[69]||3)+(a[66]||3))>=8},
+  {name:'Saksi',icon:'◉',color:'#993C1D',light:'#FAECE7',desc:'Orang beriman yang menyatakan kebenaran melalui kehidupan',detail:'Bagi orang ini, kehidupan datang sebelum kata-kata. Iman ditampilkan secara alami dalam kehidupan sehari-hari, dan orang-orang di sekitarnya bertemu Tuhan melalui kehidupan itu.',match:(n,a)=>n['Spiritualitas']>=65&&(a[68]||3)>=3&&(a[66]||3)>=3},
+  {name:'Cendekiawan',icon:'◎',color:'#185FA5',light:'#E6F1FB',desc:'Orang beriman yang menggali kebenaran secara mendalam',detail:'Semakin banyak mereka tahu, semakin ingin mereka tahu. Kemampuan mereka untuk memahami dan mensistematisasi Firman secara logis menjadi fondasi intelektual komunitas.',match:(n,a)=>((a[65]||3)+(a[73]||3))>=8},
+  {name:'Penghibur',icon:'◐',color:'#993556',light:'#FBEAF0',desc:'Orang beriman yang merangkul yang terluka',detail:'Ada penghiburan yang hanya bisa diberikan oleh mereka yang mengenal rasa sakit. Orang ini secara alami tinggal bersama mereka yang terluka dalam komunitas — kehadiran yang hangat.',match:(n,a)=>n['Karakter']>=65&&(a[67]||3)>=4},
+  {name:'Penghubung',icon:'◑',color:'#854F0B',light:'#FAEEDA',desc:'Orang beriman yang menghubungkan orang-orang',detail:'Orang ini mengumpulkan yang tercerai-berai menjadi satu. Mereka membangun jembatan hubungan dan membawa kehidupan serta vitalitas ke dalam komunitas.',match:(n,a)=>((a[71]||3)+(a[74]||3))>=8},
+  {name:'Pendoa',icon:'◔',color:'#7A4F9B',light:'#F0EAFE',desc:'Orang beriman yang mempertahankan melalui doa dan refleksi',detail:'Orang ini tahu bahwa doa adalah panggilan yang paling kuat. Di tempat tersembunyi, mereka mempertahankan komunitas melalui doa, dan kedalaman dalam diri mereka membawa kedamaian bagi orang-orang terdekat.',match:(n,a)=>((a[70]||3)+(a[67]||3))>=8},
+  {name:'Pencipta',icon:'◕',color:'#3B6D11',light:'#EAF3DE',desc:'Orang beriman yang mengekspresikan Tuhan melalui kreativitas',detail:'Orang ini menemukan jejak Tuhan dalam keindahan. Melalui seni, musik, tulisan, dan media, mereka mengekspresikan iman dan membuat komunitas menjadi lebih kaya.',match:(n,a)=>(a[72]||3)>=4},
+];
+function getMissionType(norm,ans){
+  const matched=MISSION_TYPES.filter(m=>m.match(norm,ans));
+  if(matched.length>0)return matched[0];
+  const f=norm['Spiritualitas'],c=norm['Karakter'],e=norm['Energi'];
+  if(f>=65&&e>=60)return MISSION_TYPES[0];
+  if(c>=65)return MISSION_TYPES[4];
+  if(e>=60)return MISSION_TYPES[5];
+  return MISSION_TYPES[6];
+}
+const WEIGHTS={Karakter:1.2,Spiritualitas:1.6,Lingkungan:1.0,Energi:0.8};
+const AXIS_4=['Karakter','Spiritualitas','Lingkungan','Energi'];
+const AXIS_COLORS={Karakter:'#0F6E56',Spiritualitas:'#993C1D',Lingkungan:'#185FA5',Energi:'#7A4F9B'};
+let state={qIdx:0,answers:{},lastResult:null};
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('screen-'+id).classList.add('active');window.scrollTo(0,0);}
+function updateProgress(){document.getElementById('progressFill').style.width=Math.round((state.qIdx/QUESTIONS.length)*100)+'%';}
+function startAssessment(){state.qIdx=0;state.answers={};showAxisIntro('Karakter');}
+function showAxisIntro(axisId){const info=AXES_INFO.find(a=>a.id===axisId);const el=document.getElementById('axisIcon');el.style.background=info.color;el.textContent=axisId;document.getElementById('axisTitle').textContent=info.title;document.getElementById('axisDesc').textContent=info.desc;document.getElementById('axisRange').textContent=info.range;show('axis');}
+function startAxis(){renderQuestion();}
+function renderQuestion(){
+  if(state.qIdx>=QUESTIONS.length){runClassify();return;}
+  const q=QUESTIONS[state.qIdx];const axInfo=AXES_INFO.find(a=>a.id===q.a);
+  document.getElementById('qCounter').textContent=`${state.qIdx+1} / ${QUESTIONS.length}`;
+  const tag=document.getElementById('qAxisTag');tag.textContent=q.a;tag.style.background=axInfo.light;tag.style.color=axInfo.dark;
+  document.getElementById('qText').textContent=q.t;
+  const likert=document.getElementById('likert');likert.innerHTML='';const cur=state.answers[q.n];
+  [1,2,3,4,5].forEach(v=>{const btn=document.createElement('button');btn.className='likert-btn'+(cur===v?' selected':'');btn.textContent=v;if(cur===v){btn.style.background=axInfo.color;btn.style.borderColor=axInfo.color;}btn.onclick=()=>{state.answers[q.n]=v;document.querySelectorAll('.likert-btn').forEach(b=>{b.classList.remove('selected');b.style.background='';b.style.borderColor='';});btn.classList.add('selected');btn.style.background=axInfo.color;btn.style.borderColor=axInfo.color;document.getElementById('btnNext').disabled=false;};likert.appendChild(btn);});
+  document.getElementById('btnNext').disabled=!cur;document.getElementById('btnPrev').style.display=state.qIdx===0?'none':'block';
+  updateProgress();show('question');
+}
+function nextQ(){state.qIdx++;if(state.qIdx<QUESTIONS.length){const q=QUESTIONS[state.qIdx];if(q.a!==QUESTIONS[state.qIdx-1].a)showAxisIntro(q.a);else renderQuestion();}else{runClassify();}}
+function prevQ(){if(state.qIdx>0){state.qIdx--;renderQuestion();}}
+function runClassify(){show('calc');document.getElementById('progressFill').style.width='100%';setTimeout(doClassify,1400);}
+function doClassify(){
+  const raw={Karakter:0,Spiritualitas:0,Lingkungan:0,Energi:0};const cnt={Karakter:0,Spiritualitas:0,Lingkungan:0,Energi:0};
+  QUESTIONS.filter(q=>q.a!=='Bakat').forEach(q=>{const v=state.answers[q.n]||3;raw[q.a]+=(q.r?6-v:v);cnt[q.a]++;});
+  const norm={};AXIS_4.forEach(ax=>{norm[ax]=Math.round(raw[ax]/(cnt[ax]*5)*100);});
+  const aptScores={};QUESTIONS.filter(q=>q.a==='Bakat').forEach(q=>{aptScores[q.apt]=state.answers[q.n]||3;});
+  const aptRanked=Object.entries(aptScores).sort((a,b)=>b[1]-a[1]);
+  let ranked=FAITH_TYPES.map(t=>({...t,d:Math.sqrt(AXIS_4.reduce((s,ax)=>s+WEIGHTS[ax]*Math.pow(norm[ax]-t.p[ax],2),0))})).sort((a,b)=>a.d-b.d);
+  if(norm['Spiritualitas']<=40){const c=ranked.filter(t=>t.name==='Pencari'||t.name==='Awal Mula');if(c.length&&c[0].d<ranked[0].d*1.3)ranked=[c[0],...ranked.filter(t=>t.name!==c[0].name)];}
+  if(norm['Lingkungan']<=35){const c=ranked.filter(t=>t.name==='Padang Gurun'||t.name==='Bertahan');if(c.length&&c[0].d<ranked[0].d*1.3)ranked=[c[0],...ranked.filter(t=>t.name!==c[0].name)];}
+  if(AXIS_4.every(ax=>norm[ax]>=78)){const rf=ranked.find(t=>t.name==='Berbuah');if(rf)ranked=[rf,...ranked.filter(t=>t.name!=='Berbuah')];}
+  const flags=AXIS_4.filter(ax=>norm[ax]<=35).map(ax=>'Domain '+ax+' menunjukkan tanda-tanda kesulitan. Silakan diskusikan dengan konselor.');
+  state.lastResult={ranked,norm,flags,aptRanked};renderResult(ranked,norm,flags,aptRanked);
+}
+function renderResult(ranked,norm,flags,aptRanked){
+  const best=ranked[0];const analysis=best.analyze(norm,state.answers);const mission=getMissionType(norm,state.answers);
+  document.getElementById('resultHeader').innerHTML=`<div class="result-badge" style="background:${best.light};color:${best.color}">Tipe Iman Saya</div><div class="result-typename" style="color:${best.color}">${best.name}</div><div class="result-typesub">${best.sub}</div><div class="result-quote">${best.quote}</div>`;
+  let body='';
+  if(flags.length){body+=`<div class="result-section"><div class="section-label">Area yang Perlu Diperhatikan</div>${flags.map(f=>`<div class="flag-item">${f}</div>`).join('')}</div>`;}
+  body+=`<div class="result-section"><div class="section-label">Skor Domain</div><div class="radar-wrap">${buildRadar(norm,best)}</div>${AXIS_4.map(ax=>`<div class="axis-bar-row"><span class="axis-bar-label" style="color:${AXIS_COLORS[ax]}">${ax}</span><div class="axis-bar-bg"><div class="axis-bar-fill" style="width:${norm[ax]}%;background:${AXIS_COLORS[ax]}"></div></div><span class="axis-bar-val">${norm[ax]}</span></div>`).join('')}</div>`;
+  body+=`<div class="result-section"><div class="section-label">Sifat Inti</div><div class="analysis-block"><div class="ab-head" style="background:${best.light}"><div class="ab-head-dot" style="background:${best.color}"></div><span style="color:${best.color};font-weight:500">Cerita Saya</span></div><div class="ab-body">${analysis.traits.map(t=>`<p>${t}</p>`).join('')}</div></div></div>`;
+  body+=`<div class="result-section"><div class="section-label">Jalan ke Depan</div><div class="analysis-block"><div class="ab-head" style="background:#EAF3DE"><div class="ab-head-dot" style="background:#3B6D11"></div><span style="color:#3B6D11;font-weight:500">Di Mana Saya Bisa Bertumbuh</span></div><div class="ab-body">${analysis.growth.map(t=>`<p>${t}</p>`).join('')}</div></div></div>`;
+  body+=`<div class="result-section"><div class="section-label">Sebuah Kata untuk Diri Saya</div><div class="analysis-block"><div class="ab-head" style="background:#E6F1FB"><div class="ab-head-dot" style="background:#185FA5"></div><span style="color:#185FA5;font-weight:500">Yang Saya Butuhkan Sekarang</span></div><div class="ab-body">${analysis.counsel.map(t=>`<p>${t}</p>`).join('')}</div></div></div>`;
+  const aptTop=aptRanked.slice(0,2);const aptBot=aptRanked.slice(-2).reverse();const aptColors=['#534AB7','#0F6E56'];
+  body+=`<div class="result-section"><div class="section-label">Bakat Pertumbuhan Saya</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;"><div style="background:#F8F6F1;border-radius:8px;border:1px solid #E8E3DC;padding:16px;"><div style="font-size:10px;font-weight:500;letter-spacing:.6px;color:#0F6E56;text-transform:uppercase;margin-bottom:12px;">Bakat Pertumbuhan</div>${aptTop.map(([name,score],i)=>{const info=APT_TYPES[name]||{desc:''};const col=aptColors[i];return`<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;"><div style="font-size:16px;font-weight:600;width:20px;color:${col};font-family:'Playfair Display',serif">${i+1}</div><div style="flex:1;"><div style="font-size:13px;font-weight:500;color:#1A1814;margin-bottom:2px;">${name}</div><div style="font-size:11px;color:#B0A99E;line-height:1.5;">${info.desc}</div></div><div style="font-size:12px;font-weight:500;color:${col};flex-shrink:0;">${score}pt</div></div>`;}).join('')}</div><div style="background:#F8F6F1;border-radius:8px;border:1px solid #E8E3DC;padding:16px;"><div style="font-size:10px;font-weight:500;letter-spacing:.6px;color:#B0A99E;text-transform:uppercase;margin-bottom:12px;">Kurang Sesuai</div>${aptBot.map(([name,score])=>{const info=APT_TYPES[name]||{desc:''};return`<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;"><div style="font-size:11px;color:#B0A99E;width:20px;text-align:center;">—</div><div style="flex:1;"><div style="font-size:13px;font-weight:500;color:#7A7568;margin-bottom:2px;">${name}</div><div style="font-size:11px;color:#B0A99E;line-height:1.5;">${info.desc}</div></div><div style="font-size:12px;color:#B0A99E;flex-shrink:0;">${score}pt</div></div>`;}).join('')}</div></div></div>`;
+  const top3=ranked.slice(0,3);const maxD=Math.max(...ranked.map(r=>r.d));
+  body+=`<div class="result-section"><div class="section-label">Kesamaan Tipe Iman</div>${top3.map((t,i)=>`<div style="padding:12px 0;border-bottom:1px solid #F4F0EB;"><div style="display:flex;align-items:center;gap:10px;margin-bottom:5px;"><span style="font-size:11px;color:#B0A99E;width:16px;flex-shrink:0;">${i+1}</span><span style="width:8px;height:8px;border-radius:50%;background:${t.color};display:inline-block;flex-shrink:0;"></span><span style="font-size:14px;font-weight:500;flex:1;">${t.name}</span><div style="width:80px;height:5px;background:#E8E3DC;border-radius:3px;overflow:hidden;flex-shrink:0;"><div style="height:5px;border-radius:3px;width:${Math.round((1-t.d/maxD)*100)}%;background:${t.color};"></div></div></div><div style="font-size:12px;color:#B0A99E;line-height:1.6;padding-left:26px;">${t.rankDesc}</div></div>`).join('')}</div>`;
+  const otherMissions=MISSION_TYPES.filter(m=>m.name!==mission.name);
+  body+=`<div class="result-section"><div class="section-label">Tipe Panggilan</div><div style="background:${mission.light};border-radius:8px;padding:18px 20px;margin-bottom:14px;"><div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;"><div style="width:40px;height:40px;border-radius:50%;background:${mission.color};display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;flex-shrink:0;">${mission.icon}</div><div><div style="font-size:17px;font-weight:500;color:${mission.color};margin-bottom:2px;">${mission.name}</div><div style="font-size:12px;color:#7A7568;">${mission.desc}</div></div></div><div style="font-size:13px;color:#444441;line-height:1.8;border-top:1px solid rgba(0,0,0,.07);padding-top:12px;">${mission.detail}</div></div><div style="background:#fff;border-radius:8px;border:1px solid #E8E3DC;padding:14px 16px;"><div style="font-size:10px;font-weight:500;letter-spacing:.6px;color:#B0A99E;text-transform:uppercase;margin-bottom:10px;">Tipe Panggilan Lainnya — ketuk untuk info</div><div style="display:flex;flex-wrap:wrap;gap:7px;" id="missionChips">${otherMissions.map((m,idx)=>`<button onclick="toggleMissionChip(${idx})" data-idx="${idx}" style="font-size:12px;padding:5px 13px;border-radius:20px;background:#F8F6F1;color:#7A7568;border:1px solid #E8E3DC;cursor:pointer;transition:all .15s;font-family:'Inter',sans-serif;">${m.name}</button>`).join('')}</div><div id="missionDetail" style="margin-top:0;overflow:hidden;transition:all .3s;max-height:0;"></div></div></div>`;
+  body+=`<script>window._otherMissions=${JSON.stringify(otherMissions.map(m=>({name:m.name,desc:m.desc,detail:m.detail,color:m.color,light:m.light,icon:m.icon})))};window._activeMissionIdx=null;function toggleMissionChip(idx){const btns=document.querySelectorAll('#missionChips button');const detail=document.getElementById('missionDetail');const m=window._otherMissions[idx];if(window._activeMissionIdx===idx){window._activeMissionIdx=null;detail.style.maxHeight='0';detail.innerHTML='';btns.forEach(b=>{b.style.background='#F8F6F1';b.style.color='#7A7568';b.style.borderColor='#E8E3DC';});}else{window._activeMissionIdx=idx;btns.forEach((b,i)=>{if(i===idx){b.style.background=m.light;b.style.color=m.color;b.style.borderColor=m.color;}else{b.style.background='#F8F6F1';b.style.color='#7A7568';b.style.borderColor='#E8E3DC';}});detail.innerHTML=\`<div style="background:\${m.light};border-radius:6px;padding:14px 16px;margin-top:10px;"><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><div style="width:28px;height:28px;border-radius:50%;background:\${m.color};display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;flex-shrink:0;">\${m.icon}</div><div><div style="font-size:13px;font-weight:500;color:\${m.color};">\${m.name}</div><div style="font-size:11px;color:#7A7568;">\${m.desc}</div></div></div><div style="font-size:12px;color:#444441;line-height:1.75;">\${m.detail}</div></div>\`;detail.style.maxHeight='300px';}}<\/script>`;
+  const enc=best.encourage;
+  body+=`<div class="encourage-block"><div class="encourage-verse">${enc.verse}</div><div class="encourage-ref">${enc.ref}</div><div class="encourage-msg">${enc.msg}</div></div>`;
+  document.getElementById('resultBody').innerHTML=body;show('result');
+}
+function buildRadar(norm,best){
+  const W=300,H=300,cx=150,cy=150,r=80,N=4;
+  const pts=AXIS_4.map((ax,i)=>{const a=Math.PI*2*i/N-Math.PI/2,v=norm[ax]/100;return[cx+r*v*Math.cos(a),cy+r*v*Math.sin(a)];});
+  const bg=AXIS_4.map((_,i)=>{const a=Math.PI*2*i/N-Math.PI/2;return[cx+r*Math.cos(a),cy+r*Math.sin(a)];});
+  const toP=arr=>arr.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ')+'Z';
+  const grid=[.25,.5,.75,1].map(s=>{const gp=AXIS_4.map((_,i)=>{const a=Math.PI*2*i/N-Math.PI/2;return[cx+r*s*Math.cos(a),cy+r*s*Math.sin(a)];});return`<path d="${toP(gp)}" fill="none" stroke="#E8E3DC" stroke-width="1"/>`;}).join('');
+  const lblDefs=[{ax:'Karakter',x:150,y:48,anchor:'middle'},{ax:'Spiritualitas',x:252,y:154,anchor:'start'},{ax:'Lingkungan',x:150,y:260,anchor:'middle'},{ax:'Energi',x:68,y:154,anchor:'middle'}];
+  const lbls=lblDefs.map(d=>`<text x="${d.x}" y="${d.y}" text-anchor="${d.anchor}" font-size="11" fill="${AXIS_COLORS[d.ax]}" font-family="'Inter',sans-serif" font-weight="500">${d.ax}</text>`).join('');
+  return`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${grid}<path d="${toP(bg)}" fill="none" stroke="#D5CEC5" stroke-width="1"/><path d="${toP(pts)}" fill="${best.color}" fill-opacity="0.15" stroke="${best.color}" stroke-width="2"/>${pts.map(p=>`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="3.5" fill="${best.color}"/>`).join('')}${lbls}</svg>`;
+}
+function saveAsJpg(){
+  const btn=event.target;btn.textContent='Membuat gambar...';btn.disabled=true;
+  const el=document.getElementById('screen-result');const prevScroll=window.scrollY;window.scrollTo(0,0);
+  setTimeout(()=>{html2canvas(el,{scale:2,useCORS:true,backgroundColor:'#F8F6F1',scrollY:0,windowWidth:document.documentElement.scrollWidth,windowHeight:el.scrollHeight}).then(canvas=>{
+    const reset=()=>{btn.textContent='Simpan Hasil sebagai Gambar (JPG)';btn.disabled=false;window.scrollTo(0,prevScroll);};
+    canvas.toBlob(blob=>{
+      const fileName='hasil-tipe-iman.jpg';const isIOS=/iPhone|iPad|iPod/i.test(navigator.userAgent);
+      if(isIOS&&navigator.share){const file=new File([blob],fileName,{type:'image/jpeg'});if(navigator.canShare&&navigator.canShare({files:[file]})){navigator.share({files:[file],title:'Hasil Penilaian Tipe Iman Saya'}).then(reset).catch(()=>{const url=URL.createObjectURL(blob);window.open(url,'_blank');reset();});return;}}
+      const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=fileName;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(url);document.body.removeChild(a);},3000);reset();
+    },'image/jpeg',0.92);
+  }).catch(()=>{btn.textContent='Simpan Hasil sebagai Gambar (JPG)';btn.disabled=false;window.scrollTo(0,prevScroll);});},120);
+}
+function saveAsPdf(){
+  const best=state.lastResult.ranked[0],norm=state.lastResult.norm,analysis=best.analyze(norm,state.answers),enc=best.encourage,aptRanked=state.lastResult.aptRanked;
+  const mission=getMissionType(norm,state.answers);const aptTop=aptRanked.slice(0,2);const top3=state.lastResult.ranked.slice(0,3);const maxD=Math.max(...state.lastResult.ranked.map(r=>r.d));
+  const win=window.open('','_blank');
+  win.document.write(`<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"><title>Hasil Penilaian Tipe Iman</title><style>body{font-family:'Inter',sans-serif;background:#fff;color:#1A1814;padding:40px 48px;max-width:700px;margin:0 auto;}h1{font-family:'Playfair Display',serif;font-size:26px;color:${best.color};margin-bottom:6px;}.divider{height:1px;background:#E8E3DC;margin:20px 0;}.label{font-size:10px;font-weight:500;letter-spacing:.8px;color:#B0A99E;text-transform:uppercase;margin-bottom:10px;}.score-row{display:flex;align-items:center;gap:12px;margin-bottom:8px;}.score-name{width:80px;font-size:12px;font-weight:500;}.bar-bg{flex:1;height:6px;background:#F0EDE8;border-radius:3px;overflow:hidden;}.bar-fill{height:6px;border-radius:3px;}p{font-size:13px;line-height:1.8;color:#7A7568;margin-bottom:6px;}.verse{font-family:'Playfair Display',serif;font-size:14px;line-height:1.9;color:#1A1814;text-align:center;white-space:pre-line;font-style:italic;margin:20px 0 6px;}.enc-ref{font-size:11px;color:#B0A99E;text-align:center;margin-bottom:10px;}.enc-msg{font-size:12px;color:#7A7568;line-height:1.8;text-align:center;}.q-row{display:flex;gap:8px;padding:5px 0;border-bottom:1px solid #F4F0EB;font-size:11px;color:#7A7568;}.q-num{width:24px;flex-shrink:0;color:#B0A99E;}.q-text{flex:1;}.q-ans{width:24px;text-align:right;font-weight:500;color:#1A1814;}@media print{body{padding:24px 32px;}@page{margin:0;}}</style></head><body>
+  <h1>${best.name}</h1><p style="color:#7A7568;margin-bottom:4px;">${best.sub}</p><p style="font-size:13px;color:#B0A99E;font-style:italic;margin-bottom:28px;">${best.quote}</p><div class="divider"></div>
+  <div class="label">Skor Domain</div>${AXIS_4.map(ax=>`<div class="score-row"><div class="score-name" style="color:${AXIS_COLORS[ax]}">${ax}</div><div class="bar-bg"><div class="bar-fill" style="width:${norm[ax]}%;background:${AXIS_COLORS[ax]}"></div></div><span style="font-size:12px;font-weight:500;width:28px;text-align:right;">${norm[ax]}</span></div>`).join('')}
+  <div class="divider"></div><div class="label">Sifat Inti</div>${analysis.traits.map(t=>`<p>${t}</p>`).join('')}
+  <div class="label" style="margin-top:14px">Jalan ke Depan</div>${analysis.growth.map(t=>`<p>${t}</p>`).join('')}
+  <div class="divider"></div><div class="verse">${enc.verse}</div><div class="enc-ref">${enc.ref}</div><div class="enc-msg">${enc.msg}</div>
+  <div class="divider"></div><div class="label">Catatan Jawaban (74 Pertanyaan)</div>${QUESTIONS.map(q=>`<div class="q-row"><span class="q-num">${q.n}</span><span class="q-text">${q.t}</span><span class="q-ans">${state.answers[q.n]||'—'}</span></div>`).join('')}
+  <script>window.onload=()=>{setTimeout(()=>window.print(),400);}<\/script></body></html>`);win.document.close();
+}
+function retry(){startAssessment();}
+</script>
+</body>
+</html>
