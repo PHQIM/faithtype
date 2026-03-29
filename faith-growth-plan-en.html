@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Faith Growth Plan Sheet</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300;400;500&display=swap');
+:root{
+  --bg:#F8F6F1;--white:#fff;--text:#1A1814;--muted:#7A7568;--light:#B0A99E;
+  --border:#E8E3DC;--bl:#F4F0EB;--accent:#3D3526;
+  --c-char:#0F6E56;--c-spir:#993C1D;--c-env:#185FA5;--c-ene:#7A4F9B;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{font-size:15px;}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* ── TOP BAR ── */
+.topbar{background:var(--white);border-bottom:1px solid var(--border);padding:12px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;}
+.topbar-title{font-size:13px;font-weight:500;color:var(--muted);}
+.topbar-btns{display:flex;gap:8px;align-items:center;}
+.btn-reset{padding:7px 14px;border:1px solid var(--border);background:transparent;border-radius:3px;font-family:'Noto Sans KR',sans-serif;font-size:12px;color:var(--muted);cursor:pointer;}
+.btn-pdf{padding:7px 16px;background:var(--accent);color:#fff;border:none;border-radius:3px;font-family:'Noto Sans KR',sans-serif;font-size:12px;font-weight:500;cursor:pointer;letter-spacing:.3px;}
+
+/* ── FORM AREA ── */
+.form-wrap{max-width:800px;margin:0 auto;padding:28px 24px 80px;}
+
+/* ── COVER ── */
+.cover{background:var(--white);border-radius:8px;border-top:5px solid var(--accent);padding:32px 36px 28px;margin-bottom:20px;}
+.cover-label{font-size:10px;font-weight:500;letter-spacing:1px;color:var(--light);text-transform:uppercase;margin-bottom:10px;}
+.cover-title{font-family:'Noto Serif KR',serif;font-size:24px;font-weight:600;color:var(--text);margin-bottom:6px;}
+.cover-sub{font-size:13px;color:var(--muted);margin-bottom:24px;}
+.cover-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.cover-field{display:flex;flex-direction:column;gap:5px;}
+.cf-label{font-size:10px;font-weight:500;letter-spacing:.5px;color:var(--light);text-transform:uppercase;}
+.cf-input{border:none;border-bottom:1.5px solid var(--border);background:transparent;padding:6px 2px;font-family:'Noto Sans KR',sans-serif;font-size:13px;color:var(--text);outline:none;width:100%;}
+.cf-input:focus{border-bottom-color:var(--accent);}
+
+/* ── SECTION ── */
+.section{background:var(--white);border-radius:8px;border:1px solid var(--border);margin-bottom:16px;overflow:hidden;}
+.sec-head{display:flex;align-items:center;gap:12px;padding:14px 20px;border-bottom:1px solid var(--border);background:var(--bg);}
+.sec-num{font-size:10px;font-weight:500;color:var(--light);width:22px;flex-shrink:0;}
+.sec-title{font-size:15px;font-weight:500;color:var(--text);flex:1;}
+.sec-badge{font-size:10px;font-weight:500;padding:3px 10px;border-radius:12px;}
+.sec-body{padding:20px;}
+
+/* ── SCORE GRID ── */
+.score-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.score-card{background:var(--bg);border-radius:6px;padding:14px 16px;}
+.score-card-head{font-size:10px;font-weight:500;letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px;}
+.score-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.score-row:last-child{margin-bottom:0;}
+.score-axis{font-size:12px;font-weight:500;width:40px;flex-shrink:0;}
+.score-input{width:52px;border:none;border-bottom:1.5px solid var(--border);background:transparent;text-align:center;font-family:'Noto Sans KR',sans-serif;font-size:13px;font-weight:500;color:var(--text);outline:none;padding:3px 0;}
+.score-input:focus{border-bottom-color:var(--accent);}
+.score-bar-bg{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden;}
+.score-bar-fill{height:5px;border-radius:3px;transition:width .4s;}
+.type-row{display:flex;flex-direction:column;gap:8px;}
+.type-field{display:flex;align-items:center;gap:10px;}
+.type-label{font-size:12px;color:var(--muted);width:80px;flex-shrink:0;}
+.type-input{flex:1;border:none;border-bottom:1.5px solid var(--border);background:transparent;padding:4px 2px;font-family:'Noto Sans KR',sans-serif;font-size:13px;color:var(--text);outline:none;}
+.type-input:focus{border-bottom-color:var(--accent);}
+
+/* ── STRENGTH / WEAK ── */
+.sw-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px;}
+.sw-card{border-radius:6px;padding:14px 16px;}
+.sw-head{font-size:10px;font-weight:500;letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px;}
+.sw-textarea{width:100%;border:none;background:transparent;font-family:'Noto Sans KR',sans-serif;font-size:12px;color:var(--text);resize:none;outline:none;line-height:1.8;min-height:56px;}
+
+/* ── TIMELINE ── */
+.timeline{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--border);border-radius:6px;overflow:hidden;}
+.tl-item{padding:14px 12px;text-align:center;border-right:1px solid var(--border);}
+.tl-item:last-child{border-right:none;}
+.tl-period{font-size:10px;font-weight:500;color:var(--light);letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px;}
+.tl-label{font-size:12px;font-weight:500;color:var(--text);margin-bottom:6px;}
+.tl-input{width:100%;border:none;border-bottom:1px solid var(--border);background:transparent;font-family:'Noto Sans KR',sans-serif;font-size:11px;color:var(--muted);outline:none;text-align:center;padding:3px 0;}
+
+/* ── GROWTH TRACK ── */
+.growth-track{display:flex;flex-direction:column;gap:8px;margin-top:14px;}
+.gt-row{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;border:1px solid var(--border);border-radius:6px;}
+.gt-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:3px;}
+.gt-info{flex:1;}
+.gt-title{font-size:13px;font-weight:500;color:var(--text);margin-bottom:4px;}
+.gt-input{width:100%;border:none;border-bottom:1px solid var(--border);background:transparent;font-family:'Noto Sans KR',sans-serif;font-size:12px;color:var(--muted);outline:none;padding:2px 0;line-height:1.7;}
+.gt-tag{font-size:10px;font-weight:500;padding:3px 9px;border-radius:10px;flex-shrink:0;white-space:nowrap;}
+
+/* ── STRATEGY ── */
+.strategy-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.strat-card{border-radius:6px;padding:14px 16px;}
+.strat-head{font-size:10px;font-weight:500;letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px;}
+.strat-item{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;}
+.strat-item:last-child{margin-bottom:0;}
+.strat-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+.strat-input{flex:1;border:none;border-bottom:1px solid var(--border);background:transparent;font-family:'Noto Sans KR',sans-serif;font-size:12px;color:var(--text);outline:none;padding:2px 0;}
+.strat-memo{margin-top:12px;border:1px solid var(--border);border-radius:6px;padding:14px 16px;}
+.strat-memo-head{font-size:10px;font-weight:500;letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px;}
+.strat-memo-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.strat-memo-row:last-child{margin-bottom:0;}
+.sml{font-size:12px;color:var(--muted);width:64px;flex-shrink:0;}
+.strat-memo-input{flex:1;border:none;border-bottom:1px solid var(--border);background:transparent;font-family:'Noto Sans KR',sans-serif;font-size:12px;color:var(--text);outline:none;padding:2px 0;}
+
+/* ── DOMAIN GRID ── */
+.domain-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.domain-card{border:1px solid var(--border);border-radius:6px;padding:14px 16px;}
+.domain-head{font-size:11px;font-weight:500;letter-spacing:.4px;margin-bottom:10px;}
+.domain-action{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;}
+.domain-action:last-child{margin-bottom:0;}
+.da-num{font-size:11px;color:var(--light);width:16px;flex-shrink:0;margin-top:2px;}
+.da-input{flex:1;border:none;border-bottom:1px solid var(--border);background:transparent;font-family:'Noto Sans KR',sans-serif;font-size:12px;color:var(--text);outline:none;padding:2px 0;line-height:1.6;}
+
+/* ── GOAL TABLE ── */
+.goal-section{margin-bottom:16px;}
+.goal-head{font-size:11px;font-weight:500;color:var(--muted);letter-spacing:.4px;margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+.goal-period-badge{font-size:10px;padding:2px 8px;border-radius:8px;font-weight:500;}
+.goal-row{display:flex;align-items:center;gap:10px;padding:9px 12px;border:1px solid var(--border);border-radius:5px;margin-bottom:6px;}
+.goal-row:last-child{margin-bottom:0;}
+.goal-check{width:16px;height:16px;border:1.5px solid var(--border);border-radius:3px;flex-shrink:0;cursor:pointer;}
+.goal-input{flex:1;border:none;background:transparent;font-family:'Noto Sans KR',sans-serif;font-size:12px;color:var(--text);outline:none;padding:0;}
+.goal-tag-wrap{display:flex;gap:5px;}
+.goal-tag{font-size:10px;font-weight:500;padding:2px 8px;border-radius:8px;}
+
+/* ── CHECKLIST ── */
+.check-group{margin-bottom:16px;}
+.check-group:last-child{margin-bottom:0;}
+.check-group-head{font-size:11px;font-weight:500;letter-spacing:.4px;margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+.check-row{display:flex;align-items:center;gap:10px;padding:9px 12px;border-bottom:1px solid var(--bl);}
+.check-row:last-child{border-bottom:none;}
+.chk{width:16px;height:16px;border:1.5px solid var(--border);border-radius:3px;flex-shrink:0;cursor:pointer;appearance:none;-webkit-appearance:none;position:relative;}
+.chk:checked{background:var(--accent);border-color:var(--accent);}
+.chk:checked::after{content:'✓';position:absolute;top:-1px;left:2px;font-size:11px;color:#fff;font-weight:500;}
+.check-text{flex:1;font-size:12px;color:var(--muted);line-height:1.55;}
+.check-badge{font-size:10px;font-weight:500;padding:2px 8px;border-radius:8px;white-space:nowrap;flex-shrink:0;}
+
+/* ── MEMO ── */
+.memo-area{width:100%;min-height:72px;border:1px solid var(--border);border-radius:6px;padding:12px 14px;font-family:'Noto Sans KR',sans-serif;font-size:12px;color:var(--text);resize:vertical;outline:none;background:var(--bg);line-height:1.8;}
+.memo-area:focus{border-color:var(--accent);}
+.pray-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;}
+.pray-row:last-child{margin-bottom:0;}
+.pray-num{font-size:12px;color:var(--light);width:18px;flex-shrink:0;margin-top:2px;}
+.pray-input{flex:1;border:none;border-bottom:1px solid var(--border);background:transparent;font-family:'Noto Sans KR',sans-serif;font-size:12px;color:var(--text);outline:none;padding:3px 0;line-height:1.7;}
+.pray-input:focus{border-bottom-color:var(--accent);}
+
+/* ── PRINT ── */
+@media print{
+  .topbar{display:none;}
+  .form-wrap{max-width:100%;padding:0;margin:0;}
+  body{background:#fff;}
+  .cover,.section{border-radius:0;page-break-inside:avoid;margin-bottom:0;}
+  .section{border-left:none;border-right:none;border-radius:0;}
+  .cover{border-top-width:4px;}
+  input,textarea{border-bottom-color:#ccc!important;}
+  .btn-reset,.btn-pdf{display:none;}
+  @page{margin:14mm 16mm;size:A4;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="topbar-title">Faith Growth Plan Sheet · For Counselors</span>
+  <div class="topbar-btns">
+    <button class="btn-reset" onclick="resetAll()">Reset</button>
+    <button class="btn-pdf" onclick="window.print()">Save PDF / Print</button>
+  </div>
+</div>
+
+<div class="form-wrap" id="planDoc">
+
+  <!-- COVER -->
+  <div class="cover">
+    <div class="cover-label">Faith Type Assessment Based · Personal Growth Plan</div>
+    <div class="cover-title">Faith Stage Advancement Plan Sheet</div>
+    <div class="cover-sub">Personalized counseling & growth roadmap based on assessment results · For counselors</div>
+    <div class="cover-grid">
+      <div class="cover-field"><span class="cf-label">Counselee Name</span><input class="cf-input" id="c_name" placeholder="Name or Code" /></div>
+      <div class="cover-field"><span class="cf-label">Counselor</span><input class="cf-input" id="c_counselor" placeholder="Assigned Counselor" /></div>
+      <div class="cover-field"><span class="cf-label">Plan Start Date</span><input class="cf-input" id="c_date" type="date" /></div>
+      <div class="cover-field"><span class="cf-label">Faith Type</span><input class="cf-input" id="c_ftype" placeholder="e.g. Seedling" /></div>
+      <div class="cover-field"><span class="cf-label">Calling Type</span><input class="cf-input" id="c_mtype" placeholder="e.g. Connector" /></div>
+      <div class="cover-field"><span class="cf-label">Reassessment Date</span><input class="cf-input" id="c_redate" type="date" /></div>
+    </div>
+  </div>
+
+  <!-- SECTION 01 -->
+  <div class="section">
+    <div class="sec-head">
+      <span class="sec-num">01</span>
+      <span class="sec-title">Assessment Results Summary</span>
+      <span class="sec-badge" style="background:#EEEDFE;color:#3C3489">Base Information</span>
+    </div>
+    <div class="sec-body">
+      <div class="score-grid">
+        <div class="score-card">
+          <div class="score-card-head" style="color:#534AB7">Domain Scores (0–100)</div>
+          <div class="score-row">
+            <span class="score-axis" style="color:var(--c-char)">Character</span>
+            <input class="score-input" id="s_char" type="number" min="0" max="100" placeholder="__" oninput="updateBar('bar_char','s_char','var(--c-char)')" />
+            <div class="score-bar-bg"><div class="score-bar-fill" id="bar_char" style="background:var(--c-char);width:0%"></div></div>
+          </div>
+          <div class="score-row">
+            <span class="score-axis" style="color:var(--c-spir)">Spirituality</span>
+            <input class="score-input" id="s_spir" type="number" min="0" max="100" placeholder="__" oninput="updateBar('bar_spir','s_spir','var(--c-spir)')" />
+            <div class="score-bar-bg"><div class="score-bar-fill" id="bar_spir" style="background:var(--c-spir);width:0%"></div></div>
+          </div>
+          <div class="score-row">
+            <span class="score-axis" style="color:var(--c-env)">Environment</span>
+            <input class="score-input" id="s_env" type="number" min="0" max="100" placeholder="__" oninput="updateBar('bar_env','s_env','var(--c-env)')" />
+            <div class="score-bar-bg"><div class="score-bar-fill" id="bar_env" style="background:var(--c-env);width:0%"></div></div>
+          </div>
+          <div class="score-row">
+            <span class="score-axis" style="color:var(--c-ene)">Energy</span>
+            <input class="score-input" id="s_ene" type="number" min="0" max="100" placeholder="__" oninput="updateBar('bar_ene','s_ene','var(--c-ene)')" />
+            <div class="score-bar-bg"><div class="score-bar-fill" id="bar_ene" style="background:var(--c-ene);width:0%"></div></div>
+          </div>
+        </div>
+        <div class="score-card">
+          <div class="score-card-head" style="color:#0F6E56">Type & Aptitude Information</div>
+          <div class="type-row">
+            <div class="type-field"><span class="type-label">Faith Type</span><input class="type-input" id="t_faith" placeholder="검사 결과 유형" /></div>
+            <div class="type-field"><span class="type-label">Calling Type</span><input class="type-input" id="t_mission" placeholder="검사 결과 유형" /></div>
+            <div class="type-field"><span class="type-label">Top Aptitude</span><input class="type-input" id="t_apt1" placeholder="e.g. Intellectual" /></div>
+            <div class="type-field"><span class="type-label">2nd Aptitude</span><input class="type-input" id="t_apt2" placeholder="e.g. Relational" /></div>
+            <div class="type-field"><span class="type-label">Weak Aptitude</span><input class="type-input" id="t_weak" placeholder="e.g. Expressive" /></div>
+          </div>
+        </div>
+      </div>
+      <div class="sw-grid">
+        <div class="sw-card" style="background:#EAF3DE">
+          <div class="sw-head" style="color:#3B6D11">Strength Domains (High Scores · How to Use)</div>
+          <textarea class="sw-textarea" id="sw_strength" rows="3" placeholder="Record high-scoring domains and how to leverage them."></textarea>
+        </div>
+        <div class="sw-card" style="background:#FAEEDA">
+          <div class="sw-head" style="color:#854F0B">Areas Needing Support (Low Scores · Caution)</div>
+          <textarea class="sw-textarea" id="sw_weak" rows="3" placeholder="Record low-scoring domains and points to watch in counseling."></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 02 -->
+  <div class="section">
+    <div class="sec-head">
+      <span class="sec-num">02</span>
+      <span class="sec-title">Check-in Periods & Expected Growth</span>
+      <span class="sec-badge" style="background:#EAF3DE;color:#27500A">Roadmap</span>
+    </div>
+    <div class="sec-body">
+      <div class="timeline">
+        <div class="tl-item" style="background:#F8F6F1">
+          <div class="tl-period">1months</div>
+          <div class="tl-label">Relationship & Trust</div>
+          <input class="tl-input" id="tl1" placeholder="Key Goal" />
+        </div>
+        <div class="tl-item">
+          <div class="tl-period">3months</div>
+          <div class="tl-label">Building Foundation</div>
+          <input class="tl-input" id="tl3" placeholder="Key Goal" />
+        </div>
+        <div class="tl-item" style="background:#F8F6F1">
+          <div class="tl-period">6months</div>
+          <div class="tl-label">Inner Growth</div>
+          <input class="tl-input" id="tl6" placeholder="Key Goal" />
+        </div>
+        <div class="tl-item">
+          <div class="tl-period">1년</div>
+          <div class="tl-label">Stage Advancement</div>
+          <input class="tl-input" id="tl12" placeholder="Reassessment & Evaluation" />
+        </div>
+      </div>
+      <div class="growth-track">
+        <div class="gt-row">
+          <div class="gt-dot" style="background:#D3D1C7;border:2px solid #B4B2A9;"></div>
+          <div class="gt-info">
+            <div class="gt-title">Current State (Starting Point)</div>
+            <input class="gt-input" id="g_now" placeholder="Briefly record the characteristics of the current faith journey from assessment results." />
+          </div>
+          <span class="gt-tag" style="background:#F1EFE8;color:#5F5E5A">Current</span>
+        </div>
+        <div class="gt-row">
+          <div class="gt-dot" style="background:#B5D4F4;"></div>
+          <div class="gt-info">
+            <div class="gt-title">Expected State After 3 Months</div>
+            <input class="gt-input" id="g_3m" placeholder="Record specific changes expected for this counselee after 3 months." />
+          </div>
+          <span class="gt-tag" style="background:#E6F1FB;color:#0C447C">Short-term</span>
+        </div>
+        <div class="gt-row">
+          <div class="gt-dot" style="background:#9FE1CB;"></div>
+          <div class="gt-info">
+            <div class="gt-title">Expected State After 6 Months</div>
+            <input class="gt-input" id="g_6m" placeholder="Record the expected faith growth after 6 months." />
+          </div>
+          <span class="gt-tag" style="background:#E1F5EE;color:#085041">Mid-term</span>
+        </div>
+        <div class="gt-row">
+          <div class="gt-dot" style="background:#639922;"></div>
+          <div class="gt-info">
+            <div class="gt-title">Expected State After 1 Year (Reassessment Goal)</div>
+            <input class="gt-input" id="g_1y" placeholder="Record expected score changes and life changes at the 1-year reassessment." />
+          </div>
+          <span class="gt-tag" style="background:#EAF3DE;color:#27500A">Long-term</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 03 -->
+  <div class="section">
+    <div class="sec-head">
+      <span class="sec-num">03</span>
+      <span class="sec-title">Aptitude Utilization & Weakness Support Strategy</span>
+      <span class="sec-badge" style="background:#FAEEDA;color:#633806">Custom Strategy</span>
+    </div>
+    <div class="sec-body">
+      <div class="strategy-grid">
+        <div class="strat-card" style="background:#EAF3DE">
+          <div class="strat-head" style="color:#3B6D11">Strength Aptitude Utilization Strategy</div>
+          <div class="strat-item"><div class="strat-dot" style="background:#3B6D11"></div><input class="strat-input" id="str_s1" placeholder="Approach through top aptitude" /></div>
+          <div class="strat-item"><div class="strat-dot" style="background:#3B6D11"></div><input class="strat-input" id="str_s2" placeholder="Connection between calling type and aptitude" /></div>
+          <div class="strat-item"><div class="strat-dot" style="background:#3B6D11"></div><input class="strat-input" id="str_s3" placeholder="Role connection within community" /></div>
+          <div class="strat-item"><div class="strat-dot" style="background:#3B6D11"></div><input class="strat-input" id="str_s4" placeholder="How to bypass weaknesses using strengths" /></div>
+        </div>
+        <div class="strat-card" style="background:#FAEEDA">
+          <div class="strat-head" style="color:#854F0B">Weakness Area Support Strategy</div>
+          <div class="strat-item"><div class="strat-dot" style="background:#854F0B"></div><input class="strat-input" id="str_w1" placeholder="Core cause of low-scoring domain" /></div>
+          <div class="strat-item"><div class="strat-dot" style="background:#854F0B"></div><input class="strat-input" id="str_w2" placeholder="Environment improvement priority" /></div>
+          <div class="strat-item"><div class="strat-dot" style="background:#854F0B"></div><input class="strat-input" id="str_w3" placeholder="Approach that doesn't expose weaknesses" /></div>
+          <div class="strat-item"><div class="strat-dot" style="background:#854F0B"></div><input class="strat-input" id="str_w4" placeholder="Gradual support sequence" /></div>
+        </div>
+      </div>
+      <div class="strat-memo">
+        <div class="strat-memo-head" style="color:#534AB7">Integrated Strategy Memo for This Counselee</div>
+        <div class="strat-memo-row"><span class="sml">Aptitude Use</span><input class="strat-memo-input" id="str_m1" placeholder="How to use this counselee's aptitude for faith growth" /></div>
+        <div class="strat-memo-row"><span class="sml">Calling Connection</span><input class="strat-memo-input" id="str_m2" placeholder="How to connect calling type with current faith stage" /></div>
+        <div class="strat-memo-row"><span class="sml">Support Strategy</span><input class="strat-memo-input" id="str_m3" placeholder="Approach direction for gradually supporting weak areas" /></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 04 -->
+  <div class="section">
+    <div class="sec-head">
+      <span class="sec-num">04</span>
+      <span class="sec-title">This Month's Action Plan by 4 Domains</span>
+      <span class="sec-badge" style="background:#FAECE7;color:#712B13">Action Design</span>
+    </div>
+    <div class="sec-body">
+      <div class="domain-grid">
+        <div class="domain-card" style="border-left:3px solid var(--c-char);">
+          <div class="domain-head" style="color:var(--c-char)">Character — Personality & Relationships</div>
+          <div class="domain-action"><span class="da-num">1</span><input class="da-input" id="d_c1" placeholder="This month's Character domain action" /></div>
+          <div class="domain-action"><span class="da-num">2</span><input class="da-input" id="d_c2" placeholder="Specific action for relationships, character, emotions" /></div>
+          <div class="domain-action"><span class="da-num">3</span><input class="da-input" id="d_c3" placeholder="Optional" /></div>
+        </div>
+        <div class="domain-card" style="border-left:3px solid var(--c-spir);">
+          <div class="domain-head" style="color:var(--c-spir)">Spirituality — Word & Spiritual Life</div>
+          <div class="domain-action"><span class="da-num">1</span><input class="da-input" id="d_s1" placeholder="This month's Spirituality domain action" /></div>
+          <div class="domain-action"><span class="da-num">2</span><input class="da-input" id="d_s2" placeholder="Action for Word, prayer, spiritual growth" /></div>
+          <div class="domain-action"><span class="da-num">3</span><input class="da-input" id="d_s3" placeholder="Optional" /></div>
+        </div>
+        <div class="domain-card" style="border-left:3px solid var(--c-env);">
+          <div class="domain-head" style="color:var(--c-env)">Environment — Circumstances & Conditions</div>
+          <div class="domain-action"><span class="da-num">1</span><input class="da-input" id="d_e1" placeholder="This month's Environment domain action" /></div>
+          <div class="domain-action"><span class="da-num">2</span><input class="da-input" id="d_e2" placeholder="Action for environment improvement and community connection" /></div>
+          <div class="domain-action"><span class="da-num">3</span><input class="da-input" id="d_e3" placeholder="Optional" /></div>
+        </div>
+        <div class="domain-card" style="border-left:3px solid var(--c-ene);">
+          <div class="domain-head" style="color:var(--c-ene)">Energy — Will to Change</div>
+          <div class="domain-action"><span class="da-num">1</span><input class="da-input" id="d_n1" placeholder="This month's Energy domain action" /></div>
+          <div class="domain-action"><span class="da-num">2</span><input class="da-input" id="d_n2" placeholder="Action for motivation, vitality, participation" /></div>
+          <div class="domain-action"><span class="da-num">3</span><input class="da-input" id="d_n3" placeholder="Optional" /></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 05 -->
+  <div class="section">
+    <div class="sec-head">
+      <span class="sec-num">05</span>
+      <span class="sec-title">Specific Practice Goals</span>
+      <span class="sec-badge" style="background:#E6F1FB;color:#0C447C">Weekly · Monthly</span>
+    </div>
+    <div class="sec-body">
+      <div class="goal-section">
+        <div class="goal-head">
+          <span class="goal-period-badge" style="background:#FAECE7;color:#712B13">This Week · 1 only</span>
+          <span style="font-size:11px;color:var(--light)">Start small and certain</span>
+        </div>
+        <div class="goal-row">
+          <input type="checkbox" class="goal-check chk" />
+          <input class="goal-input" id="g_week" placeholder="Record specifically one action to practice this week." />
+          <div class="goal-tag-wrap">
+            <select id="g_week_tag" style="border:none;background:transparent;font-family:'Noto Sans KR',sans-serif;font-size:11px;color:var(--muted);outline:none;cursor:pointer;">
+              <option>Select Domain</option><option>Character</option><option>Spirituality</option><option>Environment</option><option>Energy</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="goal-section">
+        <div class="goal-head">
+          <span class="goal-period-badge" style="background:#EAF3DE;color:#27500A">This Month · 3 items</span>
+          <span style="font-size:11px;color:var(--light)">Include all 4 domains evenly</span>
+        </div>
+        <div id="month-goals"></div>
+      </div>
+      <div class="goal-section" style="margin-bottom:0">
+        <div class="goal-head">
+          <span class="goal-period-badge" style="background:#EEEDFE;color:#3C3489">3-Month Core Goal · 1 item</span>
+          <span style="font-size:11px;color:var(--light)">Set together by counselor and counselee</span>
+        </div>
+        <div class="goal-row">
+          <input type="checkbox" class="goal-check chk" />
+          <input class="goal-input" id="g_qtr" placeholder="Record the faith growth goal to achieve within 3 months." />
+          <span class="goal-tag" style="background:#EEEDFE;color:#3C3489">Core</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 06 -->
+  <div class="section">
+    <div class="sec-head">
+      <span class="sec-num">06</span>
+      <span class="sec-title">Care Checklist</span>
+      <span class="sec-badge" style="background:#FBEAF0;color:#72243E">Counselor Review</span>
+    </div>
+    <div class="sec-body">
+      <div class="check-group">
+        <div class="check-group-head" style="color:#993556">
+          <span style="font-size:10px;font-weight:500;padding:3px 9px;border-radius:10px;background:#FBEAF0;color:#72243E;text-transform:uppercase;letter-spacing:.4px;">Required Check Before Each Session</span>
+        </div>
+        <div style="border:1px solid var(--border);border-radius:6px;overflow:hidden;">
+          <div class="check-row"><input type="checkbox" class="chk" /><span class="check-text">Check and give feedback on last week's practice goal</span><span class="check-badge" style="background:#FBEAF0;color:#72243E">Required</span></div>
+          <div class="check-row"><input type="checkbox" class="chk" /><span class="check-text">Check current energy level and emotional state (1–10)</span><span class="check-badge" style="background:#FBEAF0;color:#72243E">Required</span></div>
+          <div class="check-row"><input type="checkbox" class="chk" /><span class="check-text">Any environmental changes or new difficulties</span><span class="check-badge" style="background:#FAEEDA;color:#633806">Check</span></div>
+          <div class="check-row"><input type="checkbox" class="chk" /><span class="check-text">Maintaining community connection (attendance, relationships)</span><span class="check-badge" style="background:#FAEEDA;color:#633806">Check</span></div>
+          <div class="check-row"><input type="checkbox" class="chk" /><span class="check-text">Signs of burnout, isolation, or low motivation</span><span class="check-badge" style="background:#FCEBEB;color:#A32D2D">Warning</span></div>
+          <div class="check-row"><input type="checkbox" class="chk" /><span class="check-text">Continuity of Word reading or prayer life</span><span class="check-badge" style="background:#FAEEDA;color:#633806">Check</span></div>
+        </div>
+      </div>
+      <div class="check-group">
+        <div class="check-group-head" style="color:#854F0B">
+          <span style="font-size:10px;font-weight:500;padding:3px 9px;border-radius:10px;background:#FAEEDA;color:#633806;text-transform:uppercase;letter-spacing:.4px;">3-Month Midpoint Evaluation</span>
+        </div>
+        <div style="border:1px solid var(--border);border-radius:6px;overflow:hidden;">
+          <div class="check-row"><input type="checkbox" class="chk" /><span class="check-text">Record comparison of expected vs. actual change at 3 months</span><span class="check-badge" style="background:#FAEEDA;color:#633806">Evaluate</span></div>
+          <div class="check-row"><input type="checkbox" class="chk" /><span class="check-text">Explore perceived changes by domain (predict score changes)</span><span class="check-badge" style="background:#FAEEDA;color:#633806">Evaluate</span></div>
+          <div class="check-row"><input type="checkbox" class="chk" /><span class="check-text">Check if aptitude & calling type are being used well</span><span class="check-badge" style="background:#FAEEDA;color:#633806">Evaluate</span></div>
+          <div class="check-row"><input type="checkbox" class="chk" /><span class="check-text">Need to revise goals or reset 2nd-phase plan</span><span class="check-badge" style="background:#FAEEDA;color:#633806">Evaluate</span></div>
+          <div class="check-row"><input type="checkbox" class="chk" /><span class="check-text">Confirm and encourage growth the counselee perceives</span><span class="check-badge" style="background:#E1F5EE;color:#085041">Encourage</span></div>
+        </div>
+      </div>
+      <div class="check-group" style="margin-bottom:0">
+        <div class="check-group-head" style="color:#3B6D11">
+          <span style="font-size:10px;font-weight:500;padding:3px 9px;border-radius:10px;background:#EAF3DE;color:#27500A;text-transform:uppercase;letter-spacing:.4px;">1-Year Closing Check · Reassessment</span>
+        </div>
+        <div style="border:1px solid var(--border);border-radius:6px;overflow:hidden;">
+          <div class="check-row"><input type="checkbox" class="chk" /><span class="check-text">Readminister assessment and compare scores</span><span class="check-badge" style="background:#EAF3DE;color:#27500A">Reassess</span></div>
+          <div class="check-row"><input type="checkbox" class="chk" /><span class="check-text">Confirm faith type change or reinforcement</span><span class="check-badge" style="background:#EAF3DE;color:#27500A">Reassess</span></div>
+          <div class="check-row"><input type="checkbox" class="chk" /><span class="check-text">Reconfirm calling type and connect to next stage</span><span class="check-badge" style="background:#EAF3DE;color:#27500A">Reassess</span></div>
+          <div class="check-row"><input type="checkbox" class="chk" /><span class="check-text">Decide whether to design a 2nd-year plan</span><span class="check-badge" style="background:#EEEDFE;color:#3C3489">Next Stage</span></div>
+          <div class="check-row"><input type="checkbox" class="chk" /><span class="check-text">Mutual gratitude and closure for 1 year of companionship</span><span class="check-badge" style="background:#EAF3DE;color:#27500A">Closing</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 07 -->
+  <div class="section">
+    <div class="sec-head">
+      <span class="sec-num">07</span>
+      <span class="sec-title">Counselor Memo & Prayer Items</span>
+      <span class="sec-badge" style="background:#F1EFE8;color:#444441">Record</span>
+    </div>
+    <div class="sec-body">
+      <div style="margin-bottom:16px;">
+        <div class="strat-memo-head" style="color:#5F5E5A;margin-bottom:8px;">Observations & Notable Points During Counseling</div>
+        <textarea class="memo-area" id="memo_obs" rows="4" placeholder="Freely record observations, counselee characteristics, and points to watch in counseling."></textarea>
+      </div>
+      <div>
+        <div class="strat-memo-head" style="color:#534AB7;margin-bottom:10px;">이 Prayer Items for This Counselee</div>
+        <div class="pray-row"><span class="pray-num">1</span><input class="pray-input" id="p1" placeholder="First prayer item" /></div>
+        <div class="pray-row"><span class="pray-num">2</span><input class="pray-input" id="p2" placeholder="Second prayer item" /></div>
+        <div class="pray-row"><span class="pray-num">3</span><input class="pray-input" id="p3" placeholder="Third prayer item" /></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── SCORE BARS ──
+function updateBar(barId, inputId, color){
+  const val = Math.min(100, Math.max(0, parseInt(document.getElementById(inputId).value)||0));
+  const bar = document.getElementById(barId);
+  bar.style.width = val+'%';
+  bar.style.background = color;
+}
+
+// ── MONTH GOALS (3 rows) ──
+const domainTags = ['Character','Spirituality','Environment','Energy'];
+const domainColors = {
+  'Character': {bg:'#E1F5EE',c:'#085041'},
+  'Spirituality': {bg:'#FAECE7',c:'#712B13'},
+  'Environment': {bg:'#E6F1FB',c:'#0C447C'},
+  'Energy': {bg:'#F0EAFE',c:'#4B2E74'},
+};
+function buildMonthGoals(){
+  const wrap = document.getElementById('month-goals');
+  wrap.innerHTML = '';
+  for(let i=1;i<=3;i++){
+    const row = document.createElement('div');
+    row.className = 'goal-row';
+    row.style.marginBottom = i<3?'6px':'0';
+    const chk = document.createElement('input');
+    chk.type='checkbox'; chk.className='goal-check chk';
+    const inp = document.createElement('input');
+    inp.className='goal-input'; inp.id='g_m'+i;
+    inp.placeholder='This month's practice goal'+i+' — Record as specific actions.';
+    const sel = document.createElement('select');
+    sel.id='g_m'+i+'_tag';
+    sel.style.cssText='border:none;background:transparent;font-family:\'Noto Sans KR\',sans-serif;font-size:11px;color:#B0A99E;outline:none;cursor:pointer;';
+    const defOpt = document.createElement('option');
+    defOpt.textContent='Domain';
+    sel.appendChild(defOpt);
+    domainTags.forEach(d=>{const o=document.createElement('option');o.textContent=d;sel.appendChild(o);});
+    sel.onchange=()=>{
+      const v=sel.value, col=domainColors[v];
+      if(col){sel.style.color=col.c;sel.style.background=col.bg;sel.style.padding='2px 8px';sel.style.borderRadius='8px';}
+    };
+    row.appendChild(chk); row.appendChild(inp); row.appendChild(sel);
+    wrap.appendChild(row);
+  }
+}
+buildMonthGoals();
+
+// ── RESET ──
+function resetAll(){
+  if(!confirm('Reset all data? This cannot be undone.')) return;
+  document.querySelectorAll('input[type="text"],input:not([type]),input[type="number"],input[type="date"],textarea').forEach(el=>{el.value='';});
+  document.querySelectorAll('input[type="checkbox"]').forEach(el=>{el.checked=false;});
+  document.querySelectorAll('select').forEach(el=>{el.selectedIndex=0;el.style.cssText='border:none;background:transparent;font-family:\'Noto Sans KR\',sans-serif;font-size:11px;color:#B0A99E;outline:none;cursor:pointer;';});
+  ['bar_char','bar_spir','bar_env','bar_ene'].forEach(id=>{const b=document.getElementById(id);if(b)b.style.width='0%';});
+}
+
+// ── AUTO-SAVE to localStorage ──
+function saveData(){
+  const data={};
+  document.querySelectorAll('[id]').forEach(el=>{
+    if(el.tagName==='INPUT'||el.tagName==='TEXTAREA'||el.tagName==='SELECT') data[el.id]=el.tagName==='INPUT'&&el.type==='checkbox'?el.checked:el.value;
+  });
+  try{localStorage.setItem('faithPlan',JSON.stringify(data));}catch(e){}
+}
+function loadData(){
+  try{
+    const raw=localStorage.getItem('faithPlan');
+    if(!raw) return;
+    const data=JSON.parse(raw);
+    Object.keys(data).forEach(id=>{
+      const el=document.getElementById(id);
+      if(!el) return;
+      if(el.tagName==='INPUT'&&el.type==='checkbox') el.checked=data[id];
+      else el.value=data[id];
+    });
+    ['char','spir','env','ene'].forEach(k=>{
+      const el=document.getElementById('s_'+k);
+      if(el&&el.value) updateBar('bar_'+k,'s_'+k,'var(--c-'+k+')');
+    });
+    document.querySelectorAll('select').forEach(sel=>{
+      if(sel.value&&domainColors[sel.value]){const col=domainColors[sel.value];sel.style.color=col.c;sel.style.background=col.bg;sel.style.padding='2px 8px';sel.style.borderRadius='8px';}
+    });
+  }catch(e){}
+}
+document.addEventListener('input',saveData);
+document.addEventListener('change',saveData);
+loadData();
+</script>
+</body>
+</html>
