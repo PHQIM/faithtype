@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Faith Type Counseling Guide — For Counselors</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@300;400;500&display=swap');
+:root{
+  --bg:#F8F6F1;--white:#FFFFFF;--text:#1A1814;--muted:#7A7568;--light:#B0A99E;
+  --border:#E8E3DC;--border-light:#F4F0EB;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{font-size:16px;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+.topbar{background:var(--white);border-bottom:1px solid var(--border);padding:14px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.topbar-title{font-size:13px;font-weight:500;color:var(--muted);letter-spacing:.3px;}
+.topbar-right{display:flex;align-items:center;gap:12px;}
+.select-wrap{position:relative;}
+.type-select{appearance:none;-webkit-appearance:none;background:var(--white);border:1px solid var(--border);border-radius:4px;padding:8px 36px 8px 14px;font-family:'Inter',sans-serif;font-size:13px;font-weight:500;color:var(--text);cursor:pointer;outline:none;min-width:210px;}
+.select-arrow{position:absolute;right:12px;top:50%;transform:translateY(-50%);pointer-events:none;width:12px;height:12px;color:var(--light);}
+.btn-print{padding:8px 16px;background:var(--text);color:var(--white);border:none;border-radius:4px;font-family:'Inter',sans-serif;font-size:12px;font-weight:500;cursor:pointer;letter-spacing:.3px;}
+
+.main{max-width:760px;margin:0 auto;padding:32px 24px 80px;}
+
+.cover{padding:40px 40px 36px;background:var(--white);border-radius:8px;border-top:4px solid var(--type-color,#534AB7);margin-bottom:24px;}
+.cover-eyebrow{font-size:10px;font-weight:500;letter-spacing:1.2px;color:var(--light);text-transform:uppercase;margin-bottom:14px;}
+.cover-badge{display:inline-flex;align-items:center;gap:8px;border-radius:4px;padding:7px 14px;margin-bottom:18px;}
+.cover-badge-dot{width:8px;height:8px;border-radius:50%;}
+.cover-badge-text{font-size:12px;font-weight:500;letter-spacing:.3px;}
+.cover-title{font-family:'Playfair Display',serif;font-size:26px;font-weight:600;line-height:1.3;margin-bottom:8px;}
+.cover-sub{font-size:14px;color:var(--muted);margin-bottom:24px;}
+.cover-chips{display:flex;flex-wrap:wrap;gap:10px;}
+.chip{font-size:11px;color:var(--muted);background:var(--bg);padding:5px 12px;border-radius:20px;border:1px solid var(--border);}
+
+.toc{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:20px 24px;margin-bottom:24px;}
+.toc-label{font-size:10px;font-weight:500;letter-spacing:.8px;color:var(--light);text-transform:uppercase;margin-bottom:14px;}
+.toc-list{display:flex;flex-direction:column;gap:7px;}
+.toc-item{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);}
+.toc-num{font-size:11px;color:var(--light);width:22px;flex-shrink:0;}
+.toc-name{flex:1;}
+.toc-dots{flex:1;border-bottom:1px dotted var(--border);margin:0 4px;}
+
+.section{background:var(--white);border-radius:8px;border:1px solid var(--border);padding:28px 32px;margin-bottom:16px;}
+.sec-num{font-size:10px;font-weight:500;letter-spacing:.8px;color:var(--light);text-transform:uppercase;margin-bottom:6px;}
+.sec-title{font-size:18px;font-weight:600;color:var(--text);margin-bottom:6px;}
+.sec-desc{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:20px;}
+
+.profile-box{border-radius:6px;padding:18px 20px;margin-bottom:0;}
+.profile-label{font-size:10px;font-weight:500;letter-spacing:.6px;text-transform:uppercase;margin-bottom:12px;}
+.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.pi{display:flex;flex-direction:column;gap:3px;}
+.pi-label{font-size:11px;}
+.pi-value{font-size:13px;font-weight:500;line-height:1.5;}
+
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:0;}
+.card{border-radius:6px;padding:16px 18px;}
+.card-head{font-size:10px;font-weight:500;letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px;}
+.card-item{font-size:13px;line-height:1.65;padding-left:12px;position:relative;margin-bottom:5px;color:#444441;}
+.card-item:last-child{margin-bottom:0;}
+.card-item::before{content:'·';position:absolute;left:0;color:#888780;}
+
+.ap-table{width:100%;border-collapse:collapse;font-size:13px;}
+.ap-table th{text-align:left;font-size:10px;font-weight:500;letter-spacing:.5px;color:var(--light);text-transform:uppercase;padding:8px 10px;border-bottom:1px solid var(--border);}
+.ap-table td{padding:11px 10px;border-bottom:1px solid var(--border-light);vertical-align:top;color:#444441;line-height:1.65;}
+.ap-table tr:last-child td{border-bottom:none;}
+.tag{display:inline-block;font-size:10px;font-weight:500;padding:3px 9px;border-radius:10px;white-space:nowrap;}
+.tag-do{background:#EAF3DE;color:#27500A;}
+.tag-dont{background:#FAECE7;color:#712B13;}
+.ap-table td:first-child{width:70px;padding-right:4px;}
+
+.axis-list{display:flex;flex-direction:column;gap:10px;}
+.ai-row{display:flex;gap:12px;align-items:flex-start;}
+.ai-badge{font-size:11px;font-weight:500;padding:4px 12px;border-radius:20px;white-space:nowrap;flex-shrink:0;margin-top:1px;min-width:100px;text-align:center;}
+.ai-text{font-size:13px;color:#444441;line-height:1.65;}
+
+.q-list{display:flex;flex-direction:column;gap:10px;}
+.q-item{background:var(--bg);border-radius:6px;padding:13px 16px 13px 28px;font-size:13px;color:#444441;line-height:1.7;position:relative;}
+.q-item::before{content:'\201C';position:absolute;left:12px;top:12px;font-size:18px;color:var(--light);font-family:'Playfair Display',serif;}
+
+.watch-box{border-radius:0 6px 6px 0;padding:14px 18px;margin-bottom:12px;}
+.watch-box:last-child{margin-bottom:0;}
+.watch-label{font-size:10px;font-weight:500;letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px;}
+.watch-text{font-size:13px;line-height:1.7;}
+
+.growth-box{border-radius:6px;padding:20px 22px;}
+.growth-label{font-size:10px;font-weight:500;letter-spacing:.6px;text-transform:uppercase;margin-bottom:14px;}
+.growth-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.gi{display:flex;flex-direction:column;gap:3px;}
+.gi-label{font-size:11px;}
+.gi-value{font-size:13px;font-weight:500;line-height:1.5;}
+
+.scripture{text-align:center;padding:28px 24px;border-top:1px solid var(--border);margin-top:16px;}
+.verse{font-family:'Playfair Display',serif;font-size:16px;color:var(--text);line-height:1.9;margin-bottom:8px;font-style:italic;white-space:pre-line;}
+.verse-ref{font-size:11px;color:var(--light);}
+
+.mission-list{display:flex;flex-direction:column;gap:0;}
+.mission-item{display:flex;align-items:flex-start;gap:14px;padding:13px 0;border-bottom:1px solid var(--border-light);}
+.mission-item:last-child{border-bottom:none;}
+.mission-num{font-family:'Playfair Display',serif;font-size:16px;font-weight:600;width:24px;flex-shrink:0;line-height:1.5;}
+.mission-text{font-size:13px;color:#444441;line-height:1.75;flex:1;}
+.mission-intro{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:16px;padding:12px 16px;border-left:3px solid var(--border);border-radius:0 4px 4px 0;}
+
+.guide-footer{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:14px 24px;display:flex;justify-content:space-between;align-items:center;margin-top:16px;}
+.footer-l{font-size:11px;color:var(--light);}
+
+.divider{height:1px;background:var(--border);margin:20px 0;}
+
+@media print{
+  .topbar{display:none;}
+  .main{max-width:100%;padding:0;margin:0;}
+  body{background:#fff;}
+  .cover,.section,.toc,.guide-footer{border-radius:0;border-left:none;border-right:none;page-break-inside:avoid;}
+  .cover{border-top-width:3px;margin-bottom:0;}
+  .section{margin-bottom:0;border-bottom:1px solid var(--border);}
+  .btn-print{display:none;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="topbar-title">Faith Type Counseling Guide &middot; For Counselors</span>
+  <div class="topbar-right">
+    <div class="select-wrap">
+      <select class="type-select" id="typeSelect" onchange="switchType(this.value)">
+        <option value="0">Type 01 &mdash; The Root</option>
+        <option value="1">Type 02 &mdash; The Seed</option>
+        <option value="2">Type 03 &mdash; The Ground</option>
+        <option value="3">Type 04 &mdash; The Fruit</option>
+        <option value="4">Type 05 &mdash; The Wilderness</option>
+        <option value="5">Type 06 &mdash; The Seeker</option>
+        <option value="6">Type 07 &mdash; The Endurer</option>
+        <option value="7">Type 08 &mdash; The Beginner</option>
+      </select>
+      <svg class="select-arrow" viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <button class="btn-print" onclick="window.print()">Print / PDF</button>
+  </div>
+</div>
+
+<div class="main" id="guideContent"></div>
+
+<script>
+const TYPES = [
+  {
+    num:'01', name:'The Root', sub:'A faith deeply rooted',
+    color:'#534AB7', light:'#EEEDFE', dark:'#3C3489',
+    axes:'Divinity High · Humanity High', diff:'Medium', need:'Depth & Authenticity',
+    profile:{
+      'Desire':'Authentic faith and deep understanding of Scripture',
+      'Fear':'Appearing faithful only on the surface; superficial faith',
+      'Motivation':'Aligning Word and life; standing on truth',
+      'Under Stress':'Intensified perfectionist self-standards, tendency to isolate',
+      'Relationships':'Prefers deep relationships after trust is built; uncomfortable with superficiality',
+      'Growth Trigger':'Genuine community experience, sharing and serving'
+    },
+    strengths:['Firm trust in Scripture','High sense of responsibility and reliability','Deep longing for spiritual depth','Commitment to community','Ability to detect authenticity'],
+    cautions:['Too hard on themselves','Difficulty showing vulnerability','Tendency to ignore burnout signs','Sets high faith standards for others','Appears fine on the outside'],
+    approaches:[
+      {tag:'do', how:'Listen first; withhold judgment', why:'They only open up in spaces that feel genuinely safe'},
+      {tag:'do', how:'Start by acknowledging their strengths', why:'High self-criticism means affirmation is the foundation of trust'},
+      {tag:'do', how:'Give permission to rest', why:'Core message to help them move away from performance-driven faith'},
+      {tag:'dont', how:'Avoid challenging them to do more', why:'They are already doing enough; adding more will only burden them'},
+      {tag:'dont', how:'Avoid surface-level compliments', why:'Their high authenticity-radar sees through hollow responses'},
+    ],
+    axes_guide:[
+      {axis:'Divinity High', bg:'#FAECE7', color:'#712B13', text:'Their assurance of salvation and trust in Scripture is solid. Rather than exploring spiritual certainty, explore how that certainty connects to their daily life.'},
+      {axis:'Humanity High', bg:'#E1F5EE', color:'#085041', text:'Relationships and character are stable. Check whether they have a pattern of depleting themselves for others.'},
+      {axis:'Environment Mid', bg:'#E6F1FB', color:'#0C447C', text:'External support may be weak. Identify specific challenges: family dynamics, accessibility to community gatherings, etc.'},
+      {axis:'Energy Low', bg:'#F0EAFE', color:'#4B2E74', text:'Low change-energy is a signal of possible burnout. Prioritize recovery and rest before introducing new challenges.'},
+    ],
+    questions:[
+      'When you engage with Scripture lately, what emotion do you feel — joy or a sense of duty?',
+      'What gives you the most strength in your faith life right now?',
+      'Have you told someone honestly that you\'re struggling recently?',
+      'Is there something you haven\'t yet given yourself permission to do?',
+      'In this moment, can you sense what you need most?',
+    ],
+    warnings:[
+      {color:'#FCEBEB', border:'#A32D2D', label:'Burnout Warning Signal', labelColor:'#A32D2D', textColor:'#501313', text:'When someone appears to be doing well on the outside but scores low in energy, they may be inwardly depleted. Don\'t take "I\'m fine" at face value — invite them deeper with thoughtful questions.'},
+      {color:'#FFF8F0', border:'#E8A44A', label:'Perfectionism Pattern', labelColor:'#854F0B', textColor:'#633806', text:'Their faith standards may be so high that they always feel inadequate. Repeatedly deliver the message "You are doing well enough" throughout the entire session.'},
+    ],
+    growth:{
+      'Short-term':'Permission for self-acceptance and rest; repeated confirmation they are doing well',
+      'Mid-term':'Connecting them to a natural space of sharing within community',
+      'Long-term':'Allowing the depth of their faith to flow into everyday life and relationships',
+      'Risk Period':'When they try to handle everything alone — ongoing connection is essential',
+    },
+    verse:'"I can do all things\nthrough him who strengthens me."',
+    verseRef:'Philippians 4:13',
+    scripture_note:'A passage to share together at the close of the session.',
+    missionIntro:'The direction of these missions is not "adding more" but letting what they already have flow — and resting.',
+    missions:[
+      'Choose one verse from this week\'s Scripture and explain it briefly to someone close, as if giving a short speech',
+      'Write down one thing in your faith that has been holding you back — something you haven\'t been able to let go of',
+      'List three moments in your faith journey for which you are most grateful',
+      'Take time to listen fully to a fellow member\'s story — without giving any advice',
+    ],
+  },
+  {
+    num:'02', name:'The Seed', sub:'A faith full of potential',
+    color:'#0F6E56', light:'#E1F5EE', dark:'#085041',
+    axes:'Humanity High · Divinity Mid', diff:'Low', need:'Affirming Growth Potential',
+    profile:{
+      'Desire':'Wants to know the truth and find meaning within community',
+      'Fear':'That their faith might be fake, or that they might waver without roots',
+      'Motivation':'A warm desire to share genuine connection within relationships',
+      'Under Stress':'May drift or be easily influenced by others when lacking conviction',
+      'Relationships':'Relationally oriented; tends to reach out first and share warmth',
+      'Growth Trigger':'Systematic Bible study and a trustworthy companion'
+    },
+    strengths:['Warm and open character','Builds trust well within relationships','Open mind eager to learn new things','Naturally blends into community','Genuine desire to share sincerely'],
+    cautions:['May waver due to shallow scriptural roots','Easily influenced by surrounding atmosphere','Faith conviction may be unstable','Tendency to want quick answers','Limited experience wrestling deeply with Scripture'],
+    approaches:[
+      {tag:'do', how:'Approach relationally; start with warmth', why:'For this type, the relationship must open before content can enter'},
+      {tag:'do', how:'Create an atmosphere that welcomes questions', why:'They need the message that not yet having certainty is natural'},
+      {tag:'do', how:'Connect their character to the language of faith', why:'Link: "your warmth is the very character of God"'},
+      {tag:'dont', how:'Avoid pressing for quick decisions or certainty', why:'An unprepared commitment becomes a burden and causes them to leave'},
+      {tag:'dont', how:'Avoid delivering too much content at once', why:'Experiencing and feeling one thing at a time is most effective'},
+    ],
+    axes_guide:[
+      {axis:'Humanity High', bg:'#E1F5EE', color:'#085041', text:'Warm character and relational ability are great strengths. Help them recognize that this is already the seed of faith.'},
+      {axis:'Divinity Mid', bg:'#FAECE7', color:'#712B13', text:'Spiritual conviction is forming. View the absence of certainty not as a problem but as a journey of exploration — walk it together.'},
+      {axis:'Environment', bg:'#E6F1FB', color:'#0C447C', text:'When the environment is supportive, growth accelerates. Review surrounding relationships and community setting together.'},
+      {axis:'Energy', bg:'#F0EAFE', color:'#4B2E74', text:'If energy is high, connect actively. If low, start with a low-pressure, small step of participation.'},
+    ],
+    questions:[
+      'Is there something you\'ve been most curious about in faith lately?',
+      'When do you feel most at ease within the community?',
+      'Has any passage of Scripture touched your heart recently? Which one?',
+      'What do you feel you need most in your faith journey right now?',
+      'Do you have any questions about faith that still haven\'t been resolved?',
+    ],
+    warnings:[
+      {color:'#FFF8F0', border:'#E8A44A', label:'Risk of Wavering', labelColor:'#854F0B', textColor:'#633806', text:'They may be heavily influenced by circumstances or relationships. There is a risk of drifting from faith due to unhealthy relationships or environmental change — regularly check their connection status.'},
+      {color:'#E1F5EE', border:'#0F6E56', label:'Potential for Accelerated Growth', labelColor:'#085041', textColor:'#085041', text:'When connected to systematic Bible study and a trustworthy companion, this type can grow rapidly. Connect them to a structured learning opportunity at the right moment.'},
+    ],
+    growth:{
+      'Short-term':'Form safe relationships that welcome questions; low-pressure participation',
+      'Mid-term':'Connect to systematic Bible study; build a 1-on-1 companion relationship',
+      'Long-term':'Form inner roots so Scripture becomes the standard for life',
+      'Risk Period':'When isolated or relationships break off — periodic reconnection is necessary',
+    },
+    verse:'"He who began a good work in you\nwill bring it to completion\nat the day of Jesus Christ."',
+    verseRef:'Philippians 1:6',
+    scripture_note:'Share this alongside the message: "Just as you are right now is enough."',
+    missionIntro:'Missions focus on small, safe first experiences — the first wrestling match to take root in Scripture.',
+    missions:[
+      'Write down five questions you are most curious about regarding faith',
+      'Reflect on the different facets of God you sense (Judge, God of Love, God of Justice, etc.)',
+      'Find and read the story of a biblical figure who faced similar struggles; reflect on what resembles you, the pros and cons, and what they might do living your life today',
+      'Write freely: "Why did I become interested in faith? What am I hoping to gain through faith?"',
+    ],
+  },
+  {
+    num:'03', name:'The Ground', sub:'A faith well-supported by environment',
+    color:'#185FA5', light:'#E6F1FB', dark:'#0C447C',
+    axes:'Environment High · Foundation High', diff:'Low', need:'Shift to Inner Conviction',
+    profile:{
+      'Desire':'Wants to naturally continue faith within a stable environment',
+      'Fear':'That faith might waver if the environment changes',
+      'Motivation':'The comfort of faith life shared with those around them',
+      'Under Stress':'Faith may be shaken by external environmental changes',
+      'Relationships':'Naturally maintains relationships within a supportive environment',
+      'Growth Trigger':'Asking oneself "Why do I have faith?"'
+    },
+    strengths:['Strong support from family and surroundings','External conditions for faith life are well-established','High accessibility and continuity of participation','Financial and time margin available','Smooth connection with faith community'],
+    cautions:['Possible faith dependent on external conditions','Inner conviction still forming','Faith may only activate when circumstances are good','Lacking conviction that one personally chose faith','No experience testing faith in difficult situations'],
+    approaches:[
+      {tag:'do', how:'Start from gratitude and connect inward', why:'Good environment can be naturally linked as the starting point of faith'},
+      {tag:'do', how:'Explore together "Why do you choose faith?"', why:'Core question for moving from external motivation to inner conviction'},
+      {tag:'do', how:'Reframe environmental change as a growth opportunity', why:'To help form an inner foundation that maintains faith even through disruption'},
+      {tag:'dont', how:'Don\'t let them take their good environment for granted', why:'Gratitude needs to be intentionally connected as the engine of faith'},
+      {tag:'dont', how:'Avoid recommending relational activities without Scripture study', why:'Faith without roots may waver when the environment shifts'},
+    ],
+    axes_guide:[
+      {axis:'Environment High', bg:'#E6F1FB', color:'#0C447C', text:'External conditions are well-established. Help them appreciate this environment with gratitude and use it actively for faith growth.'},
+      {axis:'Divinity Mid', bg:'#FAECE7', color:'#712B13', text:'Inner faith conviction is still forming. Moving from external motivation to inner conviction is the core task at this stage.'},
+      {axis:'Humanity', bg:'#E1F5EE', color:'#085041', text:'Character and relationships are stable. Explore together so the reason for faith does not remain "because circumstances are good."'},
+      {axis:'Energy', bg:'#F0EAFE', color:'#4B2E74', text:'Coordinate the timing of new challenges based on energy level. When they have margin, it is a good time to encourage Bible study.'},
+    ],
+    questions:[
+      'What is the biggest reason you continue your faith life right now?',
+      'If your environment were different, how might your faith have changed?',
+      'Is there content from Scripture that has most touched your heart? Would you share it?',
+      'Have there been moments when you had to decide and walk alone in faith?',
+      'Has there been a moment when you personally encountered God? What was it like?',
+    ],
+    warnings:[
+      {color:'#FFF8F0', border:'#E8A44A', label:'Environment-Dependent Pattern', labelColor:'#854F0B', textColor:'#633806', text:'If the main reason for faith is external — family support, comfortable community setting — faith may waver when circumstances change. Continuously focus on forming inner conviction.'},
+      {color:'#E6F1FB', border:'#185FA5', label:'Growth Opportunity', labelColor:'#0C447C', textColor:'#0C447C', text:'Having a good environment also means it is the ideal time to focus on faith growth. Naturally connect them to Bible study and small group participation.'},
+    ],
+    growth:{
+      'Short-term':'Awareness of gratitude and the external environment; current-state check',
+      'Mid-term':'Bible study for forming inner conviction; personal faith exploration',
+      'Long-term':'Forming their own answer to "Why do I choose this faith?"',
+      'Risk Period':'Transition periods when the environment changes — build the inner foundation beforehand',
+    },
+    verse:'"I thank him who has given me strength,\nChrist Jesus our Lord,\nbecause he judged me faithful,\nappointing me to his service."',
+    verseRef:'1 Timothy 1:12',
+    scripture_note:'Share as a passage connecting gratitude and calling.',
+    missionIntro:'Missions move from external motivation to inner conviction — connecting gratitude to personal certainty.',
+    missions:[
+      'Personally deliver a message of gratitude to someone who has been cheering on your faith',
+      'Write "The reason I have faith" in three sentences — not about environment, but from your own heart',
+      'Read Scripture alone and record what you felt',
+      'Think about what you would want to say to God and pray from that heart',
+      'Find one verse from Scripture that connects to your actual situation right now and write it down',
+      'Reflect on whether there was a moment you had to walk alone in faith',
+      'Organize the reasons you chose faith and confess them to God in prayer',
+    ],
+  },
+  {
+    num:'04', name:'The Fruit', sub:'A faith bearing fruit in life',
+    color:'#3B6D11', light:'#EAF3DE', dark:'#27500A',
+    axes:'All Areas High', diff:'Medium', need:'Continuity & Balance',
+    profile:{
+      'Desire':'Wants faith to flow naturally integrated through all of life',
+      'Fear':'That faith separates from life, or that growth stops',
+      'Motivation':'A life where the fruit of faith is visible in daily living',
+      'Under Stress':'Tendency toward self-blame when balance is disrupted; sense of stagnation',
+      'Relationships':'Natural connection and sharing within community',
+      'Growth Trigger':'Deeper sharing, new community experiences'
+    },
+    strengths:['Faith and life are in balance','Ability to translate Scripture into action','Brings positive energy to community','Emotionally stable and mature character','Deep insight into the faith journey'],
+    cautions:['May experience stagnation as if growth has stopped','Can evaluate themselves with high expectations','Sensitive to situations where balance breaks down','May view spiritual dry spells as abnormal','Gap between appearing well externally and inner thirst'],
+    approaches:[
+      {tag:'do', how:'Fully acknowledge the journey so far', why:'The Fruit type tends to undervalue themselves, so affirmation is essential'},
+      {tag:'do', how:'Reframe stagnation as a natural season of faith', why:'Growth is not linear — guide them that rest is also part of growth'},
+      {tag:'do', how:'Invite them to a space of deeper sharing', why:'At this stage, sharing is the growth energy more than receiving'},
+      {tag:'dont', how:'Don\'t rush to present new challenges', why:'They may need time to rest and process'},
+      {tag:'dont', how:'Don\'t conclude counseling is unnecessary because all areas are high', why:'Inner thirst and fatigue may not be visible in the numbers'},
+    ],
+    axes_guide:[
+      {axis:'All Areas High', bg:'#EAF3DE', color:'#27500A', text:'Four areas are in balance. Acknowledge that maintaining this balance is itself mature faith, and focus on continuity.'},
+      {axis:'Energy Check', bg:'#F0EAFE', color:'#4B2E74', text:'If energy appears lower than expected, carefully explore whether this is burnout or a dry spell. It may be a signal of wanting to rest.'},
+      {axis:'Divinity', bg:'#FAECE7', color:'#712B13', text:'Check together whether their relationship with Scripture is duty or joy. Depth is there but freshness may be needed.'},
+      {axis:'Humanity', bg:'#E1F5EE', color:'#085041', text:'Even with mature character, there may be inner fatigue or thirst. Do not be deceived by outward appearances.'},
+    ],
+    questions:[
+      'Is faith a joy or a sense of duty lately? Please share honestly what you feel.',
+      'What are you most grateful for in your faith journey right now?',
+      'Have you had time to converse with God one-on-one recently?',
+      'Is there something you want to share honestly in this space right now?',
+      'When did your faith feel most alive?',
+    ],
+    warnings:[
+      {color:'#FFF8F0', border:'#E8A44A', label:'Watch for Dry Spells', labelColor:'#854F0B', textColor:'#633806', text:'They may appear balanced outwardly but inwardly wonder "Am I still growing?" Look at this together not as a failure of faith but as a natural season.'},
+      {color:'#FCEBEB', border:'#A32D2D', label:'Burnout Risk', labelColor:'#A32D2D', textColor:'#501313', text:'If energy scores appear low despite overall high scores, accumulated fatigue from doing so much for so long may be the cause. Definitely deliver the permission to rest.'},
+    ],
+    growth:{
+      'Short-term':'Acknowledge the journey so far; explore inner thirst and fatigue',
+      'Mid-term':'Experience new spaces of sharing and connection; recover freshness in faith',
+      'Long-term':'A journey of simultaneously expanding the depth and breadth of faith',
+      'Risk Period':'When stagnation persists for too long — new connection is needed',
+    },
+    verse:'"For I am sure that neither death nor life,\nnor angels nor rulers,\nnor anything else in all creation,\nwill be able to separate us\nfrom the love of God."',
+    verseRef:'Romans 8:38-39',
+    scripture_note:'A passage to confirm together that they remain in God\'s love regardless of circumstances.',
+    missionIntro:'Missions are about recovering freshness and sharing. Express what has deepened through life.',
+    missions:[
+      'Try praying in a way you haven\'t done in a long time (walking prayer, written prayer, etc.)',
+      'Recall the moment you felt most alive in faith recently and write a gratitude journal',
+      'Reach out first to someone you\'re meeting for the first time in community and have a conversation',
+      'Record moments this week where you sensed God\'s hand at work',
+      'Start reading a book of the Bible from the beginning — one you haven\'t read yet',
+      'Recall the hardest time in your faith journey and write in one sentence what you learned',
+      'This week, honestly record daily whether Scripture feels like duty or joy',
+      'Share one faith story you rarely share with a trusted person',
+      'Write a letter describing what you want your faith to look like in one month',
+      'After a community gathering, tell one person: "What you shared today was helpful to me"',
+    ],
+  },
+  {
+    num:'05', name:'The Wilderness', sub:'A faith held on to through difficult circumstances',
+    color:'#854F0B', light:'#FAEEDA', dark:'#633806',
+    axes:'Environment Low · Foundation Low', diff:'High', need:'Empathy & Practical Support',
+    profile:{
+      'Desire':'Wants to continue faith despite current difficulties',
+      'Fear':'That the situation will become too hard and they will abandon faith',
+      'Motivation':'An inner will that refuses to give up even in hardship',
+      'Under Stress':'Environmental pressure consumes faith energy',
+      'Relationships':'Wants connection but may become isolated due to circumstances',
+      'Growth Trigger':'Solving real problems alongside one supportive person'
+    },
+    strengths:['Will to hold on to faith even in difficulty','Deep empathy that knows the weight of life','Earnest longing for authentic faith','Inner strength refined through hardship','Enduring perseverance'],
+    cautions:['May become exhausted if environmental difficulty continues','Isolation and alienation can lead away from faith','Only spiritual encouragement without practical help backfires','Tendency to self-blame or attribute difficulties to oneself','May be greatly shaken even by small difficulties'],
+    approaches:[
+      {tag:'do', how:'Sufficient empathy before judgment', why:'For this type, the feeling of being understood is the prerequisite for trust'},
+      {tag:'do', how:'Together, specifically identify the real difficulties', why:'Concrete problem-identification is more helpful than vague encouragement'},
+      {tag:'do', how:'Acknowledge the very fact that they are here', why:'Sustaining faith through difficult circumstances is already remarkable'},
+      {tag:'dont', how:'Avoid spiritual challenges or advice to try harder', why:'There is no capacity to receive more right now; it only adds to the burden'},
+      {tag:'dont', how:'Don\'t say "if you believe, circumstances will change"', why:'It feels like the reality of their pain is being denied, breaking trust'},
+    ],
+    axes_guide:[
+      {axis:'Environment Low', bg:'#E6F1FB', color:'#0C447C', text:'Identify specifically what difficulties exist. Look together at real barriers: finances, family conflict, difficulty accessing gatherings, etc.'},
+      {axis:'Divinity', bg:'#FAECE7', color:'#712B13', text:'First confirm that the spiritual will and longing are there. Holding on to faith in hardship is itself evidence of faith.'},
+      {axis:'Humanity', bg:'#E1F5EE', color:'#085041', text:'Character and relational ability become resources for connection. Maintaining their connection to community so they do not become isolated is important.'},
+      {axis:'Energy Low', bg:'#F0EAFE', color:'#4B2E74', text:'Low energy is due to the environment. Expect together that as the environment improves, energy can also recover.'},
+    ],
+    questions:[
+      'Can you tell me what has been hardest lately?',
+      'If there is a reason you continue in faith despite your current situation, what is it?',
+      'What kind of help do you need most right now?',
+      'Are there things you have been carrying alone? Can you share them?',
+      'How does God feel to you right now?',
+    ],
+    warnings:[
+      {color:'#FCEBEB', border:'#A32D2D', label:'Risk of Departure Warning', labelColor:'#A32D2D', textColor:'#501313', text:'When both environment and energy scores are low, feelings of wanting to abandon faith may arise. Proactively reach out so their connection to community is not lost.'},
+      {color:'#FFF8F0', border:'#E8A44A', label:'Need for Practical Support', labelColor:'#854F0B', textColor:'#633806', text:'Spiritual encouragement alone is not enough. Explore concrete ways to help with real difficulties — finances, transportation, family conflict, etc.'},
+    ],
+    growth:{
+      'Short-term':'Identify and empathize with real difficulties; maintain connection',
+      'Mid-term':'Resolve environmental barriers one by one; build a supportive relationship',
+      'Long-term':'Form a faith foundation that does not waver even in difficulty',
+      'Risk Period':'When isolated, when reality is too hard — immediate connection is needed',
+    },
+    verse:'"Fear not, for I have redeemed you;\nI have called you by name,\nyou are mine."',
+    verseRef:'Isaiah 43:1',
+    scripture_note:'A passage to remember together the God who calls by name even in the wilderness.',
+    missionIntro:'Missions should be realistic and small. No big challenges — the goal is one small step and maintaining connection.',
+    missions:[
+      'Write down one thing from today you are grateful for, however small (a meal, sunlight, a phone call)',
+      'Write just 3 lines of honest prayer capturing your current situation — it does not need to be well-written',
+      'Contact someone who supports you and say: "Things have been a bit hard lately"',
+      'Attend a gathering or service at least once this week — arriving late or leaving early is fine',
+      'Write down the one hardest thing right now and take time to lay it before God',
+      'Write out one environmental barrier making your faith difficult and note one possible solution',
+      'Meditate on a Bible story of God\'s presence in the wilderness (Exodus, Psalm 23 recommended)',
+      'Contact one person who would truly understand you and make a plan to meet',
+    ],
+  },
+  {
+    num:'06', name:'The Seeker', sub:'A faith out searching for truth',
+    color:'#993C1D', light:'#FAECE7', dark:'#712B13',
+    axes:'Divinity Low · Energy High', diff:'Medium', need:'A Safe Space for Questions',
+    profile:{
+      'Desire':'Wants to verify for themselves whether the truth is real',
+      'Fear':'That they will believe and later discover it was wrong',
+      'Motivation':'Intellectual curiosity and a serious attitude toward truth',
+      'Under Stress':'When forced to answer or make a commitment without conviction',
+      'Relationships':'Wants to share questions within authentic relationships',
+      'Growth Trigger':'A space to safely ask questions and a trustworthy companion'
+    },
+    strengths:['Serious and honest approach to pursuing truth','Intellectual discernment that does not believe easily','Potential for deep faith once conviction is formed','Ability to grow through questions','Values authenticity'],
+    cautions:['Faith conviction is unstable and may waver','Difficult to move forward without intellectual understanding','Extended questioning may make commitment harder','Aversion to formal or superficial faith culture','Pressure to answer causes them to pull away'],
+    approaches:[
+      {tag:'do', how:'Welcome questions and explore together', why:'For this type, blocked questions lead away from faith'},
+      {tag:'do', how:'Show that you can walk together even without certainty', why:'Help them experience that faith does not come only after understanding'},
+      {tag:'do', how:'Respect the intellectual approach; explore Scripture logic together', why:'Logical connection becomes the bridge of trust for this type'},
+      {tag:'dont', how:'Never press for quick decisions or "just believe" approaches', why:'Shutting down intellectual inquiry destroys trust itself'},
+      {tag:'dont', how:'Do not link doubt to guilt', why:'Must clearly communicate that doubt is not unbelief'},
+    ],
+    axes_guide:[
+      {axis:'Divinity Low', bg:'#FAECE7', color:'#712B13', text:'Spiritual conviction is still forming. View this not as a problem but as a journey of exploration — look at it together.'},
+      {axis:'Energy High', bg:'#F0EAFE', color:'#4B2E74', text:'Inner energy toward new things is high. Connecting this energy to faith exploration opens up rapid growth possibility.'},
+      {axis:'Humanity', bg:'#E1F5EE', color:'#085041', text:'If relational character is present, forming a trust relationship is easier. Invite them to share their questions within that relationship.'},
+      {axis:'Environment', bg:'#E6F1FB', color:'#0C447C', text:'The more supportive the environment, the safer the exploration. Connecting to an open, non-coercive community is important.'},
+    ],
+    questions:[
+      'Is there something about faith you have been most curious about or haven\'t been able to understand?',
+      'What image of faith have you had up until now?',
+      'If faith were real, what do you think it would look like?',
+      'What do you need most in this journey of exploration right now?',
+      'Has any part of Scripture made logical sense to you or touched your heart?',
+    ],
+    warnings:[
+      {color:'#FFF8F0', border:'#E8A44A', label:'Watch for Prolonged Seeking', labelColor:'#854F0B', textColor:'#633806', text:'If seeking goes on too long, they may not reach commitment and energy may be depleted. Respect the pace of their exploration while not missing the timing to naturally invite them toward the next step.'},
+      {color:'#FAECE7', border:'#993C1D', label:'Watch for Intellectual Barriers', labelColor:'#712B13', textColor:'#712B13', text:'If the attitude that they can only believe once fully intellectually satisfied is reinforced, the door to faith becomes narrow. Providing the experience of "understanding comes as you walk" is important.'},
+    ],
+    growth:{
+      'Short-term':'Form a safe question space; build a trust relationship',
+      'Mid-term':'Intellectually explore Scripture together; accumulate small experiences',
+      'Long-term':'From exploration to conviction; forming one\'s own language of faith',
+      'Risk Period':'When questions are blocked or they feel pressured — re-confirm the open space',
+    },
+    verse:'"Ask, and it will be given to you;\nseek, and you will find;\nknock, and it will be opened to you."',
+    verseRef:'Matthew 7:7',
+    scripture_note:'A passage to hold together — the promise that the door surely opens for those who seek.',
+    missionIntro:'Missions are explorations that do not force answers. Walk together holding questions.',
+    missions:[
+      'Write on paper the most burning question you would ask God when history is complete',
+      'Bring that question to a trusted person and talk it over together',
+      'Find and read the story of a biblical figure who doubted (Thomas, Gideon, etc.)',
+      'Write freely: "If God exists, what kind of person would I want him to be for me?"',
+      'Look for things in your everyday life that feel beyond scientific explanation — signs of a Creator',
+      'Ask the most trustworthy person of faith you know: "Why do you believe?"',
+      'Write freely: "What do I want from faith?"',
+    ],
+  },
+  {
+    num:'07', name:'The Endurer', sub:'A faith held on to while weary',
+    color:'#993556', light:'#FBEAF0', dark:'#72243E',
+    axes:'Divinity High · Energy Low', diff:'High', need:'Recovery & Rest',
+    profile:{
+      'Desire':'Wants to believe and continue in faith, but is exhausted',
+      'Fear':'That exhaustion will cause them to abandon faith',
+      'Motivation':'A sincere and earnest heart for faith, deep within',
+      'Under Stress':'Feels as if everything is collapsing when fatigue and depletion continue',
+      'Relationships':'Wants connection but may become isolated due to lack of energy',
+      'Growth Trigger':'Rest, recovery, and connection with one safe person'
+    },
+    strengths:['Deep sincerity and earnestness for faith','Inner strength that does not give up even in hardship','Spiritual longing and desire for growth','Deep empathy from knowing weakness','Values authenticity'],
+    cautions:['May be in a state of emotional and physical depletion','Faith life itself may have become a burden','Difficulty asking for help; tends to handle everything alone','"I should be able to endure this" — self-coercion','Tendency to disconnect or isolate from relationships'],
+    approaches:[
+      {tag:'do', how:'Generous empathy first; no judgment', why:'For this type, the experience of being understood is the greatest healing'},
+      {tag:'do', how:'Clearly deliver permission to rest', why:'To help them experience with their whole being that rest is also faith'},
+      {tag:'do', how:'Help them experience faith as rest, not burden', why:'To break the vicious cycle of faith becoming heavier when already weary'},
+      {tag:'dont', how:'Avoid challenges to try harder or assigning tasks', why:'They are already doing enough; additional burden does harm'},
+      {tag:'dont', how:'Never link "it\'s hard because you lack faith"', why:'Guilt deepens depletion and causes them to drift from faith'},
+    ],
+    axes_guide:[
+      {axis:'Divinity High', bg:'#FAECE7', color:'#712B13', text:'The sincerity of faith is there. Be sure to convey that holding on to faith despite exhaustion is itself evidence of belief.'},
+      {axis:'Energy Low', bg:'#F0EAFE', color:'#4B2E74', text:'Low change-energy is a signal of depletion. This is a time to focus on recovery and rest rather than new challenges.'},
+      {axis:'Humanity', bg:'#E1F5EE', color:'#085041', text:'If humanity scores are low, there may be emotional difficulty. First focus on psychological safety and emotional recovery.'},
+      {axis:'Environment', bg:'#E6F1FB', color:'#0C447C', text:'Determine if environmental pressure is depleting their energy. If there are real difficulties, seek solutions together.'},
+    ],
+    questions:[
+      'What feels most heavy in your faith life right now?',
+      'When was the last time you worshipped freely and lightly?',
+      'If there is something you need most right now, what would it be?',
+      'If faith gave you permission to rest, how do you think that would feel?',
+      'Do you sense that coming here today itself is meaningful?',
+    ],
+    warnings:[
+      {color:'#FCEBEB', border:'#A32D2D', label:'Watch for Psychological Crisis', labelColor:'#A32D2D', textColor:'#501313', text:'If both energy and humanity scores are low, and expressions of helplessness or hopelessness arise during counseling, professional help may be needed. Carefully consider connecting them to professional counseling.'},
+      {color:'#FFF8F0', border:'#E8A44A', label:'Overload Warning', labelColor:'#854F0B', textColor:'#633806', text:'Adding faith tasks or activities may actually worsen their condition. At this stage, removing things and laying things down is the real counseling goal.'},
+    ],
+    growth:{
+      'Short-term':'Experience empathy and rest; permission to lay down the burden',
+      'Mid-term':'Emotional recovery and reconnection; experiencing faith as rest',
+      'Long-term':'Rebuilding healthy faith that starts from inner recovery',
+      'Risk Period':'When trying to handle everything alone — immediate connection is needed',
+    },
+    verse:'"Come to me, all who labor and are heavy laden,\nand I will give you rest.\nLearn from me, for I am gentle\nand lowly in heart,\nand you will find rest for your souls."',
+    verseRef:'Matthew 11:28-29',
+    scripture_note:'A passage to experience together that faith is rest, not burden.',
+    missionIntro:'Missions are about laying down, not adding more. Rest first, then connection.',
+    missions:[
+      'Take 30 minutes today with absolutely no faith obligations — just fully rest',
+      'Write on paper one thing in faith that has become a burden to you',
+      'Read Psalm 23 slowly and underline the verse that brings the most comfort',
+      'Sit before God just as you are right now and stay quietly for 3 minutes without saying anything',
+      'Write down one faith expectation or thought that is pressuring you and set it down for a while',
+      'Recall the last time you truly rested and peacefully imagine a moment of sabbath',
+      'If there was a moment when faith was rest rather than burden, recall and record it',
+      'Write three words of comfort you would want to hear from God at the completion of history',
+    ],
+  },
+  {
+    num:'08', name:'The Beginner', sub:'A faith taking its first steps',
+    color:'#5F5E5A', light:'#F1EFE8', dark:'#444441',
+    axes:'All Areas Mid-Low', diff:'Low', need:'A Warm First Experience',
+    profile:{
+      'Desire':'Wants to take the first step in faith safely and naturally',
+      'Fear':'That their lack of knowledge will be exposed, or that others will think them strange',
+      'Motivation':'Curiosity and an open heart toward new things',
+      'Under Stress':'When required to know or do too many things at once',
+      'Relationships':'Gradually opens up within comfortable, natural relationships',
+      'Growth Trigger':'A warm, safe first experience; acceptance without comparison'
+    },
+    strengths:['Open mind and curiosity toward new things','Few fixed preconceptions yet','The stage with the widest growth potential','A posture of pure exploration','Quick connection when the first experience is good'],
+    cautions:['Everything may feel unfamiliar and awkward','A bad first experience can be remembered for a long time','Too much to learn at once becomes a burden','May be sensitive to comparison or evaluation','Needs time to adapt to community culture'],
+    approaches:[
+      {tag:'do', how:'Create a warm and welcoming atmosphere first', why:'First impressions are the most important factor at this stage'},
+      {tag:'do', how:'Offer experiences before things they need to know', why:'At this stage, experience creates connection more than knowledge'},
+      {tag:'do', how:'Greatly encourage small participation and step-by-step growth', why:'Being affirmed for small things provides the momentum to keep going'},
+      {tag:'dont', how:'Avoid delivering too much content at once', why:'Information overload is a major cause of dropout at this stage'},
+      {tag:'dont', how:'Never compare to others or set external standards', why:'Comparison creates shame and withdrawal, breaking connection'},
+    ],
+    axes_guide:[
+      {axis:'All Areas Mid-Low', bg:'#F1EFE8', color:'#444441', text:'All areas are in the early stage of formation. This means growth potential is at its widest. Not comparing, and affirming this very place, is the key.'},
+      {axis:'Energy', bg:'#F0EAFE', color:'#4B2E74', text:'Coordinate the pace of participation based on energy level. If high, connect actively. If low, start at a pressure-free level.'},
+      {axis:'Divinity', bg:'#FAECE7', color:'#712B13', text:'Not yet having spiritual conviction is completely natural. Focus on accumulating experiences rather than requiring certainty.'},
+      {axis:'Environment', bg:'#E6F1FB', color:'#0C447C', text:'If the environment is supportive, actively utilize connection. If difficult, identify specific barriers and find realistic alternatives together.'},
+    ],
+    questions:[
+      'If there was a reason you became interested in faith, would you share it?',
+      'Has there been a moment in the community so far where you felt most comfortable?',
+      'There are things about faith I\'m still unsure about — is there anything you\'re curious about?',
+      'How does it feel to be here today?',
+      'Is there something you\'d like to experience in faith going forward?',
+    ],
+    warnings:[
+      {color:'#FFF8F0', border:'#E8A44A', label:'The Importance of the First Experience', labelColor:'#854F0B', textColor:'#633806', text:'First experiences at this stage are long remembered. Experiences that are not warm, or that involve comparison or evaluation, are the main reason for drifting from faith. Creating a culture where every member is welcomed is important.'},
+      {color:'#E6F1FB', border:'#5F5E5A', label:'Growth Potential', labelColor:'#444441', textColor:'#444441', text:'This type has the potential to grow most rapidly. The right first experience and warm relational connection determine the foundation of the faith journey ahead.'},
+    ],
+    growth:{
+      'Short-term':'Warm welcome and first experience; acceptance without comparison',
+      'Mid-term':'Basic Bible study and small group connection; accumulate small participation experiences',
+      'Long-term':'Form one\'s own language of faith and identity',
+      'Risk Period':'When feeling unfamiliar or compared — immediately re-affirm welcome',
+    },
+    verse:'"You are my servant,\nI have chosen you and not cast you off;\nfear not, for I am with you;\nbe not dismayed, for I am your God;\nI will strengthen you."',
+    verseRef:'Isaiah 41:9-10',
+    scripture_note:'A passage to share in the very first meeting — that God chose first.',
+    missionIntro:'Missions are about experiencing without pressure, starting without comparison or standards. Make the first experience a good memory.',
+    missions:[
+      'End today by saying "Thank you" for one good thing that happened — and mean it',
+      'Greet the most comfortable person in your group with "See you next time"',
+      'Write down the reason you became interested in faith',
+      'If prayer feels awkward, try talking to God about one thing that happened today',
+      'Express gratitude to someone in your group who has treated you warmly',
+    ],
+  },
+];
+
+function switchType(idx) {
+  const t = TYPES[parseInt(idx)];
+  document.getElementById('guideContent').innerHTML = buildGuide(t);
+  document.documentElement.style.setProperty('--type-color', t.color);
+}
+
+function buildGuide(t) {
+  const profileKeys = Object.keys(t.profile);
+  const profileHTML = profileKeys.map(k => `
+    <div class="pi">
+      <div class="pi-label" style="color:${t.color}">${k}</div>
+      <div class="pi-value" style="color:${t.dark}">${t.profile[k]}</div>
+    </div>`).join('');
+
+  const approachRows = t.approaches.map(a => `
+    <tr>
+      <td><span class="tag tag-${a.tag}">${a.tag === 'do' ? 'Do' : 'Avoid'}</span></td>
+      <td>${a.how}</td>
+      <td>${a.why}</td>
+    </tr>`).join('');
+
+  const axisRows = t.axes_guide.map(a => `
+    <div class="ai-row">
+      <span class="ai-badge" style="background:${a.bg};color:${a.color}">${a.axis}</span>
+      <span class="ai-text">${a.text}</span>
+    </div>`).join('');
+
+  const watchHTML = t.warnings.map(w => `
+    <div class="watch-box" style="background:${w.color};border-left:3px solid ${w.border}">
+      <div class="watch-label" style="color:${w.labelColor}">${w.label}</div>
+      <div class="watch-text" style="color:${w.textColor}">${w.text}</div>
+    </div>`).join('');
+
+  const growthKeys = Object.keys(t.growth);
+  const growthHTML = growthKeys.map(k => `
+    <div class="gi">
+      <div class="gi-label" style="color:${t.color}">${k}</div>
+      <div class="gi-value" style="color:${t.dark}">${t.growth[k]}</div>
+    </div>`).join('');
+
+  const tocItems = ['Type Profile','Strengths & Cautions','Counseling Approach Principles','Axis Score Interpretation','Recommended Questions','Patterns to Watch','Growth Direction','Faith Growth Missions'];
+
+  return `
+  <div class="cover" style="border-top-color:${t.color}">
+    <div class="cover-eyebrow">Faith Type Counseling Guide &middot; For Counselors</div>
+    <div class="cover-badge" style="background:${t.light}">
+      <div class="cover-badge-dot" style="background:${t.color}"></div>
+      <span class="cover-badge-text" style="color:${t.dark}">Type ${t.num} &mdash; ${t.name}</span>
+    </div>
+    <div class="cover-title">How to Counsel<br>${t.name} Types</div>
+    <div class="cover-sub">${t.sub} &middot; An Approach Guide for Counselors</div>
+    <div class="cover-chips">
+      <span class="chip">Key Axes: ${t.axes}</span>
+      <span class="chip">Difficulty: ${t.diff}</span>
+      <span class="chip">Core Need: ${t.need}</span>
+    </div>
+  </div>
+
+  <div class="toc">
+    <div class="toc-label">Contents of This Guide</div>
+    <div class="toc-list">
+      ${tocItems.map((s,i)=>`
+      <div class="toc-item">
+        <span class="toc-num">0${i+1}</span>
+        <span class="toc-name">${s}</span>
+        <span class="toc-dots"></span>
+      </div>`).join('')}
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-num">Section 01</div>
+    <div class="sec-title">Type Profile</div>
+    <div class="sec-desc">Grasp the core characteristics of this type first. Read this page before the counseling session.</div>
+    <div class="profile-box" style="background:${t.light}">
+      <div class="profile-label" style="color:${t.color}">Core Profile</div>
+      <div class="profile-grid">${profileHTML}</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-num">Section 02</div>
+    <div class="sec-title">Strengths &amp; Cautions</div>
+    <div class="sec-desc">View together the resources this type has and the vulnerable points that are easy to miss in counseling.</div>
+    <div class="two-col">
+      <div class="card" style="background:#EAF3DE">
+        <div class="card-head" style="color:#3B6D11">Strength Resources</div>
+        ${t.strengths.map(s=>`<div class="card-item">${s}</div>`).join('')}
+      </div>
+      <div class="card" style="background:#FAEEDA">
+        <div class="card-head" style="color:#854F0B">Points to Watch</div>
+        ${t.cautions.map(c=>`<div class="card-item">${c}</div>`).join('')}
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-num">Section 03</div>
+    <div class="sec-title">Counseling Approach Principles</div>
+    <div class="sec-desc">Effective counseling methods for this type and approaches to avoid. Can be applied directly in counseling sessions.</div>
+    <table class="ap-table">
+      <thead><tr><th></th><th>Approach</th><th>Reason / Effect</th></tr></thead>
+      <tbody>${approachRows}</tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="sec-num">Section 04</div>
+    <div class="sec-title">Axis Score Interpretation Points</div>
+    <div class="sec-desc">How to read the score patterns of the four radar chart axes (Humanity &middot; Divinity &middot; Environment &middot; Energy) in counseling language.</div>
+    <div class="axis-list">${axisRows}</div>
+  </div>
+
+  <div class="section">
+    <div class="sec-num">Section 05</div>
+    <div class="sec-title">Recommended Questions</div>
+    <div class="sec-desc">Questions that can naturally lead to depth in counseling with this type. Use as-is or adapt to context.</div>
+    <div class="q-list">
+      ${t.questions.map(q=>`<div class="q-item">${q}</div>`).join('')}
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-num">Section 06</div>
+    <div class="sec-title">Patterns to Watch</div>
+    <div class="sec-desc">Warning signals that frequently appear in this type and how the counselor should respond.</div>
+    ${watchHTML}
+  </div>
+
+  <div class="section">
+    <div class="sec-num">Section 07</div>
+    <div class="sec-title">Growth Direction</div>
+    <div class="sec-desc">The direction the counselor can walk alongside this type as they move to the next stage.</div>
+    <div class="growth-box" style="background:${t.light}">
+      <div class="growth-label" style="color:${t.color}">Growth Roadmap</div>
+      <div class="growth-grid">${growthHTML}</div>
+    </div>
+    <div class="scripture">
+      <div class="verse">${t.verse}</div>
+      <div class="verse-ref">${t.verseRef} &nbsp;&mdash;&nbsp; ${t.scripture_note}</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-num">Section 08</div>
+    <div class="sec-title">Faith Growth Missions</div>
+    <div class="sec-desc">Practical missions to suggest to the counselee after the session. Do not give all at once &mdash; select 1&ndash;2 appropriate to their current state.</div>
+    <div class="mission-intro">${t.missionIntro}</div>
+    <div class="mission-list">
+      ${t.missions.map((m,i)=>`
+      <div class="mission-item">
+        <div class="mission-num" style="color:${t.color}">${i+1}</div>
+        <div class="mission-text">${m}</div>
+      </div>`).join('')}
+    </div>
+  </div>
+
+  <div class="guide-footer">
+    <span class="footer-l">Faith Type Counseling Guide &middot; For Counselors &middot; Confidential &mdash; Not for External Distribution</span>
+    <span class="footer-l">${t.name} | Guide ${t.num}</span>
+  </div>`;
+}
+
+document.documentElement.style.setProperty('--type-color', TYPES[0].color);
+document.getElementById('guideContent').innerHTML = buildGuide(TYPES[0]);
+</script>
+</body>
+</html>
