@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>신앙 성장 활동지</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300;400;500&display=swap');
+:root{--bg:#F8F6F1;--white:#fff;--text:#1A1814;--muted:#7A7568;--light:#B0A99E;--border:#E8E3DC;--bl:#F4F0EB;--accent:#3D3526;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{font-size:15px;}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* ── TOPBAR ── */
+.topbar{background:var(--white);border-bottom:1px solid var(--border);padding:13px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.topbar-left{display:flex;align-items:center;gap:10px;}
+.topbar-logo{font-family:'Noto Serif KR',serif;font-size:14px;font-weight:600;color:var(--text);}
+.topbar-logo span{color:#534AB7;}
+.topbar-sep{width:1px;height:16px;background:var(--border);}
+.topbar-title{font-size:13px;color:var(--muted);}
+.btn-print{padding:7px 16px;background:var(--accent);color:#fff;border:none;border-radius:3px;font-family:'Noto Sans KR',sans-serif;font-size:12px;font-weight:500;cursor:pointer;}
+
+/* ── TYPE SELECTOR ── */
+.selector-wrap{max-width:760px;margin:0 auto;padding:28px 24px 0;}
+.selector-label{font-size:11px;font-weight:500;letter-spacing:.8px;color:var(--light);text-transform:uppercase;margin-bottom:12px;}
+.type-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+@media(max-width:580px){.type-grid{grid-template-columns:repeat(2,1fr);}}
+.type-btn{padding:10px 8px;border:1px solid var(--border);border-radius:6px;background:var(--white);font-family:'Noto Sans KR',sans-serif;font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;transition:all .15s;text-align:center;line-height:1.4;}
+.type-btn:hover{border-color:var(--light);}
+.type-btn.active{color:#fff;border-color:transparent;}
+
+/* ── ACTIVITIES AREA ── */
+.activities-wrap{max-width:760px;margin:0 auto;padding:20px 24px 60px;}
+.act-header{margin-bottom:20px;}
+.act-type-badge{display:inline-flex;align-items:center;gap:7px;padding:5px 14px;border-radius:20px;margin-bottom:10px;}
+.act-type-badge-dot{width:7px;height:7px;border-radius:50%;}
+.act-type-name{font-size:12px;font-weight:500;}
+.act-header-title{font-family:'Noto Serif KR',serif;font-size:20px;font-weight:600;color:var(--text);margin-bottom:4px;}
+.act-header-sub{font-size:13px;color:var(--muted);line-height:1.7;}
+
+/* ── SHEET ── */
+.sheet{background:var(--white);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:16px;}
+.sheet-head{padding:16px 20px;border-bottom:1px solid var(--border);}
+.sheet-num{font-size:10px;font-weight:500;letter-spacing:.6px;color:var(--light);text-transform:uppercase;margin-bottom:4px;}
+.sheet-title{font-size:15px;font-weight:500;color:var(--text);margin-bottom:3px;}
+.sheet-desc{font-size:12px;color:var(--light);line-height:1.6;}
+.sheet-body{padding:16px 20px;}
+
+/* ── FIELD TYPES ── */
+.field{margin-bottom:16px;}
+.field:last-child{margin-bottom:0;}
+.field-label{font-size:11px;font-weight:500;letter-spacing:.5px;color:var(--muted);text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:6px;}
+.field-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
+.field-input{width:100%;border:none;border-bottom:1.5px solid var(--border);background:transparent;font-family:'Noto Sans KR',sans-serif;font-size:13px;color:var(--text);outline:none;padding:5px 2px;transition:border-color .15s;}
+.field-input:focus{border-bottom-color:var(--accent);}
+.field-textarea{width:100%;border:1px solid var(--border);border-radius:4px;background:var(--bg);font-family:'Noto Sans KR',sans-serif;font-size:13px;color:var(--text);outline:none;padding:10px 12px;resize:none;line-height:1.75;transition:border-color .15s;}
+.field-textarea:focus{border-color:var(--accent);}
+
+/* check row */
+.check-row{display:flex;align-items:center;gap:10px;padding:9px 12px;border:1px solid var(--border);border-radius:4px;margin-bottom:6px;background:var(--bg);}
+.check-row:last-child{margin-bottom:0;}
+.chk{width:16px;height:16px;border:1.5px solid var(--border);border-radius:3px;flex-shrink:0;cursor:pointer;appearance:none;-webkit-appearance:none;position:relative;transition:all .15s;}
+.chk:checked{border-color:var(--accent);background:var(--accent);}
+.chk:checked::after{content:'✓';position:absolute;top:-2px;left:2px;font-size:11px;color:#fff;font-weight:500;}
+.check-text{font-size:13px;color:var(--muted);flex:1;}
+.check-input{flex:1;border:none;background:transparent;font-family:'Noto Sans KR',sans-serif;font-size:13px;color:var(--text);outline:none;}
+
+/* day row for weekly tracker */
+.day-grid{display:grid;grid-template-columns:60px 1fr 80px;gap:0;border:1px solid var(--border);border-radius:6px;overflow:hidden;}
+.day-row{display:contents;}
+.day-row > div{padding:9px 12px;border-bottom:1px solid var(--bl);font-size:12px;}
+.day-row:last-child > div{border-bottom:none;}
+.day-label{background:var(--bg);color:var(--muted);font-weight:500;display:flex;align-items:center;}
+.day-content{background:var(--white);}
+.day-content input{width:100%;border:none;background:transparent;font-family:'Noto Sans KR',sans-serif;font-size:12px;color:var(--text);outline:none;}
+.day-check{background:var(--bg);display:flex;align-items:center;justify-content:center;}
+
+/* letter area */
+.letter-area{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;}
+.letter-intro{font-size:12px;color:var(--light);margin-bottom:10px;font-style:italic;}
+.letter-textarea{width:100%;border:none;background:transparent;font-family:'Noto Serif KR',serif;font-size:13px;color:var(--text);outline:none;resize:none;line-height:1.9;min-height:120px;}
+
+/* verse collect */
+.verse-row{display:flex;gap:8px;margin-bottom:8px;align-items:flex-start;}
+.verse-row:last-child{margin-bottom:0;}
+.verse-num{font-size:11px;color:var(--light);width:18px;flex-shrink:0;margin-top:4px;}
+.verse-inputs{flex:1;display:flex;flex-direction:column;gap:4px;}
+.verse-ref{border:none;border-bottom:1px solid var(--border);background:transparent;font-family:'Noto Sans KR',sans-serif;font-size:11px;color:var(--light);outline:none;padding:2px 0;width:100%;}
+.verse-content{border:none;border-bottom:1.5px solid var(--border);background:transparent;font-family:'Noto Serif KR',serif;font-size:13px;color:var(--text);outline:none;padding:4px 0;width:100%;}
+
+/* question card */
+.q-card{border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-bottom:8px;}
+.q-card:last-child{margin-bottom:0;}
+.q-card-head{padding:10px 14px;background:var(--bg);border-bottom:1px solid var(--border);}
+.q-card-text{font-size:13px;color:var(--text);font-weight:500;}
+.q-card-body{padding:10px 14px;}
+.q-card-input{width:100%;border:none;background:transparent;font-family:'Noto Sans KR',sans-serif;font-size:13px;color:var(--text);outline:none;line-height:1.7;resize:none;min-height:52px;}
+
+/* date row */
+.meta-row{display:flex;gap:16px;margin-bottom:16px;flex-wrap:wrap;}
+.meta-field{display:flex;align-items:center;gap:8px;}
+.meta-label{font-size:11px;color:var(--light);white-space:nowrap;}
+.meta-input{border:none;border-bottom:1px solid var(--border);background:transparent;font-family:'Noto Sans KR',sans-serif;font-size:12px;color:var(--text);outline:none;padding:2px 0;width:100px;}
+.meta-input.wide{width:160px;}
+
+/* placeholder state */
+.empty-state{text-align:center;padding:48px 24px;color:var(--light);}
+.empty-title{font-family:'Noto Serif KR',serif;font-size:18px;margin-bottom:8px;color:var(--muted);}
+.empty-sub{font-size:13px;line-height:1.8;}
+
+/* ── PRINT ── */
+@media print{
+  .topbar,.selector-wrap{display:none;}
+  .activities-wrap{padding:0;max-width:100%;}
+  .sheet{border-radius:0;page-break-inside:avoid;}
+  body{background:#fff;}
+  @page{margin:14mm 16mm;size:A4;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <span class="topbar-logo">Faith<span>Type</span></span>
+    <span class="topbar-sep"></span>
+    <span class="topbar-title">신앙 성장 활동지</span>
+  </div>
+  <button class="btn-print" onclick="window.print()">PDF 저장 / 인쇄</button>
+</div>
+
+<div class="selector-wrap">
+  <div class="selector-label">나의 신앙 유형 선택</div>
+  <div class="type-grid" id="typeGrid"></div>
+</div>
+
+<div class="activities-wrap" id="activitiesWrap">
+  <div class="empty-state">
+    <div class="empty-title">유형을 선택해 주세요</div>
+    <div class="empty-sub">위에서 나의 신앙 유형을 선택하면<br>맞춤 활동지가 나타납니다.</div>
+  </div>
+</div>
+
+<script>
+const TYPES = [
+  {id:'rooted',  name:'뿌리형',  color:'#534AB7', light:'#EEEDFE',
+   theme:'깊이를 나눔으로 흘려보내기',
+   desc:'더 쌓는 것이 아니라, 가진 것을 흘려보내고 쉬어가는 것이 지금 필요한 방향입니다.',
+   sheets:[
+    {title:'말씀 나눔 카드',
+     desc:'이번 주 묵상한 말씀을 상담자와 함께 나누는 활동입니다. 설명이 아니라 나눔이 목적입니다.',
+     render(color,light){return`
+      <div class="meta-row">
+        <div class="meta-field"><span class="meta-label">작성일</span><input class="meta-input" type="date"></div>
+        <div class="meta-field"><span class="meta-label">이름</span><input class="meta-input wide" placeholder="이름 또는 코드명"></div>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>이번 주 말씀 (구절)</div>
+        <input class="field-input" placeholder="예) 시편 23:1">
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>처음 읽었을 때 떠오른 것</div>
+        <textarea class="field-textarea" rows="3" placeholder="정답이 없습니다. 솔직한 첫 느낌을 그대로 써주세요."></textarea>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>내 삶과 연결되는 부분</div>
+        <textarea class="field-textarea" rows="3" placeholder="지금 나의 상황, 감정, 고민과 어떻게 연결되나요?"></textarea>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>이 말씀으로 이번 주 해볼 한 가지</div>
+        <input class="field-input" placeholder="아주 작은 것도 괜찮습니다.">
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>상담자에게 하고 싶은 말</div>
+        <textarea class="field-textarea" rows="2" placeholder="다음 상담 때 꼭 나누고 싶은 것이 있다면 적어두세요."></textarea>
+      </div>`;}
+    },
+    {title:'쉼 허락 일지',
+     desc:'한 주 동안 "충분히 잘했다"고 느낀 순간을 매일 기록합니다. 성취가 아니라 존재로서의 감사를 찾는 훈련입니다.',
+     render(color,light){const days=['월요일','화요일','수요일','목요일','금요일','토요일','주일'];
+      return`
+      <div class="meta-row">
+        <div class="meta-field"><span class="meta-label">주차</span><input class="meta-input" placeholder="예) 2025년 3월 2주"></div>
+      </div>
+      <div class="field">
+        <div class="day-grid">
+          ${days.map(d=>`<div class="day-row"><div class="day-label">${d}</div><div class="day-content"><input placeholder="오늘 내가 잘한 것, 또는 그냥 존재해서 감사한 것"></div><div class="day-check"><input type="checkbox" class="chk"></div></div>`).join('')}
+        </div>
+        <div style="font-size:11px;color:var(--light);margin-top:6px;text-align:right;">☑ = 오늘 "충분하다"는 마음이 들었다</div>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>이번 주 나에게 건네는 한 마디</div>
+        <input class="field-input" placeholder="나 자신에게 따뜻하게 말해주세요.">
+      </div>`;}
+    },
+   ]
+  },
+  {id:'seedling', name:'씨앗형', color:'#0F6E56', light:'#E1F5EE',
+   theme:'뿌리를 내리기 위한 첫 씨름',
+   desc:'질문을 환영하는 안전한 환경에서 말씀과 첫 접촉을 만드는 것이 지금 필요한 방향입니다.',
+   sheets:[
+    {title:'나의 신앙 질문 노트',
+     desc:'신앙에 대해 궁금한 것을 자유롭게 적는 노트입니다. 답을 찾는 것이 목적이 아닙니다. 매 상담마다 질문 하나를 가져와 함께 이야기 나눕니다.',
+     render(color,light){return`
+      <div class="meta-row">
+        <div class="meta-field"><span class="meta-label">작성일</span><input class="meta-input" type="date"></div>
+        <div class="meta-field"><span class="meta-label">이름</span><input class="meta-input wide" placeholder="이름 또는 코드명"></div>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>이번 주 가장 궁금했던 신앙 질문</div>
+        <textarea class="field-textarea" rows="3" placeholder="'이런 걸 물어봐도 되나?' 싶은 질문도 환영합니다. 솔직하게 써주세요."></textarea>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>이 질문이 생긴 계기</div>
+        <textarea class="field-textarea" rows="2" placeholder="어떤 상황, 대화, 경험에서 이 질문이 떠올랐나요?"></textarea>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>아직 더 궁금한 것들 (자유롭게)</div>
+        ${[1,2,3].map(i=>`<div class="check-row" style="background:var(--white)"><span style="font-size:11px;color:var(--light);width:16px;flex-shrink:0;">${i}</span><input class="check-input" placeholder="질문 ${i}"></div>`).join('')}
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>다음 상담 때 꼭 물어보고 싶은 것</div>
+        <input class="field-input" placeholder="상담자에게 직접 묻고 싶은 질문을 적어두세요.">
+      </div>`;}
+    },
+    {title:'성경 인물 연결지',
+     desc:'지금 나의 감정이나 상황과 비슷한 성경 인물을 한 명 찾아 읽고, 그 인물의 이야기와 나의 이야기를 나란히 적어봅니다.',
+     render(color,light){return`
+      <div class="meta-row">
+        <div class="meta-field"><span class="meta-label">작성일</span><input class="meta-input" type="date"></div>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>선택한 성경 인물</div>
+        <input class="field-input" placeholder="예) 도마, 기드온, 모세, 엘리야, 룻...">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+        <div>
+          <div class="field-label" style="margin-bottom:6px;"><span class="field-dot" style="background:${color}"></span>그 인물의 상황</div>
+          <textarea class="field-textarea" rows="5" placeholder="성경에서 그 인물이 어떤 상황에 있었나요?"></textarea>
+        </div>
+        <div>
+          <div class="field-label" style="margin-bottom:6px;"><span class="field-dot" style="background:${color}"></span>나의 상황</div>
+          <textarea class="field-textarea" rows="5" placeholder="지금 나의 상황과 어떤 부분이 비슷한가요?"></textarea>
+        </div>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>그 인물이 내 삶을 산다면 어떻게 했을까?</div>
+        <textarea class="field-textarea" rows="3" placeholder="자유롭게 상상해 보세요."></textarea>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>이 인물을 통해 느낀 것</div>
+        <input class="field-input" placeholder="한 줄로 정리해 보세요.">
+      </div>`;}
+    },
+   ]
+  },
+  {id:'grounded', name:'터전형', color:'#185FA5', light:'#E6F1FB',
+   theme:'감사를 내면의 확신으로 연결하기',
+   desc:'외부 환경이 없어도 혼자 설 수 있는 내적 확신을 형성하는 것이 지금 필요한 방향입니다.',
+   sheets:[
+    {title:'"내가 신앙을 가지는 이유" 쓰기',
+     desc:'환경(가족, 공동체) 이야기를 내려두고, 오직 나의 마음에서 나오는 이유만으로 신앙을 가지는 이유를 써봅니다.',
+     render(color,light){return`
+      <div class="meta-row">
+        <div class="meta-field"><span class="meta-label">작성일</span><input class="meta-input" type="date"></div>
+        <div class="meta-field"><span class="meta-label">이름</span><input class="meta-input wide" placeholder="이름 또는 코드명"></div>
+      </div>
+      <div style="background:${light};border-radius:6px;padding:12px 16px;margin-bottom:14px;font-size:12px;color:#0C447C;line-height:1.7;">
+        규칙: 가족, 공동체, 교회 분위기 이야기는 잠시 내려두세요. 오직 <strong>"나의 마음"</strong>만으로 써봅니다.
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>나는 지금 이 신앙을 가지고 있습니다. 그 이유는...</div>
+        <textarea class="field-textarea" rows="6" placeholder="환경이 달라져도 내가 이 신앙을 선택할 이유가 있다면, 그것이 무엇인지 자유롭게 써보세요."></textarea>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>지금 가장 솔직하게 드는 생각</div>
+        <textarea class="field-textarea" rows="3" placeholder="잘 모르겠다, 아직 확신이 없다는 것도 솔직하게 써도 됩니다."></textarea>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>지난번 쓴 것과 달라진 점 (있다면)</div>
+        <input class="field-input" placeholder="달라진 게 없어도 괜찮습니다.">
+      </div>`;}
+    },
+    {title:'신앙을 선택한 이유 정리',
+     desc:'내가 신앙을 선택한 이유를 환경이나 사람이 아닌, 나의 마음에서 나오는 것으로만 3가지 정리해봅니다.',
+     render(color,light){return`
+      <div class="meta-row">
+        <div class="meta-field"><span class="meta-label">작성일</span><input class="meta-input" type="date"></div>
+        <div class="meta-field"><span class="meta-label">이름</span><input class="meta-input wide" placeholder="이름 또는 코드명"></div>
+      </div>
+      <div style="background:${light};border-radius:6px;padding:12px 16px;margin-bottom:14px;font-size:12px;color:#0C447C;line-height:1.7;">
+        규칙: 가족, 공동체, 교회 분위기는 잠시 내려두세요. 오직 <strong>"나의 마음"</strong>에서 나오는 이유만 씁니다.
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>나는 이 신앙을 선택합니다. 왜냐하면</div>
+        ${[1,2,3].map(i=>`
+        <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;">
+          <span style="font-size:13px;font-weight:500;color:${color};width:20px;flex-shrink:0;margin-top:6px;">${i}</span>
+          <textarea class="field-textarea" rows="2" style="margin-bottom:0;" placeholder="이유 ${i}"></textarea>
+        </div>`).join('')}
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>3가지를 쓰고 나서 드는 생각</div>
+        <input class="field-input" placeholder="쉬웠나요, 어려웠나요? 어떤 이유가 가장 진짜 같았나요?">
+      </div>`;}
+    },
+   ]
+  },
+  {id:'fruitful', name:'결실형', color:'#3B6D11', light:'#EAF3DE',
+   theme:'신선함 회복과 나눔의 자리',
+   desc:'유지가 아니라 신선함과 나눔의 에너지를 회복하는 것이 지금 필요한 방향입니다.',
+   sheets:[
+    {title:'가장 힘들었던 때 돌아보기',
+     desc:'신앙 여정에서 가장 힘들었던 때를 떠올리고, 그때 배운 것을 한 줄로 정리합니다. 깊어진 신앙의 흔적을 직접 확인하는 활동입니다.',
+     render(color,light){return`
+      <div class="meta-row">
+        <div class="meta-field"><span class="meta-label">작성일</span><input class="meta-input" type="date"></div>
+        <div class="meta-field"><span class="meta-label">이름</span><input class="meta-input wide" placeholder="이름 또는 코드명"></div>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>나의 신앙 여정에서 가장 힘들었던 때</div>
+        <textarea class="field-textarea" rows="3" placeholder="그때 어떤 상황이었나요? 어떤 감정이었나요?"></textarea>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>그때 배운 것 — 한 줄로</div>
+        <input class="field-input" placeholder="그 시간을 통해 알게 된 것, 얻게 된 것을 딱 한 줄로 써보세요.">
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>그 시간이 지금의 나에게 남긴 것</div>
+        <textarea class="field-textarea" rows="3" placeholder="그 힘든 때가 없었다면 지금의 나는 어땠을까요?"></textarea>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>그때의 나에게 지금 건네고 싶은 말</div>
+        <textarea class="field-textarea" rows="2" placeholder="자유롭게 써보세요."></textarea>
+      </div>`;}
+    },
+    {title:'하나님의 손길 발견 기록지',
+     desc:'이번 주 일상에서 하나님의 손길을 느낀 순간을 기록합니다. 신앙이 삶에 자연스럽게 스며들어 있음을 확인하는 활동입니다.',
+     render(color,light){const days=['월요일','화요일','수요일','목요일','금요일','토요일','주일'];
+      return`
+      <div class="meta-row">
+        <div class="meta-field"><span class="meta-label">주차</span><input class="meta-input" placeholder="예) 2025년 3월 2주"></div>
+        <div class="meta-field"><span class="meta-label">이름</span><input class="meta-input wide" placeholder="이름 또는 코드명"></div>
+      </div>
+      <div style="background:${light};border-radius:6px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#27500A;line-height:1.7;">
+        규칙: 거창하지 않아도 됩니다. 아주 작은 것, 사소한 것도 괜찮습니다. 없었던 날은 비워두세요.
+      </div>
+      <div class="day-grid">
+        ${days.map(d=>`<div class="day-row"><div class="day-label">${d}</div><div class="day-content"><input placeholder="하나님의 손길을 느낀 순간 (없으면 비워두세요)"></div><div class="day-check"><input type="checkbox" class="chk"></div></div>`).join('')}
+      </div>
+      <div style="font-size:11px;color:var(--light);margin-top:6px;text-align:right;">☑ = 오늘 하나님의 손길을 느꼈다</div>
+      <div class="field" style="margin-top:14px;">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>이번 주 가장 선명하게 느낀 순간</div>
+        <textarea class="field-textarea" rows="2" placeholder="7개 중 하나를 골라 조금 더 자세히 적어보세요."></textarea>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>상담자와 나누고 싶은 것</div>
+        <input class="field-input" placeholder="다음 상담 때 가져갈 이야기">
+      </div>`;}
+    },
+   ]
+  },
+  {id:'wilderness', name:'광야형', color:'#854F0B', light:'#FAEEDA',
+   theme:'작은 한 걸음, 연결 유지',
+   desc:'거창한 변화가 아니라 오늘 하루를 버티는 것이 목표입니다. 활동지도 짧고 가볍게 씁니다.',
+   sheets:[
+    {title:'오늘의 작은 빛 찾기',
+     desc:'하루 중 감사하거나 따뜻했던 것 한 가지를 한 줄로 적는 메모지입니다. 딱 한 줄 규칙을 지킵니다.',
+     render(color,light){const days=['월','화','수','목','금','토','주일'];
+      return`
+      <div class="meta-row">
+        <div class="meta-field"><span class="meta-label">주차</span><input class="meta-input" placeholder="예) 2025년 3월 2주"></div>
+        <div class="meta-field"><span class="meta-label">이름</span><input class="meta-input wide" placeholder="이름 또는 코드명"></div>
+      </div>
+      <div style="background:${light};border-radius:6px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#633806;">
+        규칙: 딱 한 줄만 씁니다. 아주 사소한 것도 괜찮습니다. (예: 오늘 커피가 맛있었다)
+      </div>
+      <div class="day-grid">
+        ${days.map(d=>`<div class="day-row"><div class="day-label">${d}</div><div class="day-content"><input placeholder="오늘의 작은 빛 한 가지"></div><div class="day-check"><input type="checkbox" class="chk"></div></div>`).join('')}
+      </div>
+      <div style="font-size:11px;color:var(--light);margin-top:6px;text-align:right;">☑ = 오늘 한 줄을 썼다</div>
+      <div class="field" style="margin-top:14px;">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>7개를 다 모아서 읽어보니 어떤 느낌인가요?</div>
+        <textarea class="field-textarea" rows="2" placeholder="상담 때 함께 읽어볼 것입니다."></textarea>
+      </div>`;}
+    },
+    {title:'연결 체크 카드',
+     desc:'이번 주 딱 두 가지만 확인합니다. 상담자가 매주 짧게 확인해 줍니다.',
+     render(color,light){return`
+      <div class="meta-row">
+        <div class="meta-field"><span class="meta-label">주차</span><input class="meta-input" placeholder="예) 2025년 3월 2주"></div>
+        <div class="meta-field"><span class="meta-label">이름</span><input class="meta-input wide" placeholder="이름 또는 코드명"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px;">
+        <div class="check-row">
+          <input type="checkbox" class="chk">
+          <span class="check-text">나를 응원해주는 사람에게 연락했다 (문자, 전화, 만남 등 형식 무관)</span>
+        </div>
+        <div class="check-row">
+          <input type="checkbox" class="chk">
+          <span class="check-text">예배 또는 모임에 한 번이라도 참석했다 (늦게 가도, 일찍 나와도 됨)</span>
+        </div>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>이번 주 가장 힘들었던 순간</div>
+        <textarea class="field-textarea" rows="2" placeholder="적기 싫으면 안 써도 됩니다. 그냥 느낌만 한 단어로도 괜찮아요."></textarea>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>그 순간 나에게 필요했던 것</div>
+        <input class="field-input" placeholder="위로, 혼자 있는 시간, 누군가의 전화... 무엇이든">
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>상담자에게 전하고 싶은 한 마디</div>
+        <input class="field-input" placeholder="어떤 말도 괜찮습니다.">
+      </div>`;}
+    },
+   ]
+  },
+  {id:'seeker', name:'탐색형', color:'#993C1D', light:'#FAECE7',
+   theme:'질문을 안고 함께 걷기',
+   desc:'답을 강요받지 않으면서 안전하게 탐색을 계속하는 것이 지금 필요한 방향입니다.',
+   sheets:[
+    {title:'신앙 탐색 일지',
+     desc:'이번 주 일상에서 "혹시 이게 하나님의 흔적일까?" 라고 느낀 순간을 기록합니다. 없었던 것도 솔직하게 씁니다.',
+     render(color,light){return`
+      <div class="meta-row">
+        <div class="meta-field"><span class="meta-label">작성일</span><input class="meta-input" type="date"></div>
+        <div class="meta-field"><span class="meta-label">이름</span><input class="meta-input wide" placeholder="이름 또는 코드명"></div>
+      </div>
+      <div style="background:${light};border-radius:6px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#712B13;">
+        규칙: "있어야 한다"는 압박 없이 솔직하게. 없었으면 없었다고, 모르겠으면 모르겠다고 써주세요.
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>이번 주 "혹시 이게 하나님의 흔적일까?" 느낀 순간</div>
+        <textarea class="field-textarea" rows="3" placeholder="없었다면: 없었다고 써주세요. 오히려 그 솔직함이 귀합니다."></textarea>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>이번 주 아름답다고 느낀 것</div>
+        <input class="field-input" placeholder="자연, 사람, 음악, 음식... 어떤 것도 괜찮습니다.">
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>지금 신앙에 대한 솔직한 온도 (0° 차갑다 — 100° 뜨겁다)</div>
+        <div style="display:flex;align-items:center;gap:12px;padding:8px 0;">
+          <span style="font-size:12px;color:var(--light)">0°</span>
+          <input type="range" min="0" max="100" value="50" id="tempSlider" oninput="document.getElementById('tempVal').textContent=this.value+'°'" style="flex:1;">
+          <span style="font-size:12px;color:var(--light)">100°</span>
+          <span id="tempVal" style="font-size:14px;font-weight:500;color:${color};width:36px;text-align:right;">50°</span>
+        </div>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>지금 탐색하고 있는 질문</div>
+        <textarea class="field-textarea" rows="3" placeholder="요즘 머릿속을 맴도는 신앙 관련 질문이 있다면 자유롭게 적어주세요."></textarea>
+      </div>`;}
+    },
+    {title:'"만약 하나님이 계신다면" 질문지',
+     desc:'정답이 없는 열린 질문 3개를 생각해 옵니다. 다음 상담에서 함께 이야기 나누는 것이 목적입니다.',
+     render(color,light){const qs=['만약 하나님이 계신다면, 나에게 어떤 분이면 좋겠는가?','만약 하나님이 나의 지난 1년을 보셨다면, 어떤 말씀을 해주실 것 같은가?','만약 내가 하나님을 믿게 된다면, 내 삶에서 무엇이 달라질 것 같은가?'];
+      return`
+      <div class="meta-row">
+        <div class="meta-field"><span class="meta-label">작성일</span><input class="meta-input" type="date"></div>
+        <div class="meta-field"><span class="meta-label">이름</span><input class="meta-input wide" placeholder="이름 또는 코드명"></div>
+      </div>
+      <div style="background:${light};border-radius:6px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#712B13;">
+        규칙: 정답이 없습니다. 생각의 흐름을 그대로 적어주세요. 짧아도 됩니다.
+      </div>
+      ${qs.map((q,i)=>`
+      <div class="q-card" style="margin-bottom:8px;">
+        <div class="q-card-head"><div class="q-card-text">${q}</div></div>
+        <div class="q-card-body"><textarea class="q-card-input" rows="3" placeholder="자유롭게..."></textarea></div>
+      </div>`).join('')}
+      <div class="field" style="margin-top:4px;">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>이 질문들을 생각하면서 어떤 느낌이 들었나요?</div>
+        <textarea class="field-textarea" rows="2" placeholder="불편했나요, 흥미로웠나요, 막막했나요?"></textarea>
+      </div>`;}
+    },
+   ]
+  },
+  {id:'enduring', name:'인내형', color:'#993556', light:'#FBEAF0',
+   theme:'쉼이 먼저, 연결은 그 다음',
+   desc:'신앙을 더 잘하는 것이 아니라 내려놓고 쉬는 것이 지금 필요한 방향입니다. 활동지도 가볍고 쉬워야 합니다.',
+   sheets:[
+    {title:'오늘 내려놓은 것 기록지',
+     desc:'하루 중 억지로 버티거나 감당하려 했던 것 하나를 "오늘은 이것을 내려놓겠습니다"라고 씁니다. 쉼과 해방을 연습합니다.',
+     render(color,light){const days=['월요일','화요일','수요일','목요일','금요일','토요일','주일'];
+      return`
+      <div class="meta-row">
+        <div class="meta-field"><span class="meta-label">주차</span><input class="meta-input" placeholder="예) 2025년 3월 2주"></div>
+        <div class="meta-field"><span class="meta-label">이름</span><input class="meta-input wide" placeholder="이름 또는 코드명"></div>
+      </div>
+      <div style="background:${light};border-radius:6px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#72243E;">
+        규칙: 내려놓았다고 해서 포기한 게 아닙니다. 오늘만큼은 이것을 하나님께 맡기는 것입니다.
+      </div>
+      <div class="day-grid">
+        ${days.map(d=>`<div class="day-row"><div class="day-label">${d}</div><div class="day-content"><input placeholder="오늘 내려놓은 것"></div><div class="day-check"><input type="checkbox" class="chk"></div></div>`).join('')}
+      </div>
+      <div style="font-size:11px;color:var(--light);margin-top:6px;text-align:right;">☑ = 오늘 실제로 내려놓았다는 느낌이 들었다</div>
+      <div class="field" style="margin-top:14px;">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>이번 주 내려놓기가 가장 어려웠던 것</div>
+        <input class="field-input" placeholder="어떤 것이 특히 손에서 놓기 힘들었나요?">
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>내려놓고 나서 어떤 느낌이었나요?</div>
+        <textarea class="field-textarea" rows="2" placeholder="후련했나요, 불안했나요, 아직 잘 모르겠나요?"></textarea>
+      </div>`;}
+    },
+    {title:'위로의 말씀 수집지',
+     desc:'읽다가 위로가 된 말씀이나 문장을 모아두는 공간입니다. 분석하거나 적용하지 않아도 됩니다.',
+     render(color,light){return`
+      <div class="meta-row">
+        <div class="meta-field"><span class="meta-label">이름</span><input class="meta-input wide" placeholder="이름 또는 코드명"></div>
+      </div>
+      <div style="background:${light};border-radius:6px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#72243E;">
+        규칙: 위로가 된 것을 그냥 모아두면 됩니다. 왜 위로가 됐는지 설명 안 해도 됩니다.
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>위로의 말씀 모음</div>
+        ${[1,2,3,4,5].map(i=>`
+        <div class="verse-row">
+          <div class="verse-num">${i}</div>
+          <div class="verse-inputs">
+            <input class="verse-ref" placeholder="출처 (예: 시편 23:1, 또는 읽었던 책 등)">
+            <input class="verse-content" placeholder="위로가 된 문장">
+          </div>
+        </div>`).join('')}
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>이 중에서 지금 가장 위로가 되는 것</div>
+        <input class="field-input" placeholder="번호로 답해도 됩니다. (예: 2번)">
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>상담자에게 하고 싶은 말</div>
+        <textarea class="field-textarea" rows="2" placeholder="어떤 말도 괜찮습니다."></textarea>
+      </div>`;}
+    },
+   ]
+  },
+  {id:'beginning', name:'준비형', color:'#5F5E5A', light:'#F1EFE8',
+   theme:'첫 경험을 좋은 기억으로',
+   desc:'완벽하게 이해하는 것이 아니라 편안하게 한 번 경험해 보는 것이 지금 필요한 방향입니다.',
+   sheets:[
+    {title:'오늘 좋았던 일 한 가지',
+     desc:'신앙과 상관없이 오늘 하루 좋았던 일 하나를 적습니다. 신앙 활동과 연결하지 않아도 됩니다.',
+     render(color,light){const days=['월요일','화요일','수요일','목요일','금요일','토요일','주일'];
+      return`
+      <div class="meta-row">
+        <div class="meta-field"><span class="meta-label">주차</span><input class="meta-input" placeholder="예) 2025년 3월 2주"></div>
+        <div class="meta-field"><span class="meta-label">이름</span><input class="meta-input wide" placeholder="이름 또는 코드명"></div>
+      </div>
+      <div style="background:${light};border-radius:6px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#444441;">
+        규칙: 신앙적인 것 안 써도 됩니다. 오늘 맛있었던 것, 웃었던 것, 편했던 것 — 무엇이든 좋습니다.
+      </div>
+      <div class="day-grid">
+        ${days.map(d=>`<div class="day-row"><div class="day-label">${d}</div><div class="day-content"><input placeholder="오늘 좋았던 일 한 가지"></div><div class="day-check"><input type="checkbox" class="chk"></div></div>`).join('')}
+      </div>
+      <div style="font-size:11px;color:var(--light);margin-top:6px;text-align:right;">☑ = 오늘 썼다</div>
+      <div class="field" style="margin-top:14px;">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>7개 중 가장 좋았던 하루는 언제였나요?</div>
+        <input class="field-input" placeholder="요일로 답해도 됩니다.">
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>한 주를 돌아보면서 드는 생각</div>
+        <textarea class="field-textarea" rows="2" placeholder="한 줄이어도 괜찮습니다."></textarea>
+      </div>`;}
+    },
+    {title:'처음으로 해본 것 기록지',
+     desc:'이번 주 신앙 안에서 처음 해본 것이 있다면 무엇이든 적습니다. 기도 한 번, 예배 참석, 찬양 한 곡 — 어떤 것이든 괜찮습니다.',
+     render(color,light){return`
+      <div class="meta-row">
+        <div class="meta-field"><span class="meta-label">이름</span><input class="meta-input wide" placeholder="이름 또는 코드명"></div>
+      </div>
+      <div style="background:${light};border-radius:6px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#444441;">
+        규칙: 아무리 사소해도 괜찮습니다. 처음이라는 것 자체가 소중합니다.
+      </div>
+      ${[1,2,3].map(i=>`
+      <div style="border:1px solid var(--border);border-radius:6px;padding:14px 16px;margin-bottom:8px;">
+        <div style="font-size:10px;color:var(--light);margin-bottom:8px;">처음으로 해본 것 ${i}</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div><div style="font-size:10px;color:var(--light);margin-bottom:3px;">무엇을 해봤나요</div><input class="field-input" placeholder="예: 예배 처음 참석, 찬양 한 곡 들음, 짧게 기도해봄"></div>
+          <div><div style="font-size:10px;color:var(--light);margin-bottom:3px;">어떤 느낌이었나요</div><input class="field-input" placeholder="어색했나요, 편했나요, 잘 모르겠나요?"></div>
+        </div>
+      </div>`).join('')}
+      <div class="field" style="margin-top:4px;">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>다음에 한 번 더 해보고 싶은 것</div>
+        <input class="field-input" placeholder="있다면 적어보세요. 없어도 괜찮습니다.">
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>상담자에게 전하고 싶은 것</div>
+        <textarea class="field-textarea" rows="2" placeholder="어떤 말도 괜찮습니다."></textarea>
+      </div>`;}
+    },
+   ]
+  },
+];
+
+// ── BUILD TYPE BUTTONS ──
+const grid = document.getElementById('typeGrid');
+TYPES.forEach(t => {
+  const btn = document.createElement('button');
+  btn.className = 'type-btn';
+  btn.id = 'btn-' + t.id;
+  btn.innerHTML = t.name;
+  btn.onclick = () => selectType(t.id);
+  grid.appendChild(btn);
+});
+
+let selectedType = null;
+
+function selectType(id) {
+  if (selectedType === id) return;
+  selectedType = id;
+  // update buttons
+  TYPES.forEach(t => {
+    const b = document.getElementById('btn-' + t.id);
+    b.classList.toggle('active', t.id === id);
+    if (t.id === id) { b.style.background = t.color; b.style.color = '#fff'; b.style.borderColor = t.color; }
+    else { b.style.background = ''; b.style.color = ''; b.style.borderColor = ''; }
+  });
+  renderActivities(id);
+}
+
+function renderActivities(id) {
+  const t = TYPES.find(x => x.id === id);
+  const wrap = document.getElementById('activitiesWrap');
+  wrap.innerHTML = `
+    <div class="act-header">
+      <div class="act-type-badge" style="background:${t.light}">
+        <div class="act-type-badge-dot" style="background:${t.color}"></div>
+        <span class="act-type-name" style="color:${t.color}">${t.name}</span>
+      </div>
+      <div class="act-header-title">${t.theme}</div>
+      <div class="act-header-sub">${t.desc}</div>
+    </div>
+    ${t.sheets.map((s, i) => `
+    <div class="sheet">
+      <div class="sheet-head" style="border-left:3px solid ${t.color};border-radius:0;">
+        <div class="sheet-num">활동 0${i+1}</div>
+        <div class="sheet-title">${s.title}</div>
+        <div class="sheet-desc">${s.desc}</div>
+      </div>
+      <div class="sheet-body">${s.render(t.color, t.light)}</div>
+    </div>`).join('')}
+  `;
+  // localStorage save
+  wrap.querySelectorAll('input,textarea,select').forEach(el => {
+    el.addEventListener('input', saveAll);
+    el.addEventListener('change', saveAll);
+  });
+  loadAll(id);
+}
+
+function saveAll() {
+  if (!selectedType) return;
+  const data = {};
+  document.querySelectorAll('#activitiesWrap input,#activitiesWrap textarea').forEach((el, i) => {
+    data[i] = el.type === 'checkbox' || el.type === 'radio' ? el.checked : el.value;
+  });
+  try { localStorage.setItem('fa_' + selectedType, JSON.stringify(data)); } catch(e){}
+}
+
+function loadAll(id) {
+  try {
+    const raw = localStorage.getItem('fa_' + id);
+    if (!raw) return;
+    const data = JSON.parse(raw);
+    document.querySelectorAll('#activitiesWrap input,#activitiesWrap textarea').forEach((el, i) => {
+      if (data[i] !== undefined) {
+        if (el.type === 'checkbox' || el.type === 'radio') el.checked = data[i];
+        else el.value = data[i];
+      }
+    });
+  } catch(e){}
+}
+</script>
+</body>
+</html>

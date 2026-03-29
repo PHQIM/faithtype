@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FaithType</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300;400;500&family=Playfair+Display:wght@400;600&family=Inter:wght@300;400;500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;font-family:'Noto Sans KR','Inter',sans-serif;background:#F8F6F1;color:#1A1814;}
+body{display:flex;flex-direction:column;min-height:100vh;}
+
+/* ── TOPBAR ── */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 28px;border-bottom:1px solid #E8E3DC;background:#F8F6F1;}
+.logo{font-family:'Playfair Display','Noto Serif KR',serif;font-size:17px;font-weight:600;color:#1A1814;letter-spacing:.2px;}
+.logo span{color:#534AB7;}
+.lang-wrap{position:relative;}
+.lang-select{appearance:none;-webkit-appearance:none;background:#fff;border:1px solid #E8E3DC;border-radius:20px;padding:6px 28px 6px 12px;font-family:'Noto Sans KR','Inter',sans-serif;font-size:12px;color:#7A7568;cursor:pointer;outline:none;}
+.lang-arrow{position:absolute;right:10px;top:50%;transform:translateY(-50%);pointer-events:none;font-size:10px;color:#B0A99E;}
+
+/* ── MAIN ── */
+.main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px 40px;}
+
+/* ── HERO ── */
+.hero{text-align:center;margin-bottom:36px;}
+.hero-eyebrow{font-size:11px;font-weight:500;letter-spacing:1.2px;color:#B0A99E;text-transform:uppercase;margin-bottom:12px;}
+.hero-title{font-family:'Playfair Display','Noto Serif KR',serif;font-size:clamp(24px,4vw,36px);font-weight:600;line-height:1.25;margin-bottom:14px;color:#1A1814;}
+.hero-sub{font-size:14px;color:#7A7568;line-height:1.8;max-width:480px;margin:0 auto;}
+
+/* ── ROLE SELECTOR ── */
+.role-wrap{width:100%;max-width:600px;}
+.role-tabs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+.role-tab{padding:14px 20px;border:1px solid #E8E3DC;border-radius:6px;background:#fff;font-family:'Noto Sans KR','Inter',sans-serif;font-size:14px;font-weight:500;color:#7A7568;cursor:pointer;transition:all .18s;text-align:center;}
+.role-tab:hover{border-color:#B0A99E;}
+.role-tab.active{background:#1A1814;color:#fff;border-color:#1A1814;}
+.role-panel{display:none;}
+.role-panel.active{display:flex;flex-direction:column;gap:10px;}
+
+/* ── TOOL CARD ── */
+.tool-card{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;background:#fff;border:1px solid #E8E3DC;border-radius:8px;text-decoration:none;color:inherit;transition:border-color .15s,transform .1s;cursor:pointer;}
+.tool-card:hover{border-color:#7A7568;transform:translateY(-1px);}
+.tool-card-left{display:flex;align-items:center;gap:14px;}
+.tool-card-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.tool-card-text{}
+.tool-card-title{font-size:14px;font-weight:500;color:#1A1814;margin-bottom:3px;}
+.tool-card-desc{font-size:12px;color:#B0A99E;}
+.tool-card-arrow{font-size:16px;color:#B0A99E;flex-shrink:0;}
+
+/* ── ACTIVITY LINK ── */
+.act-intro{font-size:12px;color:#B0A99E;line-height:1.65;padding:12px 16px 10px;border-bottom:1px solid #F4F0EB;}
+.act-link{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;text-decoration:none;color:inherit;transition:background .15s;border-bottom:1px solid #F4F0EB;}
+.act-link:hover{background:#F8F6F1;}
+.act-link-left{display:flex;align-items:center;gap:12px;}
+.act-link-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.act-link-title{font-size:13px;font-weight:500;color:#1A1814;margin-bottom:2px;}
+.act-link-sub{font-size:11px;color:#B0A99E;}
+.act-link-arrow{font-size:14px;color:#B0A99E;flex-shrink:0;}
+.act-types-wrap{padding:12px 16px;}
+.act-types-label{font-size:10px;font-weight:500;letter-spacing:.5px;color:#B0A99E;text-transform:uppercase;margin-bottom:8px;}
+.act-types-grid{display:flex;flex-wrap:wrap;gap:5px;}
+.act-type-chip{font-size:11px;font-weight:500;padding:3px 10px;border-radius:12px;}
+.act-how-wrap{padding:12px 16px;}
+.act-how-label{font-size:10px;font-weight:500;letter-spacing:.5px;color:#B0A99E;text-transform:uppercase;margin-bottom:8px;}
+.act-how-list{display:flex;flex-direction:column;gap:6px;}
+.act-how-item{display:flex;align-items:center;gap:8px;}
+.act-how-num{width:18px;height:18px;border-radius:50%;background:#F8F6F1;border:1px solid #E8E3DC;font-size:10px;font-weight:500;color:#B0A99E;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.act-how-text{font-size:12px;color:#7A7568;}
+
+/* ── TOGGLE CARD ── */
+.toggle-card{border:1px solid #E8E3DC;border-radius:8px;background:#fff;overflow:hidden;}
+.toggle-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;cursor:pointer;transition:background .15s;}
+.toggle-head:hover{background:#F8F6F1;}
+.toggle-head-left{display:flex;align-items:center;gap:14px;}
+.toggle-icon{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.toggle-title{font-size:14px;font-weight:500;color:#1A1814;margin-bottom:3px;}
+.toggle-desc{font-size:12px;color:#B0A99E;}
+.toggle-chevron{font-size:12px;color:#B0A99E;transition:transform .2s;flex-shrink:0;}
+.toggle-chevron.open{transform:rotate(180deg);}
+.toggle-body{display:none;border-top:1px solid #F4F0EB;padding:16px 20px;background:#FAFAF8;}
+.toggle-body.open{display:block;}
+.activity-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid #F4F0EB;}
+.activity-item:last-child{border-bottom:none;}
+.activity-num{font-size:11px;color:#B0A99E;width:18px;flex-shrink:0;margin-top:1px;}
+.activity-info{}
+.activity-title{font-size:13px;font-weight:500;color:#1A1814;margin-bottom:2px;}
+.activity-sub{font-size:11px;color:#B0A99E;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">Faith<span>Type</span></div>
+  <div class="lang-wrap">
+    <select class="lang-select" id="langSelect" onchange="setLang(this.value)">
+      <option value="ko">🇰🇷 한국어</option>
+      <option value="en">🇺🇸 English</option>
+      <option value="id">🇮🇩 Indonesia</option>
+      <option value="zh">🇨🇳 中文</option>
+      <option value="it">🇮🇹 Italiano</option>
+      <option value="de">🇩🇪 Deutsch</option>
+      <option value="fr">🇫🇷 Français</option>
+    </select>
+    <span class="lang-arrow">▾</span>
+  </div>
+</div>
+
+<div class="main">
+  <div class="hero">
+    <div class="hero-eyebrow" data-i="eyebrow">신앙 유형 진단 시스템</div>
+    <h1 class="hero-title" data-i="title">나의 신앙 여정을<br>더 깊이 이해합니다</h1>
+    <p class="hero-sub" data-i="sub">74가지 질문으로 신앙 유형을 진단하고, 맞춤 상담 가이드와 성장 플랜으로 신앙의 다음 단계를 향해 나아갑니다.</p>
+  </div>
+
+  <div class="role-wrap">
+    <div class="role-tabs">
+      <button class="role-tab active" onclick="switchRole('client')" data-i="tab_client">항해자 (내담자)</button>
+      <button class="role-tab" onclick="switchRole('counselor')" data-i="tab_counselor">동행자 (상담자)</button>
+    </div>
+
+    <!-- CLIENT PANEL -->
+    <div class="role-panel active" id="panel-client">
+      <a class="tool-card" id="link_assessment" href="faith-assessment-v6.html">
+        <div class="tool-card-left">
+          <div class="tool-card-dot" style="background:#534AB7;"></div>
+          <div class="tool-card-text">
+            <div class="tool-card-title" data-i="c1_title">신앙 유형 검사</div>
+            <div class="tool-card-desc" data-i="c1_desc">74문항 · 약 15분 · JPG/PDF 저장 가능</div>
+          </div>
+        </div>
+        <span class="tool-card-arrow">→</span>
+      </a>
+
+      <div class="toggle-card" id="toggle-client">
+        <div class="toggle-head" onclick="toggleSection('client-acts')">
+          <div class="toggle-head-left">
+            <div class="toggle-icon" style="background:#3B6D11;"></div>
+            <div>
+              <div class="toggle-title" data-i="c2_title">행동으로 옮기기</div>
+              <div class="toggle-desc" data-i="c2_desc">참여 활동 목록 보기</div>
+            </div>
+          </div>
+          <span class="toggle-chevron" id="chev-client-acts">▾</span>
+        </div>
+        <div class="toggle-body" id="client-acts">
+          <div class="act-intro" data-i="act_intro_client">검사 결과를 확인한 후, 나의 신앙 유형에 맞는 활동지를 선택해 상담자와 함께 실천해 보세요.</div>
+          <a class="act-link" id="link_activities" href="faith-activities.html">
+            <div class="act-link-left">
+              <div class="act-link-dot" style="background:#3B6D11;"></div>
+              <div>
+                <div class="act-link-title" data-i="ca_title">유형별 신앙 성장 활동지</div>
+                <div class="act-link-sub" data-i="ca_sub">8가지 유형 · 유형별 활동지 2종 · PDF 저장 가능</div>
+              </div>
+            </div>
+            <span class="act-link-arrow">→</span>
+          </a>
+          <div class="act-types-wrap">
+            <div class="act-types-label" data-i="act_types_label">포함된 활동지 유형</div>
+            <div class="act-types-grid">
+              <span class="act-type-chip" style="background:#EEEDFE;color:#3C3489" data-i="chip_rooted">뿌리형</span>
+              <span class="act-type-chip" style="background:#E1F5EE;color:#085041" data-i="chip_seedling">씨앗형</span>
+              <span class="act-type-chip" style="background:#E6F1FB;color:#0C447C" data-i="chip_grounded">터전형</span>
+              <span class="act-type-chip" style="background:#EAF3DE;color:#27500A" data-i="chip_fruitful">결실형</span>
+              <span class="act-type-chip" style="background:#FAEEDA;color:#633806" data-i="chip_wilderness">광야형</span>
+              <span class="act-type-chip" style="background:#FAECE7;color:#712B13" data-i="chip_seeker">탐색형</span>
+              <span class="act-type-chip" style="background:#FBEAF0;color:#72243E" data-i="chip_enduring">인내형</span>
+              <span class="act-type-chip" style="background:#F1EFE8;color:#444441" data-i="chip_beginning">준비형</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COUNSELOR PANEL -->
+    <div class="role-panel" id="panel-counselor">
+      <a class="tool-card" id="link_guide" href="counseling-guide-v2.html">
+        <div class="tool-card-left">
+          <div class="tool-card-dot" style="background:#0F6E56;"></div>
+          <div class="tool-card-text">
+            <div class="tool-card-title" data-i="s1_title">상담 가이드</div>
+            <div class="tool-card-desc" data-i="s1_desc">8가지 유형별 7섹션 · 상담자 전용</div>
+          </div>
+        </div>
+        <span class="tool-card-arrow">→</span>
+      </a>
+
+      <a class="tool-card" id="link_plan" href="faith-growth-plan.html">
+        <div class="tool-card-left">
+          <div class="tool-card-dot" style="background:#185FA5;"></div>
+          <div class="tool-card-text">
+            <div class="tool-card-title" data-i="s2_title">성장 플랜지</div>
+            <div class="tool-card-desc" data-i="s2_desc">1년 성장 로드맵 · PDF 저장 · 상담자 전용</div>
+          </div>
+        </div>
+        <span class="tool-card-arrow">→</span>
+      </a>
+
+      <div class="toggle-card" id="toggle-counselor">
+        <div class="toggle-head" onclick="toggleSection('counselor-acts')">
+          <div class="toggle-head-left">
+            <div class="toggle-icon" style="background:#854F0B;"></div>
+            <div>
+              <div class="toggle-title" data-i="s3_title">행동으로 옮기기</div>
+              <div class="toggle-desc" data-i="s3_desc">상담자 참여 활동 목록 보기</div>
+            </div>
+          </div>
+          <span class="toggle-chevron" id="chev-counselor-acts">▾</span>
+        </div>
+        <div class="toggle-body" id="counselor-acts">
+          <div class="act-intro" data-i="act_intro_counselor">상담 후 내담자와 함께 활동지를 선택하고, 다음 상담 때 함께 나눠보세요.</div>
+          <a class="act-link" id="link_activities_counselor" href="faith-activities.html">
+            <div class="act-link-left">
+              <div class="act-link-dot" style="background:#854F0B;"></div>
+              <div>
+                <div class="act-link-title" data-i="sa_act_title">유형별 신앙 성장 활동지</div>
+                <div class="act-link-sub" data-i="sa_act_sub">내담자 유형 선택 후 함께 작성 · PDF 저장 가능</div>
+              </div>
+            </div>
+            <span class="act-link-arrow">→</span>
+          </a>
+          <div class="act-how-wrap">
+            <div class="act-how-label" data-i="act_how_label">활용 순서</div>
+            <div class="act-how-list">
+              <div class="act-how-item"><span class="act-how-num">1</span><span class="act-how-text" data-i="how1">검사 결과에서 내담자 유형 확인</span></div>
+              <div class="act-how-item"><span class="act-how-num">2</span><span class="act-how-text" data-i="how2">활동지에서 해당 유형 선택</span></div>
+              <div class="act-how-item"><span class="act-how-num">3</span><span class="act-how-text" data-i="how3">내담자와 함께 활동지 2종 중 하나 선택</span></div>
+              <div class="act-how-item"><span class="act-how-num">4</span><span class="act-how-text" data-i="how4">PDF로 저장해 다음 상담 때 점검</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const T={
+  ko:{
+    eyebrow:'신앙 유형 진단 시스템',
+    title:'나의 신앙 여정을<br>더 깊이 이해합니다',
+    sub:'74가지 질문으로 신앙 유형을 진단하고, 맞춤 상담 가이드와 성장 플랜으로 신앙의 다음 단계를 향해 나아갑니다.',
+    tab_client:'항해자 (내담자)',tab_counselor:'동행자 (상담자)',
+    c1_title:'신앙 유형 검사',c1_desc:'74문항 · 약 15분 · JPG/PDF 저장 가능',
+    c2_title:'행동으로 옮기기',c2_desc:'참여 활동 목록 보기',
+    ca1_t:'말씀 나눔 일기',ca1_s:'이번 주 와닿은 말씀 한 구절과 느낀 점 기록하기',
+    ca2_t:'감사 일기 쓰기',ca2_s:'오늘 하루 감사한 것 3가지 적어보기',
+    ca3_t:'한 사람에게 연락하기',ca3_s:'오랫동안 연락하지 못한 신앙 동반자에게 먼저 연락',
+    ca4_t:'5분 묵상',ca4_s:'아무것도 하지 않고 하나님 앞에 조용히 앉아있기',
+    ca5_t:'신앙 질문 적기',ca5_s:'지금 가장 궁금한 신앙 질문 한 가지를 종이에 써보기',
+    s1_title:'상담 가이드',s1_desc:'8가지 유형별 7섹션 · 상담자 전용',
+    s2_title:'성장 플랜지',s2_desc:'1년 성장 로드맵 · PDF 저장 · 상담자 전용',
+    s3_title:'행동으로 옮기기',s3_desc:'상담자 참여 활동 목록 보기',
+    sa1_t:'상담 전 가이드 숙지',sa1_s:'해당 유형 섹션 01–04 미리 읽고 핵심 포인트 메모',
+    sa2_t:'기도 제목 기록',sa2_s:'플랜지 07번 섹션에 이번 주 기도 제목 3가지 작성',
+    sa3_t:'체크리스트 점검',sa3_s:'플랜지 케어 체크리스트 매 상담 전 확인',
+    sa4_t:'권장 질문 연습',sa4_s:'가이드 섹션 05 질문 5개를 상담 전 소리 내어 읽기',
+    sa5_t:'3개월 중간 평가',sa5_s:'플랜지 섹션 06 중간 평가 체크리스트 완료 여부 확인',
+    assessment:'faith-assessment-v6.html',
+    guide:'counseling-guide-v2.html',
+    plan:'faith-growth-plan.html',
+    activities:'faith-activities.html',
+
+    act_intro_client:'검사 결과를 확인한 후, 나의 신앙 유형에 맞는 활동지를 선택해 상담자와 함께 실천해 보세요.',
+    ca_title:'유형별 신앙 성장 활동지',
+    ca_sub:'8가지 유형 · 유형별 활동지 2종 · PDF 저장 가능',
+    act_types_label:'포함된 활동지 유형',
+    chip_rooted:'뿌리형',
+    chip_seedling:'씨앗형',
+    chip_grounded:'터전형',
+    chip_fruitful:'결실형',
+    chip_wilderness:'광야형',
+    chip_seeker:'탐색형',
+    chip_enduring:'인내형',
+    chip_beginning:'준비형',
+    act_intro_counselor:'상담 후 내담자와 함께 활동지를 선택하고, 다음 상담 때 함께 나눠보세요.',
+    sa_act_title:'유형별 신앙 성장 활동지',
+    sa_act_sub:'내담자 유형 선택 후 함께 작성 · PDF 저장 가능',
+    act_how_label:'활용 순서',
+    how1:'검사 결과에서 내담자 유형 확인',
+    how2:'활동지에서 해당 유형 선택',
+    how3:'내담자와 함께 활동지 2종 중 하나 선택',
+    how4:'PDF로 저장해 다음 상담 때 점검',
+  },
+  en:{
+    eyebrow:'Faith Type Assessment System',
+    title:'Understand your faith journey<br>more deeply',
+    sub:'74 questions to assess your faith type, then personalized counseling guides and growth plans to move toward the next stage of your faith.',
+    tab_client:'Navigator (Counselee)',tab_counselor:'Companion (Counselor)',
+    c1_title:'Faith Type Assessment',c1_desc:'74 questions · ~15 min · Save as JPG/PDF',
+    c2_title:'Take Action',c2_desc:'View participation activities',
+    ca1_t:'Scripture journal',ca1_s:'Write down one verse that touched you this week and your reflection',
+    ca2_t:'Gratitude journal',ca2_s:'Write 3 things you are grateful for today',
+    ca3_t:'Reach out to someone',ca3_s:'Contact a faith companion you haven\'t spoken with in a while',
+    ca4_t:'5-minute reflection',ca4_s:'Sit quietly before God without doing anything',
+    ca5_t:'Write a faith question',ca5_s:'Write down one question you are most curious about in your faith',
+    s1_title:'Counseling Guide',s1_desc:'7 sections for each of 8 types · Counselors only',
+    s2_title:'Growth Plan Sheet',s2_desc:'1-year growth roadmap · PDF save · Counselors only',
+    s3_title:'Take Action',s3_desc:'View counselor activity list',
+    sa1_t:'Review guide before session',sa1_s:'Read sections 01–04 for the relevant type and note key points',
+    sa2_t:'Record prayer items',sa2_s:'Write 3 prayer items for this week in plan sheet section 07',
+    sa3_t:'Check the care checklist',sa3_s:'Review plan sheet care checklist before each session',
+    sa4_t:'Practice recommended questions',sa4_s:'Read 5 questions from guide section 05 aloud before the session',
+    sa5_t:'3-month midpoint review',sa5_s:'Check section 06 midpoint evaluation checklist for completion',
+    assessment:'faith-assessment-en.html',
+    guide:'counseling-guide-en.html',
+    plan:'faith-growth-plan-en.html',
+    activities:'faith-activities-en.html',
+
+    act_intro_client:'After reviewing the assessment results, choose an activity sheet for your faith type and practice together with your counselor.',
+    ca_title:'Faith Growth Activity Sheets by Type',
+    ca_sub:'8 types · 2 activity sheets per type · PDF save',
+    act_types_label:'Included types',
+    chip_rooted:'Rooted',
+    chip_seedling:'Seedling',
+    chip_grounded:'Grounded',
+    chip_fruitful:'Fruitful',
+    chip_wilderness:'Wilderness',
+    chip_seeker:'Seeker',
+    chip_enduring:'Enduring',
+    chip_beginning:'Beginning',
+    act_intro_counselor:'After counseling, choose an activity sheet together with the counselee and review it at the next session.',
+    sa_act_title:'Faith Growth Activity Sheets by Type',
+    sa_act_sub:'Select counselee type · Fill in together · PDF save',
+    act_how_label:'How to use',
+    how1:"Identify counselee's faith type from results",
+    how2:'Select that type in the activity sheet',
+    how3:'Choose one of the 2 activity sheets together',
+    how4:'Save as PDF and review at next session',
+  },
+  id:{
+    eyebrow:'Sistem Penilaian Tipe Iman',
+    title:'Pahami perjalanan iman Anda<br>lebih dalam',
+    sub:'74 pertanyaan untuk menilai tipe iman Anda, kemudian panduan konseling dan rencana pertumbuhan yang disesuaikan untuk maju ke tahap berikutnya.',
+    tab_client:'Pelayar (Peserta)',tab_counselor:'Pendamping (Konselor)',
+    c1_title:'Penilaian Tipe Iman',c1_desc:'74 pertanyaan · ~15 menit · Simpan sebagai JPG/PDF',
+    c2_title:'Ambil Tindakan',c2_desc:'Lihat daftar aktivitas partisipasi',
+    ca1_t:'Jurnal firman',ca1_s:'Catat satu ayat yang menyentuh hati minggu ini beserta renungan',
+    ca2_t:'Jurnal syukur',ca2_s:'Tulis 3 hal yang disyukuri hari ini',
+    ca3_t:'Hubungi seseorang',ca3_s:'Hubungi rekan iman yang lama tidak dihubungi',
+    ca4_t:'Refleksi 5 menit',ca4_s:'Duduk diam di hadapan Tuhan tanpa melakukan apa pun',
+    ca5_t:'Tulis pertanyaan iman',ca5_s:'Tulis satu pertanyaan iman yang paling ingin diketahui',
+    s1_title:'Panduan Konseling',s1_desc:'7 bagian untuk masing-masing 8 tipe · Khusus konselor',
+    s2_title:'Lembar Rencana Pertumbuhan',s2_desc:'Peta jalan pertumbuhan 1 tahun · Simpan PDF · Khusus konselor',
+    s3_title:'Ambil Tindakan',s3_desc:'Lihat daftar aktivitas konselor',
+    sa1_t:'Pelajari panduan sebelum sesi',sa1_s:'Baca bagian 01–04 untuk tipe yang relevan dan catat poin utama',
+    sa2_t:'Catat pokok doa',sa2_s:'Tulis 3 pokok doa minggu ini di bagian 07 lembar rencana',
+    sa3_t:'Periksa daftar periksa',sa3_s:'Tinjau daftar periksa perawatan sebelum setiap sesi',
+    sa4_t:'Latih pertanyaan yang disarankan',sa4_s:'Baca 5 pertanyaan dari bagian 05 panduan dengan suara keras',
+    sa5_t:'Evaluasi tengah jalan 3 bulan',sa5_s:'Periksa penyelesaian daftar evaluasi bagian 06',
+    assessment:'faith-assessment-id.html',
+    guide:'counseling-guide-id.html',
+    plan:'faith-growth-plan-id.html',
+    activities:'faith-activities-id.html',
+
+    act_intro_client:'Setelah meninjau hasil penilaian, pilih lembar aktivitas yang sesuai dengan tipe iman Anda dan praktikkan bersama konselor.',
+    ca_title:'Lembar Aktivitas Pertumbuhan Iman per Tipe',
+    ca_sub:'8 tipe · 2 lembar aktivitas per tipe · Simpan PDF',
+    act_types_label:'Tipe yang tersedia',
+    chip_rooted:'Berakar',
+    chip_seedling:'Bibit',
+    chip_grounded:'Beralas',
+    chip_fruitful:'Berbuah',
+    chip_wilderness:'Padang Gurun',
+    chip_seeker:'Pencari',
+    chip_enduring:'Bertahan',
+    chip_beginning:'Awal Mula',
+    act_intro_counselor:'Setelah konseling, pilih lembar aktivitas bersama dan tinjau pada sesi berikutnya.',
+    sa_act_title:'Lembar Aktivitas Pertumbuhan Iman per Tipe',
+    sa_act_sub:'Pilih tipe peserta · Isi bersama · Simpan PDF',
+    act_how_label:'Cara penggunaan',
+    how1:'Identifikasi tipe iman dari hasil penilaian',
+    how2:'Pilih tipe tersebut di lembar aktivitas',
+    how3:'Pilih salah satu dari 2 lembar aktivitas bersama',
+    how4:'Simpan sebagai PDF dan tinjau di sesi berikutnya',
+  },
+  zh:{
+    eyebrow:'信仰类型评估系统',
+    title:'更深入地了解<br>您的信仰旅程',
+    sub:'通过74个问题评估您的信仰类型，然后通过个性化辅导指南和成长计划迈向信仰的下一阶段。',
+    tab_client:'航行者（被评估者）',tab_counselor:'同行者（辅导者）',
+    c1_title:'信仰类型评估',c1_desc:'74题 · 约15分钟 · 可保存JPG/PDF',
+    c2_title:'付诸行动',c2_desc:'查看参与活动列表',
+    ca1_t:'经文日记',ca1_s:'记录本周感动您的一节经文及感悟',
+    ca2_t:'感恩日记',ca2_s:'写下今天3件感恩的事',
+    ca3_t:'联系一个人',ca3_s:'主动联系久未联系的信仰同伴',
+    ca4_t:'5分钟默想',ca4_s:'什么也不做，安静地坐在神面前',
+    ca5_t:'记下信仰问题',ca5_s:'把目前最想知道的一个信仰问题写在纸上',
+    s1_title:'辅导指南',s1_desc:'8种类型各7节 · 仅限辅导者',
+    s2_title:'成长计划表',s2_desc:'1年成长路线图 · PDF保存 · 仅限辅导者',
+    s3_title:'付诸行动',s3_desc:'查看辅导者活动列表',
+    sa1_t:'辅导前熟悉指南',sa1_s:'提前阅读相关类型第01–04节并记录要点',
+    sa2_t:'记录祷告事项',sa2_s:'在计划表第07节写下本周3个祷告事项',
+    sa3_t:'检查关怀清单',sa3_s:'每次辅导前查看计划表关怀检查清单',
+    sa4_t:'练习推荐问题',sa4_s:'辅导前大声朗读指南第05节的5个问题',
+    sa5_t:'3个月中期评估',sa5_s:'确认第06节中期评估检查清单完成情况',
+    assessment:'faith-assessment-zh.html',
+    guide:'counseling-guide-zh.html',
+    plan:'faith-growth-plan-zh.html',
+    activities:'faith-activities-zh.html',
+
+    act_intro_client:'查看评估结果后，选择适合您信仰类型的活动表，与辅导者一起实践。',
+    ca_title:'按类型分类的信仰成长活动表',
+    ca_sub:'8种类型 · 每种类型2份活动表 · PDF保存',
+    act_types_label:'包含的类型',
+    chip_rooted:'扎根型',
+    chip_seedling:'幼苗型',
+    chip_grounded:'根基型',
+    chip_fruitful:'结果型',
+    chip_wilderness:'旷野型',
+    chip_seeker:'寻索型',
+    chip_enduring:'忍耐型',
+    chip_beginning:'起步型',
+    act_intro_counselor:'辅导后，与被评估者一起选择活动表，在下次辅导时一起回顾。',
+    sa_act_title:'按类型分类的信仰成长活动表',
+    sa_act_sub:'选择被评估者类型 · 共同填写 · PDF保存',
+    act_how_label:'使用步骤',
+    how1:'从评估结果确认被评估者的信仰类型',
+    how2:'在活动表中选择该类型',
+    how3:'与被评估者一起从2份活动表中选择一份',
+    how4:'保存为PDF，在下次辅导时回顾',
+  },
+  it:{
+    eyebrow:'Sistema di Valutazione del Tipo di Fede',
+    title:'Comprendi il tuo cammino<br>di fede più profondamente',
+    sub:'74 domande per valutare il tuo tipo di fede, poi guide di consulenza personalizzate e piani di crescita per avanzare verso la prossima tappa.',
+    tab_client:'Navigatore (Valutato)',tab_counselor:'Compagno (Consulente)',
+    c1_title:'Valutazione Tipo di Fede',c1_desc:'74 domande · ~15 min · Salva JPG/PDF',
+    c2_title:'Metti in Pratica',c2_desc:'Vedi elenco attività di partecipazione',
+    ca1_t:'Diario della Parola',ca1_s:'Annota un versetto che ti ha toccato questa settimana e la tua riflessione',
+    ca2_t:'Diario della gratitudine',ca2_s:'Scrivi 3 cose per cui sei grato oggi',
+    ca3_t:'Contatta qualcuno',ca3_s:'Raggiungi un compagno di fede che non senti da tempo',
+    ca4_t:'5 minuti di riflessione',ca4_s:'Siediti in silenzio davanti a Dio senza fare nulla',
+    ca5_t:'Scrivi una domanda di fede',ca5_s:'Scrivi una domanda di fede che ti incuriosisce di più',
+    s1_title:'Guida di Consulenza',s1_desc:'7 sezioni per ognuno degli 8 tipi · Solo consulenti',
+    s2_title:'Foglio del Piano di Crescita',s2_desc:'Piano annuale · Salva PDF · Solo consulenti',
+    s3_title:'Metti in Pratica',s3_desc:'Vedi elenco attività del consulente',
+    sa1_t:'Studia la guida prima della sessione',sa1_s:'Leggi le sezioni 01–04 per il tipo rilevante e prendi appunti',
+    sa2_t:'Registra le intenzioni di preghiera',sa2_s:'Scrivi 3 intenzioni di preghiera nella sezione 07 del piano',
+    sa3_t:'Controlla la lista di controllo',sa3_s:'Rivedi la lista di controllo prima di ogni sessione',
+    sa4_t:'Pratica le domande consigliate',sa4_s:'Leggi ad alta voce 5 domande dalla sezione 05 della guida',
+    sa5_t:'Revisione a metà percorso (3 mesi)',sa5_s:'Verifica il completamento della checklist della sezione 06',
+    assessment:'faith-assessment-it.html',
+    guide:'counseling-guide-it.html',
+    plan:'faith-growth-plan-it.html',
+    activities:'faith-activities-it.html',
+
+    act_intro_client:'Dopo aver esaminato i risultati, scegli un foglio attività per il tuo tipo di fede e mettilo in pratica con il tuo consulente.',
+    ca_title:'Fogli Attività per la Crescita nella Fede per Tipo',
+    ca_sub:'8 tipi · 2 fogli attività per tipo · Salva PDF',
+    act_types_label:'Tipi inclusi',
+    chip_rooted:'Radicato',
+    chip_seedling:'Germoglio',
+    chip_grounded:'Fondato',
+    chip_fruitful:'Fruttuoso',
+    chip_wilderness:'Nel Deserto',
+    chip_seeker:'Cercatore',
+    chip_enduring:'Resistente',
+    chip_beginning:'Inizio',
+    act_intro_counselor:'Dopo la consulenza, scegliete insieme un foglio attività e rivedietelo alla sessione successiva.',
+    sa_act_title:'Fogli Attività per la Crescita nella Fede per Tipo',
+    sa_act_sub:'Seleziona il tipo · Compila insieme · Salva PDF',
+    act_how_label:'Come usarlo',
+    how1:'Identifica il tipo di fede dai risultati',
+    how2:'Seleziona quel tipo nel foglio attività',
+    how3:'Scegliete insieme uno dei 2 fogli attività',
+    how4:'Salva come PDF e rivedi alla prossima sessione',
+  },
+  de:{
+    eyebrow:'Glaubenstyp-Bewertungssystem',
+    title:'Verstehe deinen Glaubensweg<br>tiefer',
+    sub:'74 Fragen zur Bewertung deines Glaubenstyps, dann personalisierte Beratungsleitfäden und Wachstumspläne für den nächsten Schritt.',
+    tab_client:'Navigator (Bewertete)',tab_counselor:'Begleiter (Berater)',
+    c1_title:'Glaubenstyp-Bewertung',c1_desc:'74 Fragen · ~15 Min. · JPG/PDF speichern',
+    c2_title:'In die Tat umsetzen',c2_desc:'Teilnahmeaktivitäten anzeigen',
+    ca1_t:'Wort-Tagebuch',ca1_s:'Einen Vers notieren, der dich diese Woche berührt hat',
+    ca2_t:'Dankbarkeitstagebuch',ca2_s:'3 Dinge aufschreiben, für die du heute dankbar bist',
+    ca3_t:'Jemanden kontaktieren',ca3_s:'Einen Glaubensbegleiter kontaktieren, mit dem du lange nicht gesprochen hast',
+    ca4_t:'5 Minuten stille Einkehr',ca4_s:'Ruhig vor Gott sitzen, ohne etwas zu tun',
+    ca5_t:'Glaubensfrage aufschreiben',ca5_s:'Eine Glaubensfrage, die dich am meisten beschäftigt, aufschreiben',
+    s1_title:'Beratungsleitfaden',s1_desc:'7 Abschnitte für jeden der 8 Typen · Nur für Berater',
+    s2_title:'Wachstumsplanblatt',s2_desc:'1-Jahres-Wachstumsplan · PDF speichern · Nur für Berater',
+    s3_title:'In die Tat umsetzen',s3_desc:'Berater-Aktivitätsliste anzeigen',
+    sa1_t:'Leitfaden vor der Sitzung lesen',sa1_s:'Abschnitte 01–04 für den relevanten Typ lesen und Notizen machen',
+    sa2_t:'Gebetsanliegen notieren',sa2_s:'3 Gebetsanliegen für diese Woche in Abschnitt 07 eintragen',
+    sa3_t:'Prüfliste überprüfen',sa3_s:'Pflege-Prüfliste vor jeder Sitzung überprüfen',
+    sa4_t:'Empfohlene Fragen üben',sa4_s:'5 Fragen aus Abschnitt 05 des Leitfadens laut vorlesen',
+    sa5_t:'3-Monats-Halbzeit-Überprüfung',sa5_s:'Abschluss der Bewertungs-Checkliste in Abschnitt 06 prüfen',
+    assessment:'faith-assessment-de.html',
+    guide:'counseling-guide-de.html',
+    plan:'faith-growth-plan-de.html',
+    activities:'faith-activities-de.html',
+
+    act_intro_client:'Nach der Auswertung der Ergebnisse wähle ein Aktivitätsblatt für deinen Glaubenstyp und übe es gemeinsam mit deinem Berater.',
+    ca_title:'Glaubenswachstums-Aktivitätsblätter nach Typ',
+    ca_sub:'8 Typen · 2 Aktivitätsblätter pro Typ · PDF speichern',
+    act_types_label:'Enthaltene Typen',
+    chip_rooted:'Verwurzelt',
+    chip_seedling:'Sämling',
+    chip_grounded:'Geerdet',
+    chip_fruitful:'Fruchtbar',
+    chip_wilderness:'In der Wüste',
+    chip_seeker:'Sucher',
+    chip_enduring:'Ausdauernd',
+    chip_beginning:'Anfang',
+    act_intro_counselor:'Wählt nach der Beratung gemeinsam ein Aktivitätsblatt und besprecht es in der nächsten Sitzung.',
+    sa_act_title:'Glaubenswachstums-Aktivitätsblätter nach Typ',
+    sa_act_sub:'Typ auswählen · Gemeinsam ausfüllen · PDF speichern',
+    act_how_label:'Verwendung',
+    how1:'Glaubenstyp aus den Ergebnissen identifizieren',
+    how2:'Diesen Typ im Aktivitätsblatt auswählen',
+    how3:'Gemeinsam eines der 2 Aktivitätsblätter wählen',
+    how4:'Als PDF speichern und in der nächsten Sitzung besprechen',
+  },
+  fr:{
+    eyebrow:'Système d\'Évaluation du Type de Foi',
+    title:'Comprendre votre chemin de foi<br>plus profondément',
+    sub:'74 questions pour évaluer votre type de foi, puis des guides de conseil personnalisés et des plans de croissance pour avancer vers la prochaine étape.',
+    tab_client:'Navigateur (Évalué)',tab_counselor:'Compagnon (Conseiller)',
+    c1_title:'Évaluation du Type de Foi',c1_desc:'74 questions · ~15 min · Enregistrer JPG/PDF',
+    c2_title:'Passer à l\'Action',c2_desc:'Voir la liste des activités de participation',
+    ca1_t:'Journal de la Parole',ca1_s:'Notez un verset qui vous a touché cette semaine et votre réflexion',
+    ca2_t:'Journal de gratitude',ca2_s:'Écrire 3 choses dont vous êtes reconnaissant(e) aujourd\'hui',
+    ca3_t:'Contacter quelqu\'un',ca3_s:'Prendre contact avec un compagnon de foi que vous n\'avez pas contacté depuis longtemps',
+    ca4_t:'5 minutes de réflexion',ca4_s:'S\'asseoir en silence devant Dieu sans rien faire',
+    ca5_t:'Écrire une question de foi',ca5_s:'Écrire la question de foi qui vous préoccupe le plus',
+    s1_title:'Guide de Conseil',s1_desc:'7 sections pour chacun des 8 types · Conseillers uniquement',
+    s2_title:'Feuille de Plan de Croissance',s2_desc:'Plan annuel · Enregistrer PDF · Conseillers uniquement',
+    s3_title:'Passer à l\'Action',s3_desc:'Voir la liste des activités du conseiller',
+    sa1_t:'Étudier le guide avant la séance',sa1_s:'Lire les sections 01–04 pour le type concerné et noter les points clés',
+    sa2_t:'Enregistrer les intentions de prière',sa2_s:'Écrire 3 intentions de prière dans la section 07 du plan',
+    sa3_t:'Vérifier la liste de contrôle',sa3_s:'Consulter la liste de contrôle de soins avant chaque séance',
+    sa4_t:'Pratiquer les questions recommandées',sa4_s:'Lire à voix haute 5 questions de la section 05 du guide',
+    sa5_t:'Bilan à mi-parcours (3 mois)',sa5_s:'Vérifier l\'achèvement de la checklist d\'évaluation section 06',
+    assessment:'faith-assessment-fr.html',
+    guide:'counseling-guide-fr.html',
+    plan:'faith-growth-plan-fr.html',
+    activities:'faith-activities-fr.html',
+
+    act_intro_client:"Après avoir examiné les résultats, choisissez une feuille d'activité adaptée à votre type de foi et pratiquez-la avec votre conseiller.",
+    ca_title:"Feuilles d'Activité de Croissance par Type de Foi",
+    ca_sub:"8 types · 2 feuilles d'activité par type · Enregistrer PDF",
+    act_types_label:'Types inclus',
+    chip_rooted:'Enraciné',
+    chip_seedling:'Jeune Pousse',
+    chip_grounded:'Bien Fondé',
+    chip_fruitful:'Fructueux',
+    chip_wilderness:'Dans le Désert',
+    chip_seeker:'Chercheur',
+    chip_enduring:'Persévérant',
+    chip_beginning:'Début',
+    act_intro_counselor:"Après le conseil, choisissez ensemble une feuille d'activité et révisez-la à la prochaine séance.",
+    sa_act_title:"Feuilles d'Activité de Croissance par Type de Foi",
+    sa_act_sub:'Sélectionner le type · Remplir ensemble · Enregistrer PDF',
+    act_how_label:"Comment l'utiliser",
+    how1:'Identifier le type de foi à partir des résultats',
+    how2:"Sélectionner ce type dans la feuille d'activité",
+    how3:"Choisir ensemble l'une des 2 feuilles d'activité",
+    how4:'Enregistrer en PDF et réviser à la prochaine séance',
+  },
+};
+
+let curLang='ko';
+let curRole='client';
+
+function setLang(lang){
+  curLang=lang;
+  const L=T[lang];
+  document.querySelectorAll('[data-i]').forEach(el=>{
+    const k=el.getAttribute('data-i');
+    if(L[k]!==undefined) el.innerHTML=L[k];
+  });
+  // update links
+  document.getElementById('link_assessment').href=L.assessment;
+  document.getElementById('link_guide').href=L.guide;
+  document.getElementById('link_plan').href=L.plan;
+  document.querySelectorAll('.act-link').forEach(el=>{ if(L.activities) el.href=L.activities; });
+  // font switch for CJK
+  const serif=lang==='zh'?'serif':lang==='ko'?'\'Noto Serif KR\',serif':'\'Playfair Display\',serif';
+  document.querySelector('.hero-title').style.fontFamily=serif;
+  document.querySelector('.logo').style.fontFamily=serif;
+}
+
+function switchRole(role){
+  curRole=role;
+  document.querySelectorAll('.role-tab').forEach((t,i)=>t.classList.toggle('active',i===(role==='client'?0:1)));
+  document.getElementById('panel-client').classList.toggle('active',role==='client');
+  document.getElementById('panel-counselor').classList.toggle('active',role==='counselor');
+}
+
+function toggleSection(id){
+  const body=document.getElementById(id);
+  const chev=document.getElementById('chev-'+id);
+  const open=body.classList.toggle('open');
+  chev.classList.toggle('open',open);
+}
+</script>
+</body>
+</html>
