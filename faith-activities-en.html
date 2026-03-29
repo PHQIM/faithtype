@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Faith Growth Activity Sheets</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300;400;500&display=swap');
+:root{--bg:#F8F6F1;--white:#fff;--text:#1A1814;--muted:#7A7568;--light:#B0A99E;--border:#E8E3DC;--bl:#F4F0EB;--accent:#3D3526;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{font-size:15px;}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* ── TOPBAR ── */
+.topbar{background:var(--white);border-bottom:1px solid var(--border);padding:13px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.topbar-left{display:flex;align-items:center;gap:10px;}
+.topbar-logo{font-family:'Noto Serif KR',serif;font-size:14px;font-weight:600;color:var(--text);}
+.topbar-logo span{color:#534AB7;}
+.topbar-sep{width:1px;height:16px;background:var(--border);}
+.topbar-title{font-size:13px;color:var(--muted);}
+.btn-print{padding:7px 16px;background:var(--accent);color:#fff;border:none;border-radius:3px;font-family:'Noto Sans KR',sans-serif;font-size:12px;font-weight:500;cursor:pointer;}
+
+/* ── TYPE SELECTOR ── */
+.selector-wrap{max-width:760px;margin:0 auto;padding:28px 24px 0;}
+.selector-label{font-size:11px;font-weight:500;letter-spacing:.8px;color:var(--light);text-transform:uppercase;margin-bottom:12px;}
+.type-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+@media(max-width:580px){.type-grid{grid-template-columns:repeat(2,1fr);}}
+.type-btn{padding:10px 8px;border:1px solid var(--border);border-radius:6px;background:var(--white);font-family:'Noto Sans KR',sans-serif;font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;transition:all .15s;text-align:center;line-height:1.4;}
+.type-btn:hover{border-color:var(--light);}
+.type-btn.active{color:#fff;border-color:transparent;}
+
+/* ── ACTIVITIES AREA ── */
+.activities-wrap{max-width:760px;margin:0 auto;padding:20px 24px 60px;}
+.act-header{margin-bottom:20px;}
+.act-type-badge{display:inline-flex;align-items:center;gap:7px;padding:5px 14px;border-radius:20px;margin-bottom:10px;}
+.act-type-badge-dot{width:7px;height:7px;border-radius:50%;}
+.act-type-name{font-size:12px;font-weight:500;}
+.act-header-title{font-family:'Noto Serif KR',serif;font-size:20px;font-weight:600;color:var(--text);margin-bottom:4px;}
+.act-header-sub{font-size:13px;color:var(--muted);line-height:1.7;}
+
+/* ── SHEET ── */
+.sheet{background:var(--white);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:16px;}
+.sheet-head{padding:16px 20px;border-bottom:1px solid var(--border);}
+.sheet-num{font-size:10px;font-weight:500;letter-spacing:.6px;color:var(--light);text-transform:uppercase;margin-bottom:4px;}
+.sheet-title{font-size:15px;font-weight:500;color:var(--text);margin-bottom:3px;}
+.sheet-desc{font-size:12px;color:var(--light);line-height:1.6;}
+.sheet-body{padding:16px 20px;}
+
+/* ── FIELD TYPES ── */
+.field{margin-bottom:16px;}
+.field:last-child{margin-bottom:0;}
+.field-label{font-size:11px;font-weight:500;letter-spacing:.5px;color:var(--muted);text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:6px;}
+.field-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
+.field-input{width:100%;border:none;border-bottom:1.5px solid var(--border);background:transparent;font-family:'Noto Sans KR',sans-serif;font-size:13px;color:var(--text);outline:none;padding:5px 2px;transition:border-color .15s;}
+.field-input:focus{border-bottom-color:var(--accent);}
+.field-textarea{width:100%;border:1px solid var(--border);border-radius:4px;background:var(--bg);font-family:'Noto Sans KR',sans-serif;font-size:13px;color:var(--text);outline:none;padding:10px 12px;resize:none;line-height:1.75;transition:border-color .15s;}
+.field-textarea:focus{border-color:var(--accent);}
+
+/* check row */
+.check-row{display:flex;align-items:center;gap:10px;padding:9px 12px;border:1px solid var(--border);border-radius:4px;margin-bottom:6px;background:var(--bg);}
+.check-row:last-child{margin-bottom:0;}
+.chk{width:16px;height:16px;border:1.5px solid var(--border);border-radius:3px;flex-shrink:0;cursor:pointer;appearance:none;-webkit-appearance:none;position:relative;transition:all .15s;}
+.chk:checked{border-color:var(--accent);background:var(--accent);}
+.chk:checked::after{content:'✓';position:absolute;top:-2px;left:2px;font-size:11px;color:#fff;font-weight:500;}
+.check-text{font-size:13px;color:var(--muted);flex:1;}
+.check-input{flex:1;border:none;background:transparent;font-family:'Noto Sans KR',sans-serif;font-size:13px;color:var(--text);outline:none;}
+
+/* day row for weekly tracker */
+.day-grid{display:grid;grid-template-columns:60px 1fr 80px;gap:0;border:1px solid var(--border);border-radius:6px;overflow:hidden;}
+.day-row{display:contents;}
+.day-row > div{padding:9px 12px;border-bottom:1px solid var(--bl);font-size:12px;}
+.day-row:last-child > div{border-bottom:none;}
+.day-label{background:var(--bg);color:var(--muted);font-weight:500;display:flex;align-items:center;}
+.day-content{background:var(--white);}
+.day-content input{width:100%;border:none;background:transparent;font-family:'Noto Sans KR',sans-serif;font-size:12px;color:var(--text);outline:none;}
+.day-check{background:var(--bg);display:flex;align-items:center;justify-content:center;}
+
+/* letter area */
+.letter-area{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;}
+.letter-intro{font-size:12px;color:var(--light);margin-bottom:10px;font-style:italic;}
+.letter-textarea{width:100%;border:none;background:transparent;font-family:'Noto Serif KR',serif;font-size:13px;color:var(--text);outline:none;resize:none;line-height:1.9;min-height:120px;}
+
+/* verse collect */
+.verse-row{display:flex;gap:8px;margin-bottom:8px;align-items:flex-start;}
+.verse-row:last-child{margin-bottom:0;}
+.verse-num{font-size:11px;color:var(--light);width:18px;flex-shrink:0;margin-top:4px;}
+.verse-inputs{flex:1;display:flex;flex-direction:column;gap:4px;}
+.verse-ref{border:none;border-bottom:1px solid var(--border);background:transparent;font-family:'Noto Sans KR',sans-serif;font-size:11px;color:var(--light);outline:none;padding:2px 0;width:100%;}
+.verse-content{border:none;border-bottom:1.5px solid var(--border);background:transparent;font-family:'Noto Serif KR',serif;font-size:13px;color:var(--text);outline:none;padding:4px 0;width:100%;}
+
+/* question card */
+.q-card{border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-bottom:8px;}
+.q-card:last-child{margin-bottom:0;}
+.q-card-head{padding:10px 14px;background:var(--bg);border-bottom:1px solid var(--border);}
+.q-card-text{font-size:13px;color:var(--text);font-weight:500;}
+.q-card-body{padding:10px 14px;}
+.q-card-input{width:100%;border:none;background:transparent;font-family:'Noto Sans KR',sans-serif;font-size:13px;color:var(--text);outline:none;line-height:1.7;resize:none;min-height:52px;}
+
+/* date row */
+.meta-row{display:flex;gap:16px;margin-bottom:16px;flex-wrap:wrap;}
+.meta-field{display:flex;align-items:center;gap:8px;}
+.meta-label{font-size:11px;color:var(--light);white-space:nowrap;}
+.meta-input{border:none;border-bottom:1px solid var(--border);background:transparent;font-family:'Noto Sans KR',sans-serif;font-size:12px;color:var(--text);outline:none;padding:2px 0;width:100px;}
+.meta-input.wide{width:160px;}
+
+/* placeholder state */
+.empty-state{text-align:center;padding:48px 24px;color:var(--light);}
+.empty-title{font-family:'Noto Serif KR',serif;font-size:18px;margin-bottom:8px;color:var(--muted);}
+.empty-sub{font-size:13px;line-height:1.8;}
+
+/* ── PRINT ── */
+@media print{
+  .topbar,.selector-wrap{display:none;}
+  .activities-wrap{padding:0;max-width:100%;}
+  .sheet{border-radius:0;page-break-inside:avoid;}
+  body{background:#fff;}
+  @page{margin:14mm 16mm;size:A4;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <span class="topbar-logo">Faith<span>Type</span></span>
+    <span class="topbar-sep"></span>
+    <span class="topbar-title">Faith Growth Activity Sheets</span>
+  </div>
+  <button class="btn-print" onclick="window.print()">Save PDF / Print</button>
+</div>
+
+<div class="selector-wrap">
+  <div class="selector-label">Select My Faith Type</div>
+  <div class="type-grid" id="typeGrid"></div>
+</div>
+
+<div class="activities-wrap" id="activitiesWrap">
+  <div class="empty-state">
+    <div class="empty-title">Please select a type</div>
+    <div class="empty-sub">Select your faith type above and<br>personalized activity sheets will appear.</div>
+  </div>
+</div>
+
+<script>
+const TYPES = [
+  {id:'rooted',  name:'Rooted',  color:'#534AB7', light:'#EEEDFE',
+   theme:'Sharing Depth Outward',
+   desc:'The direction now needed is not to accumulate more, but to flow out what you have and rest.',
+   sheets:[
+    {title:'Scripture Sharing Card',
+     desc:"An activity to share this week's scripture with your counselor. The goal is sharing, not explaining.",
+     render(color,light){return`
+      <div class="meta-row">
+        <div class="meta-field"><span class="meta-label">Date</span><input class="meta-input" type="date"></div>
+        <div class="meta-field"><span class="meta-label">이름</span><input class="meta-input wide" placeholder="Name or Code"></div>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>This Week's Scripture (Verse)</div>
+        <input class="field-input" placeholder="e.g. Psalm 23:1">
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>First thought when reading</div>
+        <textarea class="field-textarea" rows="3" placeholder="There is no right answer. Write your honest first feeling."></textarea>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>Connection to my life</div>
+        <textarea class="field-textarea" rows="3" placeholder="How does it connect to my current situation, feelings, or concerns?"></textarea>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>One thing to try this week from this scripture</div>
+        <input class="field-input" placeholder="Even something very small is fine.">
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>What I want to say to my counselor</div>
+        <textarea class="field-textarea" rows="2" placeholder="Write anything you especially want to share at the next session."></textarea>
+      </div>`;}
+    },
+    {title:'Permission to Rest Journal',
+     desc:'Record a moment each day when you felt "I did well enough." Training to find gratitude as a being, not for achievement.',
+     render(color,light){const days=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+      return`
+      <div class="meta-row">
+        <div class="meta-field"><span class="meta-label">주차</span><input class="meta-input" placeholder="e.g. Week 2, March 2025"></div>
+      </div>
+      <div class="field">
+        <div class="day-grid">
+          ${days.map(d=>`<div class="day-row"><div class="day-label">${d}</div><div class="day-content"><input placeholder="Something I did well today, or simply grateful to exist"></div><div class="day-check"><input type="checkbox" class="chk"></div></div>`).join('')}
+        </div>
+        <div style="font-size:11px;color:var(--light);margin-top:6px;text-align:right;">☑ = Today I felt "that was enough"</div>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>A word to give myself this week</div>
+        <input class="field-input" placeholder="Speak warmly to yourself.">
+      </div>`;}
+    },
+   ]
+  },
+  {id:'seedling', name:'Seedling', color:'#0F6E56', light:'#E1F5EE',
+   theme:'First Wrestle Toward Roots',
+   desc:'The direction now needed is creating first contact with the Word in a safe environment that welcomes questions.',
+   sheets:[
+    {title:'My Faith Question Notebook',
+     desc:'A notebook to freely write questions about faith. Finding answers is not the goal. Bring one question to each counseling session.',
+     render(color,light){return`
+      <div class="meta-row">
+        <div class="meta-field"><span class="meta-label">Date</span><input class="meta-input" type="date"></div>
+        <div class="meta-field"><span class="meta-label">이름</span><input class="meta-input wide" placeholder="Name or Code"></div>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>My biggest faith question this week</div>
+        <textarea class="field-textarea" rows="3" placeholder=""Is it okay to ask this?" questions are welcome. Write honestly."></textarea>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>What prompted this question</div>
+        <textarea class="field-textarea" rows="2" placeholder="What situation, conversation, or experience brought this question?"></textarea>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>More things I'm curious about (freely)</div>
+        ${[1,2,3].map(i=>`<div class="check-row" style="background:var(--white)"><span style="font-size:11px;color:var(--light);width:16px;flex-shrink:0;">${i}</span><input class="check-input" placeholder="질문 ${i}"></div>`).join('')}
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>What I want to ask at the next session</div>
+        <input class="field-input" placeholder="Write a question you want to ask your counselor directly.">
+      </div>`;}
+    },
+    {title:'Biblical Character Connection Sheet',
+     desc:'Find one biblical character similar to your current emotions or situation, read their story, and write your story alongside theirs.',
+     render(color,light){return`
+      <div class="meta-row">
+        <div class="meta-field"><span class="meta-label">Date</span><input class="meta-input" type="date"></div>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>Chosen Biblical Character</div>
+        <input class="field-input" placeholder="e.g. Thomas, Gideon, Moses, Elijah, Ruth...">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+        <div>
+          <div class="field-label" style="margin-bottom:6px;"><span class="field-dot" style="background:${color}"></span>That character's situation</div>
+          <textarea class="field-textarea" rows="5" placeholder="What situation was that character in according to scripture?"></textarea>
+        </div>
+        <div>
+          <div class="field-label" style="margin-bottom:6px;"><span class="field-dot" style="background:${color}"></span>My situation</div>
+          <textarea class="field-textarea" rows="5" placeholder="What parts are similar to my current situation?"></textarea>
+        </div>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>What would that character do if living my life?</div>
+        <textarea class="field-textarea" rows="3" placeholder="Imagine freely."></textarea>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>What I felt through this character</div>
+        <input class="field-input" placeholder="Try to summarize in one line.">
+      </div>`;}
+    },
+   ]
+  },
+  {id:'grounded', name:'Grounded', color:'#185FA5', light:'#E6F1FB',
+   theme:'Connecting Gratitude to Inner Conviction',
+   desc:'The direction now needed is forming inner conviction that can stand alone even without external environment.',
+   sheets:[
+    {title:'"My Reasons for Having Faith" Writing',
+     desc:'Set aside stories about environment (family, community) and write the reasons for having faith purely from your own heart.',
+     render(color,light){return`
+      <div class="meta-row">
+        <div class="meta-field"><span class="meta-label">Date</span><input class="meta-input" type="date"></div>
+        <div class="meta-field"><span class="meta-label">이름</span><input class="meta-input wide" placeholder="Name or Code"></div>
+      </div>
+      <div style="background:${light};border-radius:6px;padding:12px 16px;margin-bottom:14px;font-size:12px;color:#0C447C;line-height:1.7;">
+        Rule: Set aside stories about family, community, and church atmosphere. Write only from <strong>"my own heart."</strong>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>I have this faith right now. The reason is...</div>
+        <textarea class="field-textarea" rows="6" placeholder="If there is a reason you would choose this faith even if the environment changed, write it freely."></textarea>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>My most honest thought right now</div>
+        <textarea class="field-textarea" rows="3" placeholder="It's okay to write honestly that you're unsure or don't have conviction yet."></textarea>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>What changed from last time (if anything)</div>
+        <input class="field-input" placeholder="It's okay if nothing has changed.">
+      </div>`;}
+    },
+    {title:'Organizing the Reasons I Chose Faith',
+     desc:'Organize 3 reasons for choosing faith that come purely from your heart, not from environment or other people.',
+     render(color,light){return`
+      <div class="meta-row">
+        <div class="meta-field"><span class="meta-label">Date</span><input class="meta-input" type="date"></div>
+        <div class="meta-field"><span class="meta-label">이름</span><input class="meta-input wide" placeholder="Name or Code"></div>
+      </div>
+      <div style="background:${light};border-radius:6px;padding:12px 16px;margin-bottom:14px;font-size:12px;color:#0C447C;line-height:1.7;">
+        Rule: Set aside family, community, and church atmosphere. Write only reasons that come from <strong>"your own heart."</strong>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>I choose this faith. Because</div>
+        ${[1,2,3].map(i=>`
+        <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;">
+          <span style="font-size:13px;font-weight:500;color:${color};width:20px;flex-shrink:0;margin-top:6px;">${i}</span>
+          <textarea class="field-textarea" rows="2" style="margin-bottom:0;" placeholder="이유 ${i}"></textarea>
+        </div>`).join('')}
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>Thoughts after writing the 3 reasons</div>
+        <input class="field-input" placeholder="Was it easy or difficult? Which reason felt most genuine?">
+      </div>`;}
+    },
+   ]
+  },
+  {id:'fruitful', name:'Fruitful', color:'#3B6D11', light:'#EAF3DE',
+   theme:'Recovering Freshness & Sharing',
+   desc:'The direction now needed is not maintenance, but recovering freshness and the energy to share.',
+   sheets:[
+    {title:'Looking Back at the Hardest Time',
+     desc:'Recall the hardest time in your faith journey and summarize what you learned in one line. An activity to confirm the traces of deepened faith.',
+     render(color,light){return`
+      <div class="meta-row">
+        <div class="meta-field"><span class="meta-label">Date</span><input class="meta-input" type="date"></div>
+        <div class="meta-field"><span class="meta-label">이름</span><input class="meta-input wide" placeholder="Name or Code"></div>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>The hardest time in my faith journey</div>
+        <textarea class="field-textarea" rows="3" placeholder="What was the situation? What did you feel?"></textarea>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>What I learned then — in one line</div>
+        <input class="field-input" placeholder="Write in just one line what you came to know or gained through that time.">
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>What that time left in me today</div>
+        <textarea class="field-textarea" rows="3" placeholder="What would I be like today without that difficult time?"></textarea>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>Words I want to give to myself from that time</div>
+        <textarea class="field-textarea" rows="2" placeholder="Write freely."></textarea>
+      </div>`;}
+    },
+    {title:"Record of Finding God's Touch",
+     desc:"Record moments this week when you felt God's touch in daily life. An activity to confirm that faith is naturally woven into life.",
+     render(color,light){const days=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+      return`
+      <div class="meta-row">
+        <div class="meta-field"><span class="meta-label">주차</span><input class="meta-input" placeholder="e.g. Week 2, March 2025"></div>
+        <div class="meta-field"><span class="meta-label">이름</span><input class="meta-input wide" placeholder="Name or Code"></div>
+      </div>
+      <div style="background:${light};border-radius:6px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#27500A;line-height:1.7;">
+        Rule: It doesn't have to be grand. Very small or trivial things are fine. Leave blank for days when there were none.
+      </div>
+      <div class="day-grid">
+        ${days.map(d=>`<div class="day-row"><div class="day-label">${d}</div><div class="day-content"><input placeholder="A moment I felt God's touch (leave blank if none)"></div><div class="day-check"><input type="checkbox" class="chk"></div></div>`).join('')}
+      </div>
+      <div style="font-size:11px;color:var(--light);margin-top:6px;text-align:right;">☑ = Today I felt God's touch</div>
+      <div class="field" style="margin-top:14px;">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>The clearest moment this week</div>
+        <textarea class="field-textarea" rows="2" placeholder="Choose one of the 7 and write a bit more detail."></textarea>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>What I want to share with my counselor</div>
+        <input class="field-input" placeholder="The story I'll bring to the next session">
+      </div>`;}
+    },
+   ]
+  },
+  {id:'wilderness', name:'Wilderness', color:'#854F0B', light:'#FAEEDA',
+   theme:'Small Steps, Maintaining Connection',
+   desc:'The goal is not dramatic change but getting through today. Keep activity sheets short and light.',
+   sheets:[
+    {title:"Finding Today's Small Light",
+     desc:'A memo sheet to write one thing you were grateful for or that was warm today, in one line. Strictly one-line rule.',
+     render(color,light){const days=['월','화','수','목','금','토','Sunday'];
+      return`
+      <div class="meta-row">
+        <div class="meta-field"><span class="meta-label">주차</span><input class="meta-input" placeholder="e.g. Week 2, March 2025"></div>
+        <div class="meta-field"><span class="meta-label">이름</span><input class="meta-input wide" placeholder="Name or Code"></div>
+      </div>
+      <div style="background:${light};border-radius:6px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#633806;">
+        Rule: Write just one line. Even trivial things are fine. (e.g. The coffee was good today)
+      </div>
+      <div class="day-grid">
+        ${days.map(d=>`<div class="day-row"><div class="day-label">${d}</div><div class="day-content"><input placeholder="One small light of today"></div><div class="day-check"><input type="checkbox" class="chk"></div></div>`).join('')}
+      </div>
+      <div style="font-size:11px;color:var(--light);margin-top:6px;text-align:right;">☑ = Today I wrote one line</div>
+      <div class="field" style="margin-top:14px;">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>How does it feel reading all 7 together?</div>
+        <textarea class="field-textarea" rows="2" placeholder="We will read these together in counseling."></textarea>
+      </div>`;}
+    },
+    {title:'Connection Check Card',
+     desc:"Check just two things this week. Your counselor checks in briefly each week.",
+     render(color,light){return`
+      <div class="meta-row">
+        <div class="meta-field"><span class="meta-label">주차</span><input class="meta-input" placeholder="e.g. Week 2, March 2025"></div>
+        <div class="meta-field"><span class="meta-label">이름</span><input class="meta-input wide" placeholder="Name or Code"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px;">
+        <div class="check-row">
+          <input type="checkbox" class="chk">
+          <span class="check-text">Contacted someone who supports me (text, call, meeting — any form)</span>
+        </div>
+        <div class="check-row">
+          <input type="checkbox" class="chk">
+          <span class="check-text">Attended worship or gathering at least once (okay to arrive late or leave early)</span>
+        </div>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>The hardest moment this week</div>
+        <textarea class="field-textarea" rows="2" placeholder="You don't have to write if you don't want to. Even one word is fine."></textarea>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>What I needed in that moment</div>
+        <input class="field-input" placeholder="Comfort, alone time, a phone call... anything">
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>A word I want to pass to my counselor</div>
+        <input class="field-input" placeholder="Any words are fine.">
+      </div>`;}
+    },
+   ]
+  },
+  {id:'seeker', name:'Seeker', color:'#993C1D', light:'#FAECE7',
+   theme:'Walking Together With Questions',
+   desc:'The direction now needed is continuing to explore safely without being forced toward answers.',
+   sheets:[
+    {title:'Faith Exploration Journal',
+     desc:'Record moments this week when you thought "Could this be a trace of God?" Write honestly even if there were none.',
+     render(color,light){return`
+      <div class="meta-row">
+        <div class="meta-field"><span class="meta-label">Date</span><input class="meta-input" type="date"></div>
+        <div class="meta-field"><span class="meta-label">이름</span><input class="meta-input wide" placeholder="Name or Code"></div>
+      </div>
+      <div style="background:${light};border-radius:6px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#712B13;">
+        Rule: Write honestly without the pressure of "there should be." If there were none, write that.
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>Moments this week when I thought "Could this be a trace of God?"</div>
+        <textarea class="field-textarea" rows="3" placeholder="If there were none: write that. That honesty is precious."></textarea>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>Something beautiful I noticed this week</div>
+        <input class="field-input" placeholder="Nature, people, music, food... anything is fine.">
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>Honest temperature toward faith now (0° cold — 100° warm)</div>
+        <div style="display:flex;align-items:center;gap:12px;padding:8px 0;">
+          <span style="font-size:12px;color:var(--light)">0°</span>
+          <input type="range" min="0" max="100" value="50" id="tempSlider" oninput="document.getElementById('tempVal').textContent=this.value+'°'" style="flex:1;">
+          <span style="font-size:12px;color:var(--light)">100°</span>
+          <span id="tempVal" style="font-size:14px;font-weight:500;color:${color};width:36px;text-align:right;">50°</span>
+        </div>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>Question I'm currently exploring</div>
+        <textarea class="field-textarea" rows="3" placeholder="If there's a faith-related question circling your mind lately, write it freely."></textarea>
+      </div>`;}
+    },
+    {title:'"If God Exists" Question Sheet',
+     desc:'Bring 3 open questions with no right answers. The goal is to discuss them together at the next counseling session.',
+     render(color,light){const qs=['If God exists, what kind of person would I want God to be?','If God saw my last year, what do you think God would say?','If I came to believe in God, what do you think would change in my life?'];
+      return`
+      <div class="meta-row">
+        <div class="meta-field"><span class="meta-label">Date</span><input class="meta-input" type="date"></div>
+        <div class="meta-field"><span class="meta-label">이름</span><input class="meta-input wide" placeholder="Name or Code"></div>
+      </div>
+      <div style="background:${light};border-radius:6px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#712B13;">
+        Rule: There is no right answer. Write the flow of your thoughts. Short is fine.
+      </div>
+      ${qs.map((q,i)=>`
+      <div class="q-card" style="margin-bottom:8px;">
+        <div class="q-card-head"><div class="q-card-text">${q}</div></div>
+        <div class="q-card-body"><textarea class="q-card-input" rows="3" placeholder="Freely..."></textarea></div>
+      </div>`).join('')}
+      <div class="field" style="margin-top:4px;">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>What did you feel thinking about these questions?</div>
+        <textarea class="field-textarea" rows="2" placeholder="Were you uncomfortable, curious, or overwhelmed?"></textarea>
+      </div>`;}
+    },
+   ]
+  },
+  {id:'enduring', name:'Enduring', color:'#993556', light:'#FBEAF0',
+   theme:'Rest First, Then Connection',
+   desc:'The direction now needed is not doing faith better, but letting go and resting. Activity sheets must be light and easy.',
+   sheets:[
+    {title:"Today's Release Record",
+     desc:'Write one thing you forced yourself to endure today as \"I will release this today.\" Practicing rest and release.',
+     render(color,light){const days=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+      return`
+      <div class="meta-row">
+        <div class="meta-field"><span class="meta-label">주차</span><input class="meta-input" placeholder="e.g. Week 2, March 2025"></div>
+        <div class="meta-field"><span class="meta-label">이름</span><input class="meta-input wide" placeholder="Name or Code"></div>
+      </div>
+      <div style="background:${light};border-radius:6px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#72243E;">
+        Rule: Setting it down is not giving up. For today, you are entrusting this to God.
+      </div>
+      <div class="day-grid">
+        ${days.map(d=>`<div class="day-row"><div class="day-label">${d}</div><div class="day-content"><input placeholder="What I released today"></div><div class="day-check"><input type="checkbox" class="chk"></div></div>`).join('')}
+      </div>
+      <div style="font-size:11px;color:var(--light);margin-top:6px;text-align:right;">☑ = Today I actually felt I released it</div>
+      <div class="field" style="margin-top:14px;">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>What was hardest to release this week</div>
+        <input class="field-input" placeholder="What was especially hard to let go of?">
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>How did you feel after releasing it?</div>
+        <textarea class="field-textarea" rows="2" placeholder="Were you relieved, anxious, or still unsure?"></textarea>
+      </div>`;}
+    },
+    {title:'Comforting Scripture Collection',
+     desc:'A space to collect scriptures or sentences that brought comfort. No need to analyze or apply.',
+     render(color,light){return`
+      <div class="meta-row">
+        <div class="meta-field"><span class="meta-label">이름</span><input class="meta-input wide" placeholder="Name or Code"></div>
+      </div>
+      <div style="background:${light};border-radius:6px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#72243E;">
+        Rule: Just collect what brought comfort. No need to explain why.
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>Comforting Scripture Collection</div>
+        ${[1,2,3,4,5].map(i=>`
+        <div class="verse-row">
+          <div class="verse-num">${i}</div>
+          <div class="verse-inputs">
+            <input class="verse-ref" placeholder="Source (e.g. Psalm 23:1, or a book you read)">
+            <input class="verse-content" placeholder="A comforting sentence">
+          </div>
+        </div>`).join('')}
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>Which is most comforting right now</div>
+        <input class="field-input" placeholder="You can answer by number. (e.g. #2)">
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>What I want to say to my counselor</div>
+        <textarea class="field-textarea" rows="2" placeholder="Any words are fine."></textarea>
+      </div>`;}
+    },
+   ]
+  },
+  {id:'beginning', name:'Beginning', color:'#5F5E5A', light:'#F1EFE8',
+   theme:'Making the First Experience a Good Memory',
+   desc:'The direction now needed is not perfect understanding, but experiencing comfortably once.',
+   sheets:[
+    {title:'One good thing today',
+     desc:"Write one good thing from today regardless of faith. No need to connect it to faith activities.",
+     render(color,light){const days=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+      return`
+      <div class="meta-row">
+        <div class="meta-field"><span class="meta-label">주차</span><input class="meta-input" placeholder="e.g. Week 2, March 2025"></div>
+        <div class="meta-field"><span class="meta-label">이름</span><input class="meta-input wide" placeholder="Name or Code"></div>
+      </div>
+      <div style="background:${light};border-radius:6px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#444441;">
+        Rule: No need to write anything faith-related. Something tasty, funny, or comfortable — anything is good.
+      </div>
+      <div class="day-grid">
+        ${days.map(d=>`<div class="day-row"><div class="day-label">${d}</div><div class="day-content"><input placeholder="One good thing today"></div><div class="day-check"><input type="checkbox" class="chk"></div></div>`).join('')}
+      </div>
+      <div style="font-size:11px;color:var(--light);margin-top:6px;text-align:right;">☑ = Today I wrote</div>
+      <div class="field" style="margin-top:14px;">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>Which of the 7 days was the best?</div>
+        <input class="field-input" placeholder="You can answer by day of the week.">
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>Thoughts reflecting on the week</div>
+        <textarea class="field-textarea" rows="2" placeholder="One line is fine."></textarea>
+      </div>`;}
+    },
+    {title:'First-Time Experience Record',
+     desc:'Write anything you did for the first time in faith this week. One prayer, attending worship, one song — anything is fine.',
+     render(color,light){return`
+      <div class="meta-row">
+        <div class="meta-field"><span class="meta-label">이름</span><input class="meta-input wide" placeholder="Name or Code"></div>
+      </div>
+      <div style="background:${light};border-radius:6px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#444441;">
+        Rule: No matter how trivial, it is fine. The first time itself is precious.
+      </div>
+      ${[1,2,3].map(i=>`
+      <div style="border:1px solid var(--border);border-radius:6px;padding:14px 16px;margin-bottom:8px;">
+        <div style="font-size:10px;color:var(--light);margin-bottom:8px;">Something done for the first time ${i}</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div><div style="font-size:10px;color:var(--light);margin-bottom:3px;">What did you try</div><input class="field-input" placeholder="e.g. First time attending worship, listened to one song, tried a brief prayer"></div>
+          <div><div style="font-size:10px;color:var(--light);margin-bottom:3px;">How did it feel</div><input class="field-input" placeholder="Was it awkward, comfortable, or uncertain?"></div>
+        </div>
+      </div>`).join('')}
+      <div class="field" style="margin-top:4px;">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>Something you want to try again next time</div>
+        <input class="field-input" placeholder="Write it if you have one. None is fine too.">
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="field-dot" style="background:${color}"></span>Something I want to share with my counselor</div>
+        <textarea class="field-textarea" rows="2" placeholder="Any words are fine."></textarea>
+      </div>`;}
+    },
+   ]
+  },
+];
+
+// ── BUILD TYPE BUTTONS ──
+const grid = document.getElementById('typeGrid');
+TYPES.forEach(t => {
+  const btn = document.createElement('button');
+  btn.className = 'type-btn';
+  btn.id = 'btn-' + t.id;
+  btn.innerHTML = t.name;
+  btn.onclick = () => selectType(t.id);
+  grid.appendChild(btn);
+});
+
+let selectedType = null;
+
+function selectType(id) {
+  if (selectedType === id) return;
+  selectedType = id;
+  // update buttons
+  TYPES.forEach(t => {
+    const b = document.getElementById('btn-' + t.id);
+    b.classList.toggle('active', t.id === id);
+    if (t.id === id) { b.style.background = t.color; b.style.color = '#fff'; b.style.borderColor = t.color; }
+    else { b.style.background = ''; b.style.color = ''; b.style.borderColor = ''; }
+  });
+  renderActivities(id);
+}
+
+function renderActivities(id) {
+  const t = TYPES.find(x => x.id === id);
+  const wrap = document.getElementById('activitiesWrap');
+  wrap.innerHTML = `
+    <div class="act-header">
+      <div class="act-type-badge" style="background:${t.light}">
+        <div class="act-type-badge-dot" style="background:${t.color}"></div>
+        <span class="act-type-name" style="color:${t.color}">${t.name}</span>
+      </div>
+      <div class="act-header-title">${t.theme}</div>
+      <div class="act-header-sub">${t.desc}</div>
+    </div>
+    ${t.sheets.map((s, i) => `
+    <div class="sheet">
+      <div class="sheet-head" style="border-left:3px solid ${t.color};border-radius:0;">
+        <div class="sheet-num">활동 0${i+1}</div>
+        <div class="sheet-title">${s.title}</div>
+        <div class="sheet-desc">${s.desc}</div>
+      </div>
+      <div class="sheet-body">${s.render(t.color, t.light)}</div>
+    </div>`).join('')}
+  `;
+  // localStorage save
+  wrap.querySelectorAll('input,textarea,select').forEach(el => {
+    el.addEventListener('input', saveAll);
+    el.addEventListener('change', saveAll);
+  });
+  loadAll(id);
+}
+
+function saveAll() {
+  if (!selectedType) return;
+  const data = {};
+  document.querySelectorAll('#activitiesWrap input,#activitiesWrap textarea').forEach((el, i) => {
+    data[i] = el.type === 'checkbox' || el.type === 'radio' ? el.checked : el.value;
+  });
+  try { localStorage.setItem('fa_' + selectedType, JSON.stringify(data)); } catch(e){}
+}
+
+function loadAll(id) {
+  try {
+    const raw = localStorage.getItem('fa_' + id);
+    if (!raw) return;
+    const data = JSON.parse(raw);
+    document.querySelectorAll('#activitiesWrap input,#activitiesWrap textarea').forEach((el, i) => {
+      if (data[i] !== undefined) {
+        if (el.type === 'checkbox' || el.type === 'radio') el.checked = data[i];
+        else el.value = data[i];
+      }
+    });
+  } catch(e){}
+}
+</script>
+</body>
+</html>
